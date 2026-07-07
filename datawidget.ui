@@ -427,13 +427,13 @@
           <widget class="QScrollArea" name="experimentInfoScrollArea">
            <property name="minimumSize">
             <size>
-             <width>340</width>
+             <width>360</width>
              <height>0</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>380</width>
+             <width>430</width>
              <height>16777215</height>
             </size>
            </property>
@@ -444,9 +444,9 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>0</y>
-              <width>360</width>
-              <height>760</height>
+             <y>0</y>
+              <width>400</width>
+              <height>780</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="experimentInfoVerticalLayout">
@@ -470,312 +470,492 @@
                <property name="text">
                 <string>实验信息</string>
                </property>
-              </widget>
+             </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="groupBasicInfo">
-               <property name="title">
-                <string>基本信息</string>
-               </property>
-               <layout class="QFormLayout" name="basicInfoFormLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="labelExperimentName">
+              <widget class="QWidget" name="basicInfoPanelWidget" native="true">
+               <layout class="QVBoxLayout" name="basicInfoPanelLayout">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="labelBasicInfoTitle">
                   <property name="text">
-                   <string>实验名称：</string>
+                   <string>基本信息</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEditExperimentName">
-                  <property name="text">
-                   <string>dd</string>
+                <item>
+                 <layout class="QGridLayout" name="basicInfoGridLayout">
+                  <property name="horizontalSpacing">
+                   <number>10</number>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="labelExperimentNumber">
-                  <property name="text">
-                   <string>实验编号：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="lineEditExperimentNumber">
-                  <property name="text">
-                   <string>20260707162226</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="labelFinishTime">
-                  <property name="text">
-                   <string>完成时间：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="lineEditFinishTime">
-                  <property name="text">
-                   <string>2026-07-07 16:22:28</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelExperimentName">
+                    <property name="minimumSize">
+                     <size>
+                      <width>76</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>名称</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="lineEditExperimentName">
+                    <property name="minimumSize">
+                     <size>
+                      <width>170</width>
+                      <height>22</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>dd</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelExperimentNumber">
+                    <property name="text">
+                     <string>编号</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="lineEditExperimentNumber">
+                    <property name="text">
+                     <string>20260707162226</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelFinishTime">
+                    <property name="text">
+                     <string>日期</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="lineEditFinishTime">
+                    <property name="text">
+                     <string>2026-07-07 16:22:28</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="groupExperimentSetting">
-               <property name="title">
-                <string>实验设置</string>
-               </property>
-               <layout class="QFormLayout" name="experimentSettingFormLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="labelExperimentType">
+              <widget class="QWidget" name="experimentSettingPanelWidget" native="true">
+               <layout class="QVBoxLayout" name="experimentSettingPanelLayout">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="labelExperimentSettingTitle">
                   <property name="text">
-                   <string>实验类型：</string>
+                   <string>实验设置</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEditExperimentType">
-                  <property name="text">
-                   <string>转染效率分析</string>
+                <item>
+                 <layout class="QGridLayout" name="experimentSettingGridLayout">
+                  <property name="horizontalSpacing">
+                   <number>10</number>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="labelScanChannel">
-                  <property name="text">
-                   <string>扫描通道：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="lineEditScanChannel">
-                  <property name="text">
-                   <string>明场</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QGroupBox" name="groupScanSetting">
-               <property name="title">
-                <string>扫描设置</string>
-               </property>
-               <layout class="QFormLayout" name="scanSettingFormLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="labelScanType">
-                  <property name="text">
-                   <string>扫描类型：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEditScanType">
-                  <property name="text">
-                   <string>单次扫描</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="labelIntervalTime">
-                  <property name="text">
-                   <string>间隔时间：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="lineEditIntervalTime">
-                  <property name="text">
-                   <string>0小时10分钟</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="labelLoopCount">
-                  <property name="text">
-                   <string>循环次数：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="lineEditLoopCount">
-                  <property name="text">
-                   <string>1次</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="labelFieldStitching">
-                  <property name="text">
-                   <string>视野拼接：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QLineEdit" name="lineEditFieldStitching">
-                  <property name="text">
-                   <string>是</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
-                 <widget class="QLabel" name="labelFieldOverlap">
-                  <property name="text">
-                   <string>视野重合度：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QLineEdit" name="lineEditFieldOverlap">
-                  <property name="text">
-                   <string>0.05%</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="labelFocusInterval">
-                  <property name="text">
-                   <string>对焦间隔：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="5" column="1">
-                 <widget class="QLineEdit" name="lineEditFocusInterval">
-                  <property name="text">
-                   <string>1视野</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="6" column="0">
-                 <widget class="QLabel" name="labelFocusChannel">
-                  <property name="text">
-                   <string>对焦通道：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="6" column="1">
-                 <widget class="QLineEdit" name="lineEditFocusChannel">
-                  <property name="text">
-                   <string>明场</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelExperimentType">
+                    <property name="minimumSize">
+                     <size>
+                      <width>76</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>实验类型</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="lineEditExperimentType">
+                    <property name="text">
+                     <string>转染效率分析</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelScanChannel">
+                    <property name="text">
+                     <string>扫描通道</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="lineEditScanChannel">
+                    <property name="text">
+                     <string>明场</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
              </item>
              <item>
-              <widget class="QGroupBox" name="groupPlateField">
-               <property name="title">
-                <string>孔板视野</string>
-               </property>
-               <layout class="QFormLayout" name="plateFieldFormLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="labelPlateType">
+              <widget class="QWidget" name="scanSettingPanelWidget" native="true">
+               <layout class="QVBoxLayout" name="scanSettingPanelLayout">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="labelScanSettingTitle">
                   <property name="text">
-                   <string>孔板类型：</string>
+                   <string>扫描设置</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEditPlateType">
-                  <property name="text">
-                   <string>24孔板</string>
+                <item>
+                 <layout class="QGridLayout" name="scanSettingGridLayout">
+                  <property name="horizontalSpacing">
+                   <number>10</number>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
+                  <property name="verticalSpacing">
+                   <number>6</number>
+                  </property>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelObjective">
+                    <property name="minimumSize">
+                     <size>
+                      <width>76</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>物镜</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="lineEditObjective">
+                    <property name="text">
+                     <string>20X</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelScanType">
+                    <property name="text">
+                     <string>扫描类型</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="lineEditScanType">
+                    <property name="text">
+                     <string>单次扫描</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelZStack">
+                    <property name="text">
+                     <string>z-stack</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="lineEditZStack">
+                    <property name="text">
+                     <string>否</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelIntervalTime">
+                    <property name="text">
+                     <string>间隔时间</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLineEdit" name="lineEditIntervalTime">
+                    <property name="text">
+                     <string>0小时10分钟</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QLabel" name="labelLoopCount">
+                    <property name="text">
+                     <string>循环次数</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="4" column="1">
+                   <widget class="QLineEdit" name="lineEditLoopCount">
+                    <property name="text">
+                     <string>1次</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="0">
+                   <widget class="QLabel" name="labelFieldStitching">
+                    <property name="text">
+                     <string>视野拼接</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="5" column="1">
+                   <widget class="QLineEdit" name="lineEditFieldStitching">
+                    <property name="text">
+                     <string>是</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="0">
+                   <widget class="QLabel" name="labelFieldOverlap">
+                    <property name="text">
+                     <string>视野重合度</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <widget class="QLineEdit" name="lineEditFieldOverlap">
+                    <property name="text">
+                     <string>0.05%</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="0">
+                   <widget class="QLabel" name="labelFocusInterval">
+                    <property name="text">
+                     <string>对焦间隔</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="7" column="1">
+                   <widget class="QLineEdit" name="lineEditFocusInterval">
+                    <property name="text">
+                     <string>1视野</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="0">
+                   <widget class="QLabel" name="labelFocusChannel">
+                    <property name="text">
+                     <string>对焦通道</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="8" column="1">
+                   <widget class="QLineEdit" name="lineEditFocusChannel">
+                    <property name="text">
+                     <string>明场</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="plateFieldPanelWidget" native="true">
+               <layout class="QVBoxLayout" name="plateFieldPanelLayout">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="spacing">
+                 <number>8</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="labelPlateFieldTitle">
+                  <property name="text">
+                   <string>孔板视野</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="labelSelectedArea">
-                  <property name="text">
-                   <string>已选孔区：</string>
+                <item>
+                 <layout class="QGridLayout" name="plateFieldGridLayout">
+                  <property name="horizontalSpacing">
+                   <number>10</number>
                   </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLineEdit" name="lineEditSelectedArea">
-                  <property name="text">
-                   <string>1</string>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="0">
-                 <widget class="QLabel" name="labelSelectedGroup">
-                  <property name="text">
-                   <string>已选分组：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="2" column="1">
-                 <widget class="QLineEdit" name="lineEditSelectedGroup">
-                  <property name="text">
-                   <string>1</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="labelSelectedField">
-                  <property name="text">
-                   <string>已选视野：</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QLineEdit" name="lineEditSelectedField">
-                  <property name="text">
-                   <string>1</string>
-                  </property>
-                  <property name="readOnly">
-                   <bool>true</bool>
-                  </property>
-                 </widget>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="labelPlateType">
+                    <property name="minimumSize">
+                     <size>
+                      <width>76</width>
+                      <height>0</height>
+                     </size>
+                    </property>
+                    <property name="text">
+                     <string>孔板类型</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="1">
+                   <widget class="QLineEdit" name="lineEditPlateType">
+                    <property name="text">
+                     <string>24孔板</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0">
+                   <widget class="QLabel" name="labelSelectedArea">
+                    <property name="text">
+                     <string>已选孔区</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QLineEdit" name="lineEditSelectedArea">
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QLabel" name="labelSelectedGroup">
+                    <property name="text">
+                     <string>已选分组</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QLineEdit" name="lineEditSelectedGroup">
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="labelSelectedField">
+                    <property name="text">
+                     <string>已选视野</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QLineEdit" name="lineEditSelectedField">
+                    <property name="text">
+                     <string>1</string>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
