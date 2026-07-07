@@ -199,9 +199,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicSettingPage.cpp" />
+    <ClCompile Include="FieldViewWidget.cpp" />
     <ClCompile Include="ImageCorrectionPage.cpp" />
     <ClCompile Include="PreviewStatusBarWidget.cpp" />
     <ClCompile Include="SampleStageWidget.cpp" />
+    <ClCompile Include="WellPlateWidget.cpp" />
     <ClCompile Include="ZStackSettingPage.cpp" />
     <ClCompile Include="datawidget.cpp" />
     <ClCompile Include="form.cpp" />
@@ -212,9 +214,11 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="BasicSettingPage.h" />
+    <QtMoc Include="FieldViewWidget.h" />
     <QtMoc Include="ImageCorrectionPage.h" />
     <QtMoc Include="PreviewStatusBarWidget.h" />
     <QtMoc Include="SampleStageWidget.h" />
+    <QtMoc Include="WellPlateWidget.h" />
     <QtMoc Include="ZStackSettingPage.h" />
     <QtMoc Include="datawidget.h" />
     <QtMoc Include="form.h" />

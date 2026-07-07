@@ -40,6 +40,9 @@
     <ClCompile Include="BasicSettingPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FieldViewWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ImageCorrectionPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,6 +50,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SampleStageWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WellPlateWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ZStackSettingPage.cpp">
@@ -75,6 +81,9 @@
     <QtMoc Include="BasicSettingPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="FieldViewWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <QtMoc Include="ImageCorrectionPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -82,6 +91,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="SampleStageWidget.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="WellPlateWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ZStackSettingPage.h">

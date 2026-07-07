@@ -10,9 +10,11 @@ CONFIG += c++17
 
 SOURCES += \
     BasicSettingPage.cpp \
+    FieldViewWidget.cpp \
     ImageCorrectionPage.cpp \
     PreviewStatusBarWidget.cpp \
     SampleStageWidget.cpp \
+    WellPlateWidget.cpp \
     ZStackSettingPage.cpp \
     datawidget.cpp \
     form.cpp \
@@ -23,9 +25,11 @@ SOURCES += \
 
 HEADERS += \
     BasicSettingPage.h \
+    FieldViewWidget.h \
     ImageCorrectionPage.h \
     PreviewStatusBarWidget.h \
     SampleStageWidget.h \
+    WellPlateWidget.h \
     ZStackSettingPage.h \
     datawidget.h \
     form.h \

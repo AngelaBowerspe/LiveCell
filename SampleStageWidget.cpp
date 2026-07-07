@@ -1,144 +1,236 @@
 #include "SampleStageWidget.h"
 
-#include <QPainter>
-#include <QPaintEvent>
-#include <QPen>
+#include "FieldViewWidget.h"
+
+#include <QComboBox>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QSizePolicy>
-#include <QStringList>
-#include <QtMath>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QVariant>
 
 SampleStageWidget::SampleStageWidget(QWidget *parent)
     : QWidget(parent)
+    , m_pTitleLabel(nullptr)
+    , m_pPlateLabel(nullptr)
+    , m_pWellTitleLabel(nullptr)
+    , m_pFieldTitleLabel(nullptr)
+    , m_pPlateComboBox(nullptr)
+    , m_pWellPlateWidget(nullptr)
+    , m_pFieldViewWidget(nullptr)
 {
+    setObjectName("sampleStageWidget");
     setMinimumWidth(390);
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+
+    initUi();
+    initConnections();
+    setPlateFormat(WellPlateWidget::PlateFormat::Plate24);
 }
 
-void SampleStageWidget::paintEvent(QPaintEvent *event)
+WellPlateWidget *SampleStageWidget::wellPlateWidget() const
 {
-    Q_UNUSED(event)
-
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.fillRect(rect(), QColor(250, 250, 250));
-
-    const QRect headerRect(0, 0, width(), 42);
-    const QRect plateRect(14, 96, width() - 28, 290);
-    const QRect fieldRect(14, 420, width() - 28, 300);
-
-    drawHeader(&painter, headerRect);
-
-    painter.setPen(QColor(40, 40, 40));
-    painter.drawText(QRect(14, 56, 70, 28), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("样品板"));
-
-    QRect comboRect(width() - 150, 58, 136, 26);
-    painter.setPen(QColor(210, 210, 210));
-    painter.setBrush(QColor(245, 245, 245));
-    painter.drawRect(comboRect);
-    painter.setPen(QColor(20, 20, 20));
-    painter.drawText(comboRect.adjusted(10, 0, -24, 0), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("24孔板"));
-    painter.drawLine(comboRect.right() - 18, comboRect.center().y() - 2, comboRect.right() - 13, comboRect.center().y() + 3);
-    painter.drawLine(comboRect.right() - 13, comboRect.center().y() + 3, comboRect.right() - 8, comboRect.center().y() - 2);
-
-    drawPlate(&painter, plateRect);
-    drawFieldView(&painter, fieldRect);
+    return m_pWellPlateWidget;
 }
 
-void SampleStageWidget::drawHeader(QPainter *pPainter, const QRect &rect)
+FieldViewWidget *SampleStageWidget::fieldViewWidget() const
 {
-    pPainter->fillRect(rect, QColor(238, 241, 244));
-    pPainter->setPen(QColor(50, 50, 50));
-    pPainter->drawText(rect.adjusted(14, 0, -40, 0), Qt::AlignVCenter | Qt::AlignLeft, QStringLiteral("样品台"));
-
-    const QPoint center(rect.right() - 22, rect.center().y());
-    QPen pen(QColor(145, 145, 145), 2);
-    pPainter->setPen(pen);
-    pPainter->setBrush(Qt::NoBrush);
-    pPainter->drawEllipse(center, 8, 8);
-    for (int i = 0; i < 6; ++i)
-    {
-        const qreal angle = i * 60.0;
-        const qreal radian = angle * 3.14159265358979323846 / 180.0;
-        const QPointF p1(center.x() + qCos(radian) * 11.0, center.y() + qSin(radian) * 11.0);
-        const QPointF p2(center.x() + qCos(radian) * 14.0, center.y() + qSin(radian) * 14.0);
-        pPainter->drawLine(p1, p2);
-    }
+    return m_pFieldViewWidget;
 }
 
-void SampleStageWidget::drawPlate(QPainter *pPainter, const QRect &rect)
+void SampleStageWidget::setPlateFormat(WellPlateWidget::PlateFormat format)
 {
-    pPainter->fillRect(rect, QColor(246, 246, 246));
-    pPainter->setPen(QColor(90, 90, 90));
-    pPainter->drawText(rect.adjusted(16, 10, 0, 0), Qt::AlignLeft | Qt::AlignTop, QStringLiteral("孔板"));
+    m_pWellPlateWidget->setPlateFormat(format);
+    m_pFieldViewWidget->setPlateFormat(format);
+    updatePlateComboText();
+}
 
-    const int rowLabelWidth = 28;
-    const int leftMargin = rect.left() + 72;
-    const int rightMargin = rect.right() - 20;
-    const int availableWidth = qMax(1, rightMargin - leftMargin);
-    const qreal columnSpacing = availableWidth / 5.0;
-    const int radius = qBound(14, qRound(columnSpacing / 2.0) - 6, 20);
-    const int startX = leftMargin;
-    const int startY = rect.top() + 80;
-    const int rowSpacing = 48;
+WellPlateWidget::PlateFormat SampleStageWidget::plateFormat() const
+{
+    return m_pWellPlateWidget->plateFormat();
+}
 
-    QPen gridPen(QColor(130, 172, 215), 2);
-    pPainter->setPen(gridPen);
-    pPainter->setBrush(Qt::NoBrush);
+void SampleStageWidget::setWellState(const QString &well, WellPlateWidget::WellState state)
+{
+    m_pWellPlateWidget->setWellState(well, state);
+}
 
-    QStringList rows;
-    rows << QStringLiteral("A") << QStringLiteral("B") << QStringLiteral("C") << QStringLiteral("D");
+void SampleStageWidget::setWellStates(const QStringList &wells, WellPlateWidget::WellState state)
+{
+    m_pWellPlateWidget->setWellStates(wells, state);
+}
 
-    pPainter->setPen(QColor(85, 130, 185));
-    for (int column = 0; column < 6; ++column)
+void SampleStageWidget::clearWellState(WellPlateWidget::WellState state)
+{
+    m_pWellPlateWidget->clearState(state);
+}
+
+void SampleStageWidget::clearAllWellStates()
+{
+    m_pWellPlateWidget->clearAll();
+}
+
+void SampleStageWidget::setFieldState(int row, int column, FieldViewWidget::FieldState state)
+{
+    m_pFieldViewWidget->setFieldState(row, column, state);
+}
+
+void SampleStageWidget::clearFieldState(FieldViewWidget::FieldState state)
+{
+    m_pFieldViewWidget->clearState(state);
+}
+
+void SampleStageWidget::clearAllFieldStates()
+{
+    m_pFieldViewWidget->clearAll();
+}
+
+void SampleStageWidget::initUi()
+{
+    QVBoxLayout *mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
+    mainLayout->setSpacing(0);
+    mainLayout->setObjectName("sampleStageMainLayout");
+
+    QWidget *headerWidget = new QWidget(this);
+    headerWidget->setObjectName("sampleStageHeaderWidget");
+    headerWidget->setMinimumHeight(42);
+    headerWidget->setMaximumHeight(42);
+
+    QHBoxLayout *headerLayout = new QHBoxLayout(headerWidget);
+    headerLayout->setContentsMargins(14, 0, 10, 0);
+    headerLayout->setSpacing(8);
+    headerLayout->setObjectName("sampleStageHeaderLayout");
+
+    m_pTitleLabel = new QLabel(QStringLiteral("样品台"), headerWidget);
+    m_pTitleLabel->setObjectName("labelSampleStageTitle");
+
+    QToolButton *settingsButton = new QToolButton(headerWidget);
+    settingsButton->setObjectName("buttonSampleStageSettings");
+    settingsButton->setText(QStringLiteral("⚙"));
+    settingsButton->setMinimumSize(32, 32);
+    settingsButton->setMaximumSize(32, 32);
+
+    headerLayout->addWidget(m_pTitleLabel);
+    headerLayout->addStretch();
+    headerLayout->addWidget(settingsButton);
+    mainLayout->addWidget(headerWidget);
+
+    QWidget *plateSelectWidget = new QWidget(this);
+    plateSelectWidget->setObjectName("plateSelectWidget");
+    plateSelectWidget->setMinimumHeight(58);
+    plateSelectWidget->setMaximumHeight(58);
+
+    QHBoxLayout *plateSelectLayout = new QHBoxLayout(plateSelectWidget);
+    plateSelectLayout->setContentsMargins(14, 8, 14, 8);
+    plateSelectLayout->setSpacing(12);
+    plateSelectLayout->setObjectName("plateSelectLayout");
+
+    m_pPlateLabel = new QLabel(QStringLiteral("样品板"), plateSelectWidget);
+    m_pPlateLabel->setObjectName("labelPlateFormat");
+
+    m_pPlateComboBox = new QComboBox(plateSelectWidget);
+    m_pPlateComboBox->setObjectName("comboPlateFormat");
+    m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate6),
+        QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate6)));
+    m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate12),
+        QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate12)));
+    m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate24),
+        QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate24)));
+    m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate48),
+        QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate48)));
+    m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate96),
+        QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate96)));
+    m_pPlateComboBox->setMinimumWidth(180);
+
+    plateSelectLayout->addWidget(m_pPlateLabel);
+    plateSelectLayout->addStretch();
+    plateSelectLayout->addWidget(m_pPlateComboBox);
+    mainLayout->addWidget(plateSelectWidget);
+
+    QWidget *wellPanelWidget = new QWidget(this);
+    wellPanelWidget->setObjectName("wellPanelWidget");
+    QVBoxLayout *wellPanelLayout = new QVBoxLayout(wellPanelWidget);
+    wellPanelLayout->setContentsMargins(14, 10, 14, 12);
+    wellPanelLayout->setSpacing(8);
+    wellPanelLayout->setObjectName("wellPanelLayout");
+
+    m_pWellTitleLabel = new QLabel(QStringLiteral("孔板"), wellPanelWidget);
+    m_pWellTitleLabel->setObjectName("labelWellPlateTitle");
+
+    m_pWellPlateWidget = new WellPlateWidget(wellPanelWidget);
+    m_pWellPlateWidget->setObjectName("wellPlateWidget");
+
+    QFrame *separator = new QFrame(wellPanelWidget);
+    separator->setObjectName("wellPanelSeparator");
+    separator->setFrameShape(QFrame::HLine);
+
+    wellPanelLayout->addWidget(m_pWellTitleLabel);
+    wellPanelLayout->addWidget(m_pWellPlateWidget);
+    wellPanelLayout->addWidget(separator);
+    mainLayout->addWidget(wellPanelWidget);
+
+    QWidget *fieldPanelWidget = new QWidget(this);
+    fieldPanelWidget->setObjectName("fieldPanelWidget");
+    QVBoxLayout *fieldPanelLayout = new QVBoxLayout(fieldPanelWidget);
+    fieldPanelLayout->setContentsMargins(28, 24, 28, 12);
+    fieldPanelLayout->setSpacing(12);
+    fieldPanelLayout->setObjectName("fieldPanelLayout");
+
+    m_pFieldTitleLabel = new QLabel(QStringLiteral("视野"), fieldPanelWidget);
+    m_pFieldTitleLabel->setObjectName("labelFieldViewTitle");
+
+    m_pFieldViewWidget = new FieldViewWidget(fieldPanelWidget);
+    m_pFieldViewWidget->setObjectName("fieldViewWidget");
+
+    fieldPanelLayout->addWidget(m_pFieldTitleLabel);
+    fieldPanelLayout->addWidget(m_pFieldViewWidget);
+    mainLayout->addWidget(fieldPanelWidget);
+    mainLayout->addStretch();
+}
+
+void SampleStageWidget::initConnections()
+{
+    connect(m_pPlateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index) {
+        const WellPlateWidget::PlateFormat format = static_cast<WellPlateWidget::PlateFormat>(
+            m_pPlateComboBox->itemData(index).toInt());
+        setPlateFormat(format);
+    });
+}
+
+void SampleStageWidget::updatePlateComboText()
+{
+    const int target = static_cast<int>(plateFormat());
+    for (int index = 0; index < m_pPlateComboBox->count(); ++index)
     {
-        const int x = qRound(startX + column * columnSpacing);
-        QRect numberRect(x - 12, startY - 42, 24, 20);
-        pPainter->drawText(numberRect, Qt::AlignCenter, QString::number(column + 1));
-    }
-
-    for (int row = 0; row < 4; ++row)
-    {
-        const int rowTextRight = startX - radius - 8;
-        QRect rowRect(rowTextRight - rowLabelWidth, startY + row * rowSpacing - 10, rowLabelWidth, 20);
-        pPainter->drawText(rowRect, Qt::AlignRight | Qt::AlignVCenter, rows.at(row));
-    }
-
-    pPainter->setPen(gridPen);
-    for (int row = 0; row < 4; ++row)
-    {
-        for (int column = 0; column < 6; ++column)
+        if (m_pPlateComboBox->itemData(index).toInt() == target)
         {
-            const QPoint center(qRound(startX + column * columnSpacing), startY + row * rowSpacing);
-            pPainter->drawEllipse(center, radius, radius);
+            if (m_pPlateComboBox->currentIndex() != index)
+            {
+                m_pPlateComboBox->setCurrentIndex(index);
+            }
+            return;
         }
     }
-
-    pPainter->setPen(QColor(220, 220, 220));
-    pPainter->drawLine(rect.left() + 10, rect.bottom() - 16, rect.right() - 10, rect.bottom() - 16);
 }
 
-void SampleStageWidget::drawFieldView(QPainter *pPainter, const QRect &rect)
+QString SampleStageWidget::plateFormatText(WellPlateWidget::PlateFormat format)
 {
-    pPainter->setPen(QColor(90, 90, 90));
-    pPainter->drawText(rect.adjusted(16, 0, 0, 24), Qt::AlignLeft | Qt::AlignTop, QStringLiteral("视野"));
-
-    const QRect gridRect = rect.adjusted(18, 42, -18, -12);
-    pPainter->fillRect(gridRect, QColor(250, 250, 250));
-
-    QPen thinPen(QColor(190, 212, 235), 1);
-    pPainter->setPen(thinPen);
-    const int cell = qMax(16, gridRect.width() / 16);
-    for (int x = gridRect.left(); x <= gridRect.right(); x += cell)
+    switch (format)
     {
-        pPainter->drawLine(x, gridRect.top(), x, gridRect.bottom());
-    }
-    for (int y = gridRect.top(); y <= gridRect.bottom(); y += cell)
-    {
-        pPainter->drawLine(gridRect.left(), y, gridRect.right(), y);
+    case WellPlateWidget::PlateFormat::Plate6:
+        return QStringLiteral("6孔板");
+    case WellPlateWidget::PlateFormat::Plate12:
+        return QStringLiteral("12孔板");
+    case WellPlateWidget::PlateFormat::Plate24:
+        return QStringLiteral("24孔板");
+    case WellPlateWidget::PlateFormat::Plate48:
+        return QStringLiteral("48孔板");
+    case WellPlateWidget::PlateFormat::Plate96:
+        return QStringLiteral("96孔板");
     }
 
-    pPainter->setPen(QPen(QColor(150, 185, 225), 1));
-    pPainter->setBrush(Qt::NoBrush);
-    const int radius = qMax(1, qMin(gridRect.width(), gridRect.height()) / 2 - 8);
-    pPainter->drawEllipse(gridRect.center(), radius, radius);
+    return QStringLiteral("24孔板");
 }
