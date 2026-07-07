@@ -3,10 +3,9 @@
 
 #include "WellPlateWidget.h"
 
+#include <QPainter>
 #include <QVector>
 #include <QWidget>
-
-class QPainter;
 
 class FieldViewWidget : public QWidget
 {

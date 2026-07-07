@@ -1,13 +1,12 @@
 #ifndef WELLPLATEWIDGET_H
 #define WELLPLATEWIDGET_H
 
+#include <QMouseEvent>
+#include <QPainter>
 #include <QRectF>
 #include <QStringList>
 #include <QVector>
 #include <QWidget>
-
-class QMouseEvent;
-class QPainter;
 
 class WellPlateWidget : public QWidget
 {

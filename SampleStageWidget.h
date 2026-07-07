@@ -5,11 +5,10 @@
 
 #include "FieldViewWidget.h"
 
+#include <QComboBox>
+#include <QLabel>
 #include <QStringList>
 #include <QWidget>
-
-class QComboBox;
-class QLabel;
 
 class SampleStageWidget : public QWidget
 {

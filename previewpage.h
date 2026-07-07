@@ -1,14 +1,14 @@
 #ifndef PREVIEWPAGE_H
 #define PREVIEWPAGE_H
 
+#include <QButtonGroup>
+#include <QElapsedTimer>
+#include <QTimer>
 #include <QWidget>
 
-class QElapsedTimer;
 class BasicSettingPage;
 class ImageCorrectionPage;
 class PreviewStatusBarWidget;
-class QButtonGroup;
-class QTimer;
 class SampleStageWidget;
 class ZStackSettingPage;
 

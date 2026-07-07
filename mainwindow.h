@@ -1,9 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QButtonGroup>
 #include <QMainWindow>
 
-class QButtonGroup;
 class DataWidget;
 class PreviewPage;
 class ScanPage;
