@@ -36,6 +36,13 @@ void DataWidget::initExperimentTable()
     m_pUi->tableExperimentList->verticalHeader()->setVisible(false);
     m_pUi->tableExperimentList->setRowCount(0);
 
+    m_pUi->buttonPageOne->setCheckable(true);
+    m_pUi->buttonPageOne->setChecked(true);
+    m_pUi->buttonPreviousPage->setVisible(false);
+    m_pUi->buttonPageTwo->setVisible(false);
+    m_pUi->buttonPageThree->setVisible(false);
+    m_pUi->buttonNextPage->setVisible(false);
+
     const QDateTime currentDateTime = QDateTime::currentDateTime();
     m_pUi->dateTimeEnd->setDateTime(currentDateTime);
     m_pUi->dateTimeStart->setDateTime(currentDateTime.addMonths(-6));

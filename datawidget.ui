@@ -51,10 +51,16 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QWidget" name="leftFilterPanelWidget">
+          <widget class="QWidget" name="leftFilterWidget" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
-             <width>330</width>
+             <width>340</width>
              <height>0</height>
             </size>
            </property>
@@ -81,347 +87,351 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QWidget" name="dataNavigationWidget">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>54</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>16777215</width>
-                <height>54</height>
-               </size>
-              </property>
-              <layout class="QHBoxLayout" name="dataNavigationHorizontalLayout">
-               <property name="spacing">
-                <number>0</number>
+             <layout class="QHBoxLayout" name="dataNavigationHorizontalLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>8</number>
+             </property>
+             <property name="topMargin">
+              <number>6</number>
+             </property>
+             <property name="rightMargin">
+              <number>8</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="buttonGlobalList">
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>40</height>
+                </size>
                </property>
-               <property name="leftMargin">
-                <number>8</number>
+               <property name="text">
+                <string>全局列表</string>
                </property>
-               <property name="topMargin">
-                <number>6</number>
+               <property name="checkable">
+                <bool>true</bool>
                </property>
-               <property name="rightMargin">
-                <number>8</number>
+               <property name="checked">
+                <bool>true</bool>
                </property>
-               <property name="bottomMargin">
-                <number>6</number>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonExperimentDetail">
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>40</height>
+                </size>
                </property>
+               <property name="text">
+                <string>实验详情</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="searchPanelVerticalLayout">
+             <property name="spacing">
+              <number>18</number>
+             </property>
+             <property name="leftMargin">
+              <number>18</number>
+             </property>
+             <property name="topMargin">
+              <number>24</number>
+             </property>
+             <property name="rightMargin">
+              <number>18</number>
+             </property>
+             <property name="bottomMargin">
+              <number>16</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="labelSearchExperiment">
+               <property name="text">
+                <string>搜索实验</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="searchExperimentHorizontalLayout">
                <item>
-                <widget class="QPushButton" name="buttonGlobalList">
+                <widget class="QLineEdit" name="lineEditExperimentKeyword">
+                 <property name="placeholderText">
+                  <string>输入实验关键字</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QToolButton" name="buttonSearchExperiment">
                  <property name="minimumSize">
                   <size>
-                   <width>150</width>
-                   <height>40</height>
+                   <width>32</width>
+                   <height>32</height>
                   </size>
                  </property>
                  <property name="text">
-                  <string>全局列表</string>
+                  <string>查</string>
                  </property>
-                 <property name="checkable">
-                  <bool>true</bool>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelTimeFilter">
+               <property name="text">
+                <string>时间筛选</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="timeRangeHorizontalLayout">
+               <item>
+                <widget class="QDateTimeEdit" name="dateTimeStart">
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                  </font>
                  </property>
-                 <property name="checked">
+                 <property name="displayFormat">
+                  <string>yyyy-MM-dd HH:mm:ss</string>
+                 </property>
+                 <property name="calendarPopup">
                   <bool>true</bool>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="buttonExperimentDetail">
-                 <property name="minimumSize">
-                  <size>
-                   <width>150</width>
-                   <height>40</height>
-                  </size>
+                <widget class="QDateTimeEdit" name="dateTimeEnd">
+                 <property name="font">
+                  <font>
+                   <pointsize>8</pointsize>
+                  </font>
                  </property>
-                 <property name="text">
-                  <string>实验详情</string>
+                 <property name="displayFormat">
+                  <string>yyyy-MM-dd HH:mm:ss</string>
                  </property>
-                 <property name="checkable">
+                 <property name="calendarPopup">
                   <bool>true</bool>
                  </property>
                 </widget>
                </item>
               </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="QWidget" name="searchPanelWidget">
-              <layout class="QVBoxLayout" name="searchPanelVerticalLayout">
-               <property name="leftMargin">
-                <number>18</number>
-               </property>
-               <property name="topMargin">
-                <number>24</number>
-               </property>
-               <property name="rightMargin">
-                <number>18</number>
-               </property>
-               <property name="bottomMargin">
-                <number>16</number>
-               </property>
-               <property name="spacing">
-                <number>18</number>
-               </property>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="quickTimeHorizontalLayout">
                <item>
-                <widget class="QLabel" name="labelSearchExperiment">
+                <widget class="QPushButton" name="buttonLastWeek">
                  <property name="text">
-                  <string>搜索实验</string>
+                  <string>近一周</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="searchExperimentHorizontalLayout">
-                 <item>
-                  <widget class="QLineEdit" name="lineEditExperimentKeyword">
-                   <property name="placeholderText">
-                    <string>输入实验关键字</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QToolButton" name="buttonSearchExperiment">
-                   <property name="minimumSize">
-                    <size>
-                     <width>32</width>
-                     <height>32</height>
-                    </size>
-                   </property>
-                   <property name="text">
-                    <string>查</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QLabel" name="labelTimeFilter">
+                <widget class="QPushButton" name="buttonLastMonth">
                  <property name="text">
-                  <string>时间筛选</string>
+                  <string>近一月</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="timeRangeHorizontalLayout">
-                 <item>
-                  <widget class="QDateTimeEdit" name="dateTimeStart">
-                   <property name="calendarPopup">
-                    <bool>true</bool>
-                   </property>
-                   <property name="displayFormat">
-                    <string>yyyy-MM-dd HH:mm:ss</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QDateTimeEdit" name="dateTimeEnd">
-                   <property name="calendarPopup">
-                    <bool>true</bool>
-                   </property>
-                   <property name="displayFormat">
-                    <string>yyyy-MM-dd HH:mm:ss</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <layout class="QHBoxLayout" name="quickTimeHorizontalLayout">
-                 <item>
-                  <widget class="QPushButton" name="buttonLastWeek">
-                   <property name="text">
-                    <string>近一周</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="buttonLastMonth">
-                   <property name="text">
-                    <string>近一月</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="buttonLastHalfYear">
-                   <property name="text">
-                    <string>近半年</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <widget class="QLabel" name="labelExperimentTypeFilter">
+                <widget class="QPushButton" name="buttonLastHalfYear">
                  <property name="text">
-                  <string>实验类型</string>
+                  <string>近半年</string>
                  </property>
                 </widget>
-               </item>
-               <item>
-                <layout class="QGridLayout" name="experimentTypeGridLayout">
-                 <property name="horizontalSpacing">
-                  <number>12</number>
-                 </property>
-                 <property name="verticalSpacing">
-                  <number>14</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QPushButton" name="buttonCustomType">
-                   <property name="text">
-                    <string>自定义</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <widget class="QPushButton" name="buttonCellCountingType">
-                   <property name="text">
-                    <string>细胞计数</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="buttonConfluenceType">
-                   <property name="text">
-                    <string>汇合度</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QPushButton" name="buttonScratchType">
-                   <property name="text">
-                    <string>划痕实验</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QPushButton" name="buttonTransfectionType">
-                   <property name="text">
-                    <string>转染效率</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QPushButton" name="buttonCellActivityType">
-                   <property name="text">
-                    <string>细胞活性</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item>
-                <spacer name="filterVerticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>320</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
-             </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelExperimentTypeFilter">
+               <property name="text">
+                <string>实验类型</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="experimentTypeGridLayout">
+               <property name="horizontalSpacing">
+                <number>12</number>
+               </property>
+               <property name="verticalSpacing">
+                <number>14</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="buttonCustomType">
+                 <property name="text">
+                  <string>自定义</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="buttonCellCountingType">
+                 <property name="text">
+                  <string>细胞计数</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="buttonConfluenceType">
+                 <property name="text">
+                  <string>汇合度</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QPushButton" name="buttonScratchType">
+                 <property name="text">
+                  <string>划痕实验</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QPushButton" name="buttonTransfectionType">
+                 <property name="text">
+                  <string>转染效率</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QPushButton" name="buttonCellActivityType">
+                 <property name="text">
+                  <string>细胞活性</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <spacer name="filterVerticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>320</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             </layout>
             </item>
            </layout>
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="experimentListPanelWidget">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>1</horstretch>
-             <verstretch>1</verstretch>
-            </sizepolicy>
+          <layout class="QVBoxLayout" name="experimentListVerticalLayout">
+           <property name="leftMargin">
+            <number>8</number>
            </property>
-           <layout class="QVBoxLayout" name="experimentListVerticalLayout">
-            <property name="leftMargin">
-             <number>8</number>
-            </property>
-            <property name="topMargin">
-             <number>8</number>
-            </property>
-            <property name="rightMargin">
-             <number>8</number>
-            </property>
-            <property name="bottomMargin">
-             <number>8</number>
-            </property>
-            <item>
-             <widget class="QTableWidget" name="tableExperimentList">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>1</horstretch>
-                <verstretch>1</verstretch>
-               </sizepolicy>
+           <property name="topMargin">
+            <number>8</number>
+           </property>
+           <property name="rightMargin">
+            <number>8</number>
+           </property>
+           <property name="bottomMargin">
+            <number>8</number>
+           </property>
+           <item>
+            <widget class="QTableWidget" name="tableExperimentList">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="editTriggers">
+              <set>QAbstractItemView::NoEditTriggers</set>
+             </property>
+             <property name="selectionBehavior">
+              <enum>QAbstractItemView::SelectRows</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="paginationHorizontalLayout">
+             <item>
+              <spacer name="paginationSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+             <widget class="QPushButton" name="buttonPreviousPage">
+              <property name="visible">
+               <bool>false</bool>
               </property>
-              <property name="selectionBehavior">
-               <enum>QAbstractItemView::SelectRows</enum>
+              <property name="text">
+               <string>&lt;</string>
               </property>
-              <property name="editTriggers">
-               <set>QAbstractItemView::NoEditTriggers</set>
+              </widget>
+             </item>
+             <item>
+             <widget class="QPushButton" name="buttonPageOne">
+              <property name="checkable">
+               <bool>true</bool>
               </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" name="paginationHorizontalLayout">
-              <item>
-               <spacer name="paginationSpacer">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QPushButton" name="buttonPreviousPage">
-                <property name="text">
-                 <string>&lt;</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="buttonPageOne">
-                <property name="text">
-                 <string>1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="buttonPageTwo">
-                <property name="text">
-                 <string>2</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="buttonPageThree">
-                <property name="text">
-                 <string>3</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="buttonNextPage">
-                <property name="text">
-                 <string>&gt;</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <property name="text">
+               <string>1</string>
+              </property>
+              </widget>
+             </item>
+             <item>
+             <widget class="QPushButton" name="buttonPageTwo">
+              <property name="visible">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>2</string>
+              </property>
+              </widget>
+             </item>
+             <item>
+             <widget class="QPushButton" name="buttonPageThree">
+              <property name="visible">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>3</string>
+              </property>
+              </widget>
+             </item>
+             <item>
+             <widget class="QPushButton" name="buttonNextPage">
+              <property name="visible">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>&gt;</string>
+              </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </item>
          <item>
           <widget class="QScrollArea" name="experimentInfoScrollArea">
@@ -444,12 +454,15 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-             <y>0</y>
-              <width>400</width>
-              <height>780</height>
+              <y>0</y>
+              <width>428</width>
+              <height>942</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="experimentInfoVerticalLayout">
+             <property name="spacing">
+              <number>14</number>
+             </property>
              <property name="leftMargin">
               <number>14</number>
              </property>
@@ -462,19 +475,19 @@
              <property name="bottomMargin">
               <number>14</number>
              </property>
-             <property name="spacing">
-              <number>14</number>
-             </property>
              <item>
               <widget class="QLabel" name="labelExperimentInfoTitle">
                <property name="text">
                 <string>实验信息</string>
                </property>
-             </widget>
+              </widget>
              </item>
              <item>
               <widget class="QWidget" name="basicInfoPanelWidget" native="true">
                <layout class="QVBoxLayout" name="basicInfoPanelLayout">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -486,9 +499,6 @@
                 </property>
                 <property name="bottomMargin">
                  <number>0</number>
-                </property>
-                <property name="spacing">
-                 <number>8</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="labelBasicInfoTitle">
@@ -576,6 +586,9 @@
              <item>
               <widget class="QWidget" name="experimentSettingPanelWidget" native="true">
                <layout class="QVBoxLayout" name="experimentSettingPanelLayout">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -587,9 +600,6 @@
                 </property>
                 <property name="bottomMargin">
                  <number>0</number>
-                </property>
-                <property name="spacing">
-                 <number>8</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="labelExperimentSettingTitle">
@@ -654,6 +664,9 @@
              <item>
               <widget class="QWidget" name="scanSettingPanelWidget" native="true">
                <layout class="QVBoxLayout" name="scanSettingPanelLayout">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -665,9 +678,6 @@
                 </property>
                 <property name="bottomMargin">
                  <number>0</number>
-                </property>
-                <property name="spacing">
-                 <number>8</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="labelScanSettingTitle">
@@ -851,6 +861,9 @@
              <item>
               <widget class="QWidget" name="plateFieldPanelWidget" native="true">
                <layout class="QVBoxLayout" name="plateFieldPanelLayout">
+                <property name="spacing">
+                 <number>8</number>
+                </property>
                 <property name="leftMargin">
                  <number>0</number>
                 </property>
@@ -862,9 +875,6 @@
                 </property>
                 <property name="bottomMargin">
                  <number>0</number>
-                </property>
-                <property name="spacing">
-                 <number>8</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="labelPlateFieldTitle">
@@ -980,68 +990,54 @@
         </layout>
        </item>
        <item>
-        <widget class="QWidget" name="globalBottomStatusWidget">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>42</height>
-          </size>
+        <layout class="QHBoxLayout" name="globalBottomStatusLayout">
+         <property name="leftMargin">
+          <number>16</number>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>42</height>
-          </size>
+         <property name="topMargin">
+          <number>0</number>
          </property>
-         <layout class="QHBoxLayout" name="globalBottomStatusLayout">
-          <property name="leftMargin">
-           <number>16</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>16</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="labelDataStatus">
-            <property name="text">
-             <string>Ready!</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="dataStatusSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelDataPixelInfo">
-            <property name="text">
-             <string>(2448,2048)： R 144  G 144  B 144</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="labelDataPositionInfo">
-            <property name="text">
-             <string>x:57167.3    y:55759.7    z:2360.7</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+         <property name="rightMargin">
+          <number>16</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="labelDataStatus">
+           <property name="text">
+            <string>Ready!</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="dataStatusSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelDataPixelInfo">
+           <property name="text">
+            <string>(2448,2048)： R 144  G 144  B 144</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelDataPositionInfo">
+           <property name="text">
+            <string>x:57167.3    y:55759.7    z:2360.7</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -1063,100 +1059,84 @@
         <number>8</number>
        </property>
        <item>
-        <widget class="QWidget" name="detailSidePanelWidget">
-         <property name="minimumSize">
-          <size>
-           <width>110</width>
-           <height>0</height>
-          </size>
+        <layout class="QVBoxLayout" name="detailSideVerticalLayout">
+         <property name="spacing">
+          <number>10</number>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>130</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <layout class="QVBoxLayout" name="detailSideVerticalLayout">
-          <property name="spacing">
-           <number>10</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="buttonDetailBack">
-            <property name="text">
-             <string>返回</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="buttonDetailOverview">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>总览</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="buttonDetailImage">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>图像</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="buttonDetailData">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>90</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>数据</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="detailSideSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
+         <item>
+          <widget class="QPushButton" name="buttonDetailBack">
+           <property name="text">
+            <string>返回</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonDetailOverview">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>90</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>总览</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonDetailImage">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>90</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>图像</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="buttonDetailData">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>90</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>数据</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="detailSideSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QWidget" name="detailPlaceholderWidget">
-         <layout class="QVBoxLayout" name="detailPlaceholderVerticalLayout">
-          <item>
-           <widget class="QLabel" name="labelDetailPlaceholder">
-            <property name="text">
-             <string>实验详情页面后续实现</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
+        <layout class="QVBoxLayout" name="detailPlaceholderVerticalLayout">
+         <item>
+          <widget class="QLabel" name="labelDetailPlaceholder">
+           <property name="text">
+            <string>实验详情页面后续实现</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
