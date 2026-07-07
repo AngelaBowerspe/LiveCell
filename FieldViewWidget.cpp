@@ -8,8 +8,8 @@
 FieldViewWidget::FieldViewWidget(QWidget *parent)
     : QWidget(parent)
     , m_plateFormat(WellPlateWidget::PlateFormat::Plate24)
-    , m_nRows(10)
-    , m_nColumns(16)
+    , m_nRows(11)
+    , m_nColumns(11)
     , m_states(m_nRows * m_nColumns, FieldState::Empty)
 {
     setMinimumSize(minimumSizeHint());
@@ -144,14 +144,9 @@ void FieldViewWidget::paintEvent(QPaintEvent *event)
     drawGrid(&painter, rect);
     drawFieldStates(&painter, rect);
 
-    const qreal side = qMin(rect.width(), rect.height()) - 10.0;
-    const QRectF circleRect(rect.center().x() - side / 2.0,
-                            rect.center().y() - side / 2.0,
-                            side,
-                            side);
     painter.setPen(QPen(QColor(150, 185, 225), 1.2));
     painter.setBrush(Qt::NoBrush);
-    painter.drawEllipse(circleRect);
+    painter.drawRect(rect);
 }
 
 QSize FieldViewWidget::dimensionsForFormat(WellPlateWidget::PlateFormat format)
@@ -159,18 +154,18 @@ QSize FieldViewWidget::dimensionsForFormat(WellPlateWidget::PlateFormat format)
     switch (format)
     {
     case WellPlateWidget::PlateFormat::Plate6:
-        return QSize(10, 8);
+        return QSize(24, 24);
     case WellPlateWidget::PlateFormat::Plate12:
-        return QSize(12, 9);
+        return QSize(18, 18);
     case WellPlateWidget::PlateFormat::Plate24:
-        return QSize(16, 10);
+        return QSize(11, 11);
     case WellPlateWidget::PlateFormat::Plate48:
-        return QSize(18, 12);
+        return QSize(8, 8);
     case WellPlateWidget::PlateFormat::Plate96:
-        return QSize(22, 14);
+        return QSize(5, 5);
     }
 
-    return QSize(16, 10);
+    return QSize(11, 11);
 }
 
 int FieldViewWidget::stateIndex(int row, int column) const
