@@ -1,0 +1,22 @@
+# Build output
+.vs/
+build-*/
+debug/
+release/
+GeneratedFiles/
+
+# User and machine specific files
+*.user
+*.qtvscr
+*.suo
+*.VC.db
+*.VC.opendb
+
+# Generated Qt headers
+ui_*.h
+moc_*.cpp
+qrc_*.cpp
+
+# Temporary files
+*.tmp
+*.log
