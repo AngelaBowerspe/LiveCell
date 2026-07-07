@@ -22,8 +22,8 @@ SampleStageWidget::SampleStageWidget(QWidget *parent)
     , m_pFieldViewWidget(nullptr)
 {
     setObjectName("sampleStageWidget");
-    setMinimumWidth(390);
-    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    setMinimumWidth(300);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     initUi();
     initConnections();
@@ -143,7 +143,7 @@ void SampleStageWidget::initUi()
         QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate48)));
     m_pPlateComboBox->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate96),
         QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate96)));
-    m_pPlateComboBox->setMinimumWidth(180);
+    m_pPlateComboBox->setMinimumWidth(140);
 
     plateSelectLayout->addWidget(m_pPlateLabel);
     plateSelectLayout->addStretch();
@@ -153,7 +153,7 @@ void SampleStageWidget::initUi()
     QWidget *wellPanelWidget = new QWidget(this);
     wellPanelWidget->setObjectName("wellPanelWidget");
     QVBoxLayout *wellPanelLayout = new QVBoxLayout(wellPanelWidget);
-    wellPanelLayout->setContentsMargins(14, 10, 14, 12);
+    wellPanelLayout->setContentsMargins(10, 10, 10, 10);
     wellPanelLayout->setSpacing(8);
     wellPanelLayout->setObjectName("wellPanelLayout");
 
@@ -175,7 +175,7 @@ void SampleStageWidget::initUi()
     QWidget *fieldPanelWidget = new QWidget(this);
     fieldPanelWidget->setObjectName("fieldPanelWidget");
     QVBoxLayout *fieldPanelLayout = new QVBoxLayout(fieldPanelWidget);
-    fieldPanelLayout->setContentsMargins(28, 24, 28, 12);
+    fieldPanelLayout->setContentsMargins(14, 20, 14, 10);
     fieldPanelLayout->setSpacing(12);
     fieldPanelLayout->setObjectName("fieldPanelLayout");
 

@@ -21,12 +21,12 @@ WellPlateWidget::WellPlateWidget(QWidget *parent)
 
 QSize WellPlateWidget::sizeHint() const
 {
-    return QSize(360, 260);
+    return QSize(340, 240);
 }
 
 QSize WellPlateWidget::minimumSizeHint() const
 {
-    return QSize(300, 210);
+    return QSize(240, 165);
 }
 
 WellPlateWidget::PlateFormat WellPlateWidget::plateFormat() const

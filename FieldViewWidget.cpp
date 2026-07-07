@@ -18,12 +18,12 @@ FieldViewWidget::FieldViewWidget(QWidget *parent)
 
 QSize FieldViewWidget::sizeHint() const
 {
-    return QSize(360, 300);
+    return QSize(340, 280);
 }
 
 QSize FieldViewWidget::minimumSizeHint() const
 {
-    return QSize(300, 240);
+    return QSize(240, 200);
 }
 
 WellPlateWidget::PlateFormat FieldViewWidget::plateFormat() const

@@ -38,7 +38,7 @@
       <widget class="QWidget" name="leftPanelWidget">
        <property name="minimumSize">
         <size>
-         <width>360</width>
+         <width>320</width>
          <height>0</height>
         </size>
        </property>
@@ -162,13 +162,13 @@
       <widget class="QFrame" name="imageDisplayFrame">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>1</horstretch>
+         <horstretch>3</horstretch>
          <verstretch>1</verstretch>
         </sizepolicy>
        </property>
        <property name="minimumSize">
         <size>
-         <width>600</width>
+         <width>360</width>
          <height>0</height>
         </size>
        </property>
@@ -260,15 +260,21 @@
      </item>
      <item>
       <widget class="QWidget" name="rightPanelWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
-         <width>390</width>
+         <width>300</width>
          <height>0</height>
         </size>
        </property>
        <property name="maximumSize">
         <size>
-         <width>430</width>
+         <width>420</width>
          <height>16777215</height>
         </size>
        </property>
