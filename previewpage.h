@@ -3,10 +3,12 @@
 
 #include <QWidget>
 
+class QElapsedTimer;
 class BasicSettingPage;
 class ImageCorrectionPage;
 class PreviewStatusBarWidget;
 class QButtonGroup;
+class QTimer;
 class SampleStageWidget;
 class ZStackSettingPage;
 
@@ -26,10 +28,14 @@ private:
     void initLeftPages();
     void initNavigation();
     void initPanels();
+    void setRecordingEnabled(bool enabled);
+    void updateRecordTime();
 
 private:
     Ui::PreviewPage *m_pUi;
     QButtonGroup *m_pLeftNavigationGroup;
+    QTimer *m_pRecordTimer;
+    QElapsedTimer *m_pRecordElapsedTimer;
     BasicSettingPage *m_pBasicSettingPage;
     ImageCorrectionPage *m_pImageCorrectionPage;
     ZStackSettingPage *m_pZStackSettingPage;

@@ -15,6 +15,9 @@ public:
     explicit BasicSettingPage(QWidget *parent = nullptr);
     ~BasicSettingPage();
 
+signals:
+    void recordVideoToggled(bool checked);
+
 private:
     Ui::BasicSettingPage *m_pUi;
 };
