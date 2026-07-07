@@ -16,7 +16,11 @@ public:
     ~DataWidget();
 
 private:
-    Ui::DataWidget *ui;
+    void initExperimentTable();
+    void initConnections();
+
+private:
+    Ui::DataWidget *m_pUi;
 };
 
 #endif // DATAWIDGET_H
