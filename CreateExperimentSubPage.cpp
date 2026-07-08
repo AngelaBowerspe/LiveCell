@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QList>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QStringList>
 #include <QStackedWidget>
@@ -22,6 +23,8 @@ CreateExperimentSubPage::CreateExperimentSubPage(QWidget *parent)
 {
     m_pUi->setupUi(this);
 
+    setWindowFlag(Qt::Dialog, true);
+    setWindowModality(Qt::ApplicationModal);
     initControls();
     initConnections();
 }
@@ -73,6 +76,12 @@ CreateExperimentSettings CreateExperimentSubPage::experimentSettings() const
     return settings;
 }
 
+void CreateExperimentSubPage::resetToFirstPage()
+{
+    m_pUi->pageStackedWidget->setCurrentWidget(m_pUi->pageStep1);
+    updatePageIndicator();
+}
+
 void CreateExperimentSubPage::initControls()
 {
     setObjectName(QStringLiteral("createExperimentSubPage"));
@@ -87,17 +96,17 @@ void CreateExperimentSubPage::initControls()
     m_pUi->buttonScratchAnalysis->setProperty("experimentType", QStringLiteral("划痕分析"));
     m_pUi->buttonTransfectionAnalysis->setProperty("experimentType", QStringLiteral("转染效率分析"));
     m_pUi->buttonCellActivityAnalysis->setProperty("experimentType", QStringLiteral("细胞活性分析"));
-    m_pUi->buttonConfluenceAnalysis->setChecked(true);
 
     m_pScanModeGroup->setExclusive(true);
     m_pScanModeGroup->addButton(m_pUi->buttonLoopScanMode);
     m_pScanModeGroup->addButton(m_pUi->buttonSingleScanMode);
     m_pUi->buttonSingleScanMode->setChecked(true);
 
+    m_pUi->buttonCreateMode->setChecked(true);
     m_pUi->checkBrightField->setChecked(true);
-    m_pUi->checkBlueFluorescence->setChecked(true);
-    m_pUi->checkGreenFluorescence->setChecked(true);
-    m_pUi->checkRedFluorescence->setChecked(true);
+    m_pUi->checkBlueFluorescence->setChecked(false);
+    m_pUi->checkGreenFluorescence->setChecked(false);
+    m_pUi->checkRedFluorescence->setChecked(false);
     m_pUi->checkFocusBrightField->setChecked(true);
 
     m_pUi->lineEditIntervalHours->setText(QStringLiteral("0"));
@@ -110,7 +119,7 @@ void CreateExperimentSubPage::initControls()
     m_pUi->lineEditSelectedGroups->setText(QStringLiteral("1"));
     m_pUi->lineEditSelectedFields->setText(QStringLiteral("1"));
 
-    m_pUi->pageStackedWidget->setCurrentWidget(m_pUi->pageStep2);
+    m_pUi->pageStackedWidget->setCurrentWidget(m_pUi->pageStep1);
     updatePageIndicator();
 }
 
@@ -120,18 +129,10 @@ void CreateExperimentSubPage::initConnections()
     connect(m_pUi->buttonChoosePlateFields, &QPushButton::clicked,
         this, &CreateExperimentSubPage::choosePlateFieldsRequested);
 
-    connect(m_pUi->buttonPreviousPage, &QPushButton::clicked, this, [this]() {
-        const int nextIndex = qMax(0, m_pUi->pageStackedWidget->currentIndex() - 1);
-        m_pUi->pageStackedWidget->setCurrentIndex(nextIndex);
-        updatePageIndicator();
-    });
-    connect(m_pUi->buttonNextPage, &QPushButton::clicked, this, [this]() {
-        const int nextIndex = qMin(m_pUi->pageStackedWidget->count() - 1,
-            m_pUi->pageStackedWidget->currentIndex() + 1);
-        m_pUi->pageStackedWidget->setCurrentIndex(nextIndex);
-        updatePageIndicator();
-        emitExperimentSettingsChanged();
-    });
+    connect(m_pUi->buttonPreviousPage, &QPushButton::clicked,
+        this, &CreateExperimentSubPage::goPreviousPage);
+    connect(m_pUi->buttonNextPage, &QPushButton::clicked,
+        this, &CreateExperimentSubPage::goNextPage);
 
     connect(m_pExperimentTypeGroup, &QButtonGroup::buttonClicked,
         this, &CreateExperimentSubPage::emitExperimentSettingsChanged);
@@ -175,6 +176,34 @@ void CreateExperimentSubPage::initConnections()
     }
 }
 
+void CreateExperimentSubPage::goPreviousPage()
+{
+    const int nextIndex = qMax(0, m_pUi->pageStackedWidget->currentIndex() - 1);
+    m_pUi->pageStackedWidget->setCurrentIndex(nextIndex);
+    updatePageIndicator();
+}
+
+void CreateExperimentSubPage::goNextPage()
+{
+    if (!validateCurrentPage())
+    {
+        return;
+    }
+
+    const int currentIndex = m_pUi->pageStackedWidget->currentIndex();
+    if (currentIndex == m_pUi->pageStackedWidget->count() - 1)
+    {
+        emitExperimentSettingsChanged();
+        hide();
+        return;
+    }
+
+    const int nextIndex = qMin(m_pUi->pageStackedWidget->count() - 1, currentIndex + 1);
+    m_pUi->pageStackedWidget->setCurrentIndex(nextIndex);
+    updatePageIndicator();
+    emitExperimentSettingsChanged();
+}
+
 void CreateExperimentSubPage::updatePageIndicator()
 {
     const QList<QLabel *> labels = {
@@ -197,6 +226,64 @@ void CreateExperimentSubPage::updatePageIndicator()
 void CreateExperimentSubPage::emitExperimentSettingsChanged()
 {
     emit experimentSettingsChanged(experimentSettings());
+}
+
+bool CreateExperimentSubPage::validateCurrentPage()
+{
+    if (m_pUi->pageStackedWidget->currentWidget() == m_pUi->pageStep1)
+    {
+        return validateFirstPage();
+    }
+    if (m_pUi->pageStackedWidget->currentWidget() == m_pUi->pageStep2)
+    {
+        return validateSecondPage();
+    }
+    if (m_pUi->pageStackedWidget->currentWidget() == m_pUi->pageStep5)
+    {
+        return validateFifthPage();
+    }
+
+    return true;
+}
+
+bool CreateExperimentSubPage::validateFirstPage()
+{
+    if (m_pUi->lineEditExperimentName->text().trimmed().isEmpty())
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先输入实验方法名称。"));
+        m_pUi->lineEditExperimentName->setFocus();
+        return false;
+    }
+
+    return true;
+}
+
+bool CreateExperimentSubPage::validateSecondPage()
+{
+    if (selectedExperimentType().isEmpty() || selectedExperimentType() == QStringLiteral("-"))
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先选择实验类型。"));
+        return false;
+    }
+
+    if (selectedScanChannelText().isEmpty() || selectedScanChannelText() == QStringLiteral("-"))
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个扫描通道。"));
+        return false;
+    }
+
+    return true;
+}
+
+bool CreateExperimentSubPage::validateFifthPage()
+{
+    if (selectedFocusChannelText().isEmpty() || selectedFocusChannelText() == QStringLiteral("-"))
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个对焦通道。"));
+        return false;
+    }
+
+    return true;
 }
 
 QString CreateExperimentSubPage::selectedExperimentType() const

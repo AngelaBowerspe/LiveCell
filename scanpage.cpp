@@ -11,7 +11,7 @@
 ScanPage::ScanPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ScanPage)
-    , m_pCreateExperimentSubPage(new CreateExperimentSubPage(this))
+    , m_pCreateExperimentSubPage(new CreateExperimentSubPage)
 {
     ui->setupUi(this);
 
@@ -21,6 +21,7 @@ ScanPage::ScanPage(QWidget *parent)
 
 ScanPage::~ScanPage()
 {
+    delete m_pCreateExperimentSubPage;
     delete ui;
 }
 
@@ -95,14 +96,15 @@ void ScanPage::initConnections()
 
 void ScanPage::showCreateExperimentPage()
 {
-    applyExperimentSettings(m_pCreateExperimentSubPage->experimentSettings());
+    m_pCreateExperimentSubPage->resetToFirstPage();
     setExperimentActionEnabled(true);
 
     m_pCreateExperimentSubPage->resize(m_pCreateExperimentSubPage->minimumSize());
-    const QPoint pageCenter = rect().center();
-    m_pCreateExperimentSubPage->move(pageCenter.x() - m_pCreateExperimentSubPage->width() / 2,
-        pageCenter.y() - m_pCreateExperimentSubPage->height() / 2);
+    const QPoint globalCenter = mapToGlobal(rect().center());
+    m_pCreateExperimentSubPage->move(globalCenter.x() - m_pCreateExperimentSubPage->width() / 2,
+        globalCenter.y() - m_pCreateExperimentSubPage->height() / 2);
     m_pCreateExperimentSubPage->show();
+    m_pCreateExperimentSubPage->activateWindow();
     m_pCreateExperimentSubPage->raise();
 }
 
