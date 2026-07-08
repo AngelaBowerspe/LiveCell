@@ -11,6 +11,7 @@ BasicSettingPage::BasicSettingPage(QWidget *parent)
     : QWidget(parent)
     , m_pUi(new Ui::BasicSettingPage)
     , m_pObjectiveGroup(new QButtonGroup(this))
+    , m_pChannelGroup(new QButtonGroup(this))
 {
     m_pUi->setupUi(this);
 
@@ -65,6 +66,12 @@ void BasicSettingPage::initButtonGroups()
     m_pObjectiveGroup->setExclusive(true);
     m_pObjectiveGroup->addButton(m_pUi->buttonObjective10X);
     m_pObjectiveGroup->addButton(m_pUi->buttonObjective20X);
+
+    m_pChannelGroup->setExclusive(true);
+    m_pChannelGroup->addButton(m_pUi->buttonBrightField);
+    m_pChannelGroup->addButton(m_pUi->buttonBlueChannel);
+    m_pChannelGroup->addButton(m_pUi->buttonGreenChannel);
+    m_pChannelGroup->addButton(m_pUi->buttonRedChannel);
 }
 
 void BasicSettingPage::initConnections()
@@ -82,18 +89,8 @@ void BasicSettingPage::initConnections()
     connect(m_pObjectiveGroup, &QButtonGroup::buttonClicked,
         this, &BasicSettingPage::captureSettingsChanged);
 
-    const QList<QPushButton *> channelButtons = {
-        m_pUi->buttonBrightField,
-        m_pUi->buttonBlueChannel,
-        m_pUi->buttonGreenChannel,
-        m_pUi->buttonRedChannel,
-        m_pUi->buttonFarRedChannel
-    };
-    for (QPushButton *pButton : channelButtons)
-    {
-        connect(pButton, &QPushButton::toggled,
-            this, &BasicSettingPage::captureSettingsChanged);
-    }
+    connect(m_pChannelGroup, &QButtonGroup::buttonClicked,
+        this, &BasicSettingPage::captureSettingsChanged);
 
     const QList<QCheckBox *> channelChecks = {
         m_pUi->checkMultiBF,
@@ -143,10 +140,6 @@ QVector<CaptureChannel> BasicSettingPage::checkedChannels() const
     if (m_pUi->buttonRedChannel->isChecked())
     {
         channels.append(CaptureChannel::Red);
-    }
-    if (m_pUi->buttonFarRedChannel->isChecked())
-    {
-        channels.append(CaptureChannel::FarRed);
     }
     return channels;
 }

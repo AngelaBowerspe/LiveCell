@@ -14,8 +14,7 @@ enum class CaptureChannel
     BrightField,
     Blue,
     Green,
-    Red,
-    FarRed
+    Red
 };
 
 struct CaptureSettings

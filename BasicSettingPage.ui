@@ -204,28 +204,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QPushButton" name="buttonFarRedChannel">
-         <property name="minimumSize">
-          <size>
-           <width>42</width>
-           <height>42</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>42</width>
-           <height>42</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>FR</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
     </layout>
@@ -354,10 +332,10 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QSlider" name="sliderGain">
-       <property name="maximum">
-        <number>16</number>
-       </property>
+     <widget class="QSlider" name="sliderGain">
+      <property name="maximum">
+       <number>100</number>
+      </property>
        <property name="value">
         <number>1</number>
        </property>
@@ -367,10 +345,10 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QSpinBox" name="spinGain">
-       <property name="maximum">
-        <number>16</number>
-       </property>
+     <widget class="QSpinBox" name="spinGain">
+      <property name="maximum">
+       <number>100</number>
+      </property>
        <property name="value">
         <number>1</number>
        </property>

@@ -44,6 +44,7 @@ private:
 private:
     Ui::BasicSettingPage *m_pUi;
     QButtonGroup *m_pObjectiveGroup;
+    QButtonGroup *m_pChannelGroup;
 };
 
 #endif // BASICSETTINGPAGE_H
