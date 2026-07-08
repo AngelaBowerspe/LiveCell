@@ -12,7 +12,10 @@ SOURCES += \
     BasicSettingPage.cpp \
     FieldViewWidget.cpp \
     ImageCorrectionPage.cpp \
+    mocks/MockCameraService.cpp \
+    mocks/MockStageService.cpp \
     PreviewStatusBarWidget.cpp \
+    presenters/PreviewPresenter.cpp \
     SampleStageWidget.cpp \
     WellPlateWidget.cpp \
     ZStackSettingPage.cpp \
@@ -27,7 +30,14 @@ HEADERS += \
     BasicSettingPage.h \
     FieldViewWidget.h \
     ImageCorrectionPage.h \
+    interfaces/ICameraService.h \
+    interfaces/IStageService.h \
+    mocks/MockCameraService.h \
+    mocks/MockStageService.h \
+    models/CaptureSettings.h \
+    models/StageControlSettings.h \
     PreviewStatusBarWidget.h \
+    presenters/PreviewPresenter.h \
     SampleStageWidget.h \
     WellPlateWidget.h \
     ZStackSettingPage.h \

@@ -13,3 +13,8 @@ PreviewStatusBarWidget::~PreviewStatusBarWidget()
 {
     delete m_pUi;
 }
+
+void PreviewStatusBarWidget::setStatusText(const QString &text)
+{
+    m_pUi->labelReadyStatus->setText(text);
+}

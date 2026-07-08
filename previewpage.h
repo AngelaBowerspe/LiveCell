@@ -6,9 +6,14 @@
 #include <QTimer>
 #include <QWidget>
 
+#include <memory>
+
 class BasicSettingPage;
+class ICameraService;
+class IStageService;
 class ImageCorrectionPage;
 class PreviewStatusBarWidget;
+class PreviewPresenter;
 class SampleStageWidget;
 class ZStackSettingPage;
 
@@ -41,6 +46,9 @@ private:
     ZStackSettingPage *m_pZStackSettingPage;
     SampleStageWidget *m_pSampleStageWidget;
     PreviewStatusBarWidget *m_pStatusBarWidget;
+    PreviewPresenter *m_pPreviewPresenter;
+    std::unique_ptr<ICameraService> m_pCameraService;
+    std::unique_ptr<IStageService> m_pStageService;
 };
 
 #endif // PREVIEWPAGE_H
