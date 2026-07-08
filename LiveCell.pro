@@ -39,6 +39,7 @@ HEADERS += \
     models/CaptureSettings.h \
     models/ImageCorrectionSettings.h \
     models/StageControlSettings.h \
+    models/ZStackSettings.h \
     PreviewStatusBarWidget.h \
     presenters/PreviewPresenter.h \
     SampleStageWidget.h \
