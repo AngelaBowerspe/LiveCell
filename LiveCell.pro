@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     BasicSettingPage.cpp \
+    CreateExperimentSubPage.cpp \
     FieldViewWidget.cpp \
     HistogramRangeSlider.cpp \
     ImageCorrectionPage.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 
 HEADERS += \
     BasicSettingPage.h \
+    CreateExperimentSubPage.h \
     FieldViewWidget.h \
     HistogramRangeSlider.h \
     ImageCorrectionPage.h \
@@ -36,6 +38,7 @@ HEADERS += \
     interfaces/IStageService.h \
     mocks/MockCameraService.h \
     mocks/MockStageService.h \
+    models/CreateExperimentSettings.h \
     models/CaptureSettings.h \
     models/ImageCorrectionSettings.h \
     models/StageControlSettings.h \
@@ -53,6 +56,7 @@ HEADERS += \
 
 FORMS += \
     BasicSettingPage.ui \
+    CreateExperimentSubPage.ui \
     ImageCorrectionPage.ui \
     PreviewStatusBarWidget.ui \
     ZStackSettingPage.ui \

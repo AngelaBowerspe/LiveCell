@@ -1,14 +1,17 @@
 #include "scanpage.h"
 
+#include "CreateExperimentSubPage.h"
 #include "ui_scanpage.h"
 
 #include <QComboBox>
+#include <QPoint>
 #include <QPushButton>
 #include <QVariant>
 
 ScanPage::ScanPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ScanPage)
+    , m_pCreateExperimentSubPage(new CreateExperimentSubPage(this))
 {
     ui->setupUi(this);
 
@@ -23,6 +26,9 @@ ScanPage::~ScanPage()
 
 void ScanPage::initControls()
 {
+    m_pCreateExperimentSubPage->hide();
+    setExperimentActionEnabled(false);
+
     ui->comboPlateFormat->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate6),
         QVariant::fromValue(static_cast<int>(WellPlateWidget::PlateFormat::Plate6)));
     ui->comboPlateFormat->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate12),
@@ -45,10 +51,14 @@ void ScanPage::initControls()
 
 void ScanPage::initConnections()
 {
-    connect(ui->buttonCreateExperiment, &QPushButton::clicked,
-        this, &ScanPage::createExperimentRequested);
-    connect(ui->buttonEditExperimentConfig, &QPushButton::clicked,
-        this, &ScanPage::editExperimentConfigRequested);
+    connect(ui->buttonCreateExperiment, &QPushButton::clicked, this, [this]() {
+        emit createExperimentRequested();
+        showCreateExperimentPage();
+    });
+    connect(ui->buttonEditExperimentConfig, &QPushButton::clicked, this, [this]() {
+        emit editExperimentConfigRequested();
+        showCreateExperimentPage();
+    });
     connect(ui->buttonSaveExperimentConfig, &QPushButton::clicked,
         this, &ScanPage::saveExperimentConfigRequested);
     connect(ui->buttonStopScan, &QPushButton::clicked,
@@ -75,6 +85,79 @@ void ScanPage::initConnections()
     connect(ui->comboScanGroup, &QComboBox::currentIndexChanged, this, [this](int index) {
         emit groupChanged(ui->comboScanGroup->itemData(index).toInt());
     });
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::experimentSettingsChanged,
+        this, &ScanPage::applyExperimentSettings);
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::closeRequested,
+        m_pCreateExperimentSubPage, &CreateExperimentSubPage::hide);
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::choosePlateFieldsRequested,
+        this, &ScanPage::selectFieldsRequested);
+}
+
+void ScanPage::showCreateExperimentPage()
+{
+    applyExperimentSettings(m_pCreateExperimentSubPage->experimentSettings());
+    setExperimentActionEnabled(true);
+
+    m_pCreateExperimentSubPage->resize(m_pCreateExperimentSubPage->minimumSize());
+    const QPoint pageCenter = rect().center();
+    m_pCreateExperimentSubPage->move(pageCenter.x() - m_pCreateExperimentSubPage->width() / 2,
+        pageCenter.y() - m_pCreateExperimentSubPage->height() / 2);
+    m_pCreateExperimentSubPage->show();
+    m_pCreateExperimentSubPage->raise();
+}
+
+void ScanPage::setExperimentActionEnabled(bool enabled)
+{
+    ui->buttonEditExperimentConfig->setEnabled(enabled);
+    ui->buttonSaveExperimentConfig->setEnabled(enabled);
+    ui->buttonStopScan->setEnabled(enabled);
+    ui->buttonBrowseData->setEnabled(enabled);
+}
+
+void ScanPage::applyExperimentSettings(const CreateExperimentSettings &settings)
+{
+    ui->lineEditExperimentName->setText(settings.experimentName.isEmpty()
+            ? QStringLiteral("-")
+            : settings.experimentName);
+    ui->lineEditExperimentNumber->setText(settings.experimentNumber.isEmpty()
+            ? QStringLiteral("-")
+            : settings.experimentNumber);
+    ui->lineEditExperimentDate->setText(settings.experimentDate.isEmpty()
+            ? QStringLiteral("-")
+            : settings.experimentDate);
+    ui->lineEditExperimentType->setText(settings.experimentType.isEmpty()
+            ? QStringLiteral("-")
+            : settings.experimentType);
+    ui->lineEditScanChannel->setText(settings.scanChannel.isEmpty()
+            ? QStringLiteral("-")
+            : settings.scanChannel);
+    ui->lineEditObjective->setText(settings.objective.isEmpty()
+            ? QStringLiteral("-")
+            : settings.objective);
+    ui->lineEditScanType->setText(settings.scanType.isEmpty()
+            ? QStringLiteral("-")
+            : settings.scanType);
+    ui->lineEditZStack->setText(settings.zStack.isEmpty()
+            ? QStringLiteral("-")
+            : settings.zStack);
+    ui->lineEditIntervalTime->setText(settings.intervalTime.isEmpty()
+            ? QStringLiteral("-")
+            : settings.intervalTime);
+    ui->lineEditLoopCount->setText(settings.loopCount.isEmpty()
+            ? QStringLiteral("-")
+            : settings.loopCount);
+    ui->lineEditFieldStitching->setText(settings.fieldStitching.isEmpty()
+            ? QStringLiteral("-")
+            : settings.fieldStitching);
+    ui->lineEditFieldOverlap->setText(settings.fieldOverlap.isEmpty()
+            ? QStringLiteral("-")
+            : settings.fieldOverlap);
+    ui->lineEditFocusInterval->setText(settings.focusInterval.isEmpty()
+            ? QStringLiteral("-")
+            : settings.focusInterval);
+    ui->lineEditFocusChannel->setText(settings.focusChannel.isEmpty()
+            ? QStringLiteral("-")
+            : settings.focusChannel);
 }
 
 void ScanPage::setPlateFormat(WellPlateWidget::PlateFormat format)
