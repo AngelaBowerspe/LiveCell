@@ -5,8 +5,8 @@
 #include "models/StageControlSettings.h"
 
 #include <QButtonGroup>
+#include <QLineEdit>
 #include <QSlider>
-#include <QSpinBox>
 #include <QWidget>
 
 namespace Ui {
@@ -37,7 +37,10 @@ signals:
 private:
     void initButtonGroups();
     void initConnections();
-    void syncSliderAndSpinBox(QSlider *pSlider, QSpinBox *pSpinBox);
+    void initValidators();
+    void syncSliderAndLineEdit(QSlider *pSlider, QLineEdit *pLineEdit, double scale, int decimals);
+    int lineEditIntValue(const QLineEdit *pLineEdit) const;
+    double lineEditDoubleValue(const QLineEdit *pLineEdit) const;
     QVector<CaptureChannel> checkedChannels() const;
     QVector<CaptureChannel> checkedMultiChannels() const;
 

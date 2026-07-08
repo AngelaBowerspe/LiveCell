@@ -23,8 +23,8 @@ struct CaptureSettings
     QVector<CaptureChannel> activeChannels;
     int lightIntensity = 50;
     bool autoExposure = true;
-    int exposure = 500;
-    int gain = 1;
+    double exposure = 500.0;
+    double gain = 1.0;
     int contrast = 0;
     QVector<CaptureChannel> multiChannels;
 };

@@ -3,9 +3,13 @@
 #include "ui_BasicSettingPage.h"
 
 #include <QCheckBox>
+#include <QDoubleValidator>
+#include <QIntValidator>
+#include <QLineEdit>
 #include <QList>
 #include <QPushButton>
 #include <QSignalBlocker>
+#include <QtGlobal>
 
 BasicSettingPage::BasicSettingPage(QWidget *parent)
     : QWidget(parent)
@@ -31,11 +35,11 @@ CaptureSettings BasicSettingPage::captureSettings() const
         ? ObjectiveMagnification::Objective20X
         : ObjectiveMagnification::Objective10X;
     settings.activeChannels = checkedChannels();
-    settings.lightIntensity = m_pUi->spinLightIntensity->value();
+    settings.lightIntensity = lineEditIntValue(m_pUi->lineEditLightIntensity);
     settings.autoExposure = m_pUi->checkAutoExposure->isChecked();
-    settings.exposure = m_pUi->spinExposure->value();
-    settings.gain = m_pUi->spinGain->value();
-    settings.contrast = m_pUi->spinContrast->value();
+    settings.exposure = lineEditDoubleValue(m_pUi->lineEditExposure);
+    settings.gain = lineEditDoubleValue(m_pUi->lineEditGain);
+    settings.contrast = lineEditIntValue(m_pUi->lineEditContrast);
     settings.multiChannels = checkedMultiChannels();
     return settings;
 }
@@ -58,7 +62,9 @@ void BasicSettingPage::setRecording(bool recording)
 void BasicSettingPage::setExposureControlsEnabled(bool enabled)
 {
     m_pUi->sliderExposure->setEnabled(enabled);
-    m_pUi->spinExposure->setEnabled(enabled);
+    m_pUi->lineEditExposure->setEnabled(enabled);
+    m_pUi->sliderGain->setEnabled(enabled);
+    m_pUi->lineEditGain->setEnabled(enabled);
 }
 
 void BasicSettingPage::initButtonGroups()
@@ -76,10 +82,11 @@ void BasicSettingPage::initButtonGroups()
 
 void BasicSettingPage::initConnections()
 {
-    syncSliderAndSpinBox(m_pUi->sliderLightIntensity, m_pUi->spinLightIntensity);
-    syncSliderAndSpinBox(m_pUi->sliderExposure, m_pUi->spinExposure);
-    syncSliderAndSpinBox(m_pUi->sliderGain, m_pUi->spinGain);
-    syncSliderAndSpinBox(m_pUi->sliderContrast, m_pUi->spinContrast);
+    initValidators();
+    syncSliderAndLineEdit(m_pUi->sliderLightIntensity, m_pUi->lineEditLightIntensity, 1.0, 0);
+    syncSliderAndLineEdit(m_pUi->sliderExposure, m_pUi->lineEditExposure, 10.0, 1);
+    syncSliderAndLineEdit(m_pUi->sliderGain, m_pUi->lineEditGain, 10.0, 1);
+    syncSliderAndLineEdit(m_pUi->sliderContrast, m_pUi->lineEditContrast, 1.0, 0);
 
     connect(m_pUi->buttonCaptureImage, &QPushButton::clicked,
         this, &BasicSettingPage::captureRequested);
@@ -114,12 +121,57 @@ void BasicSettingPage::initConnections()
         this, &BasicSettingPage::autoStageRequested);
 }
 
-void BasicSettingPage::syncSliderAndSpinBox(QSlider *pSlider, QSpinBox *pSpinBox)
+void BasicSettingPage::initValidators()
 {
-    connect(pSlider, &QSlider::valueChanged, pSpinBox, &QSpinBox::setValue);
-    connect(pSpinBox, qOverload<int>(&QSpinBox::valueChanged), pSlider, &QSlider::setValue);
-    connect(pSpinBox, qOverload<int>(&QSpinBox::valueChanged),
-        this, &BasicSettingPage::captureSettingsChanged);
+    m_pUi->lineEditLightIntensity->setValidator(new QIntValidator(1, 100, this));
+    m_pUi->lineEditExposure->setValidator(new QDoubleValidator(0.0, 500.0, 1, this));
+    m_pUi->lineEditGain->setValidator(new QDoubleValidator(1.0, 100.0, 1, this));
+    m_pUi->lineEditContrast->setValidator(new QIntValidator(-100, 100, this));
+}
+
+void BasicSettingPage::syncSliderAndLineEdit(QSlider *pSlider,
+    QLineEdit *pLineEdit,
+    double scale,
+    int decimals)
+{
+    auto formatValue = [scale, decimals](int value) {
+        const double displayValue = value / scale;
+        return decimals == 0
+            ? QString::number(static_cast<int>(displayValue))
+            : QString::number(displayValue, 'f', decimals);
+    };
+
+    connect(pSlider, &QSlider::valueChanged, this, [this, pLineEdit, formatValue](int value) {
+        const QSignalBlocker blocker(pLineEdit);
+        pLineEdit->setText(formatValue(value));
+        emit captureSettingsChanged();
+    });
+
+    connect(pLineEdit, &QLineEdit::editingFinished, this, [this, pSlider, pLineEdit, scale, formatValue]() {
+        bool ok = false;
+        const double inputValue = pLineEdit->text().toDouble(&ok);
+        const int oldValue = pSlider->value();
+        const int newValue = ok
+            ? qBound(pSlider->minimum(), qRound(inputValue * scale), pSlider->maximum())
+            : oldValue;
+
+        pSlider->setValue(newValue);
+        pLineEdit->setText(formatValue(newValue));
+        if (newValue == oldValue)
+        {
+            emit captureSettingsChanged();
+        }
+    });
+}
+
+int BasicSettingPage::lineEditIntValue(const QLineEdit *pLineEdit) const
+{
+    return pLineEdit->text().toInt();
+}
+
+double BasicSettingPage::lineEditDoubleValue(const QLineEdit *pLineEdit) const
+{
+    return pLineEdit->text().toDouble();
 }
 
 QVector<CaptureChannel> BasicSettingPage::checkedChannels() const
