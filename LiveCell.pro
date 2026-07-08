@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     BasicSettingPage.cpp \
     FieldViewWidget.cpp \
+    HistogramRangeSlider.cpp \
     ImageCorrectionPage.cpp \
     mocks/MockCameraService.cpp \
     mocks/MockStageService.cpp \
@@ -29,12 +30,14 @@ SOURCES += \
 HEADERS += \
     BasicSettingPage.h \
     FieldViewWidget.h \
+    HistogramRangeSlider.h \
     ImageCorrectionPage.h \
     interfaces/ICameraService.h \
     interfaces/IStageService.h \
     mocks/MockCameraService.h \
     mocks/MockStageService.h \
     models/CaptureSettings.h \
+    models/ImageCorrectionSettings.h \
     models/StageControlSettings.h \
     PreviewStatusBarWidget.h \
     presenters/PreviewPresenter.h \

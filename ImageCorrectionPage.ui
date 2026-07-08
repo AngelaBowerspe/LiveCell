@@ -141,15 +141,15 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="spinThreshold">
-        <property name="minimum">
-         <number>25</number>
+       <widget class="QLineEdit" name="lineEditThreshold">
+        <property name="minimumSize">
+         <size>
+          <width>60</width>
+          <height>0</height>
+         </size>
         </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>50</number>
+        <property name="text">
+         <string>50</string>
         </property>
        </widget>
       </item>
@@ -214,11 +214,27 @@
        </widget>
       </item>
       <item>
+       <widget class="HistogramRangeSlider" name="histogramRangeSlider" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>28</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="histogramRangeLayout">
         <item>
-         <widget class="QSpinBox" name="spinHistogramMin">
-          <property name="maximum">
-           <number>255</number>
+         <widget class="QLineEdit" name="lineEditHistogramMin">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>0</string>
           </property>
          </widget>
         </item>
@@ -230,12 +246,15 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="spinHistogramMax">
-          <property name="maximum">
-           <number>255</number>
+         <widget class="QLineEdit" name="lineEditHistogramMax">
+          <property name="minimumSize">
+           <size>
+            <width>70</width>
+            <height>0</height>
+           </size>
           </property>
-          <property name="value">
-           <number>255</number>
+          <property name="text">
+           <string>255</string>
           </property>
          </widget>
         </item>
@@ -327,6 +346,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>HistogramRangeSlider</class>
+   <extends>QWidget</extends>
+   <header>HistogramRangeSlider.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
