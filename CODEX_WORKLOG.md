@@ -212,31 +212,39 @@ MVP/接口检查：
 - 当前模拟扫描仍在 `ScanPage` 内，后续建议迁移到 `ScanPresenter` 或 mock service。
 - 需要人工运行界面确认选择孔区入口、视野选择提示和 5 秒模拟扫描的视觉状态是否符合预期。
 
-## 2026-07-09 创建实验浮层与孔区选择确认修正
+## 2026-07-09 孔区视野分步确认流程
 
 目标：
-- 点击创建实验第 4 页“点击选择”后隐藏创建实验浮层，让用户操作右侧孔板和视野。
-- 点击右侧“确定”完成选择后重新显示创建实验浮层。
-- 未选择任何孔位就确认孔区选择时给出提示。
-- 排查孔板点击无反应的问题，保持右侧选择流程可点击、可框选。
+- 将右侧“选择孔区”改为孔区选择阶段的确认按钮，而不是使用底部“确定”确认孔区。
+- 将右侧“选择视野”改为当前孔位视野选择阶段的确认按钮，而不是使用底部“确定”确认视野。
+- 底部“确定”只作为最终完成按钮，检查所有已选孔位是否都已选择视野。
+- 每个孔位独立保存视野，未给任一孔位选择视野时提示用户。
 
 计划：
-- 查看 `CreateExperimentSubPage` 第 4 页选择信号和 `ScanPage` 右侧选择按钮连接。
-- 在 `ScanPage` 中集中处理浮层隐藏/恢复，不把逻辑放到 MainWindow。
-- 为确认孔区增加空选择判断，为点击孔位进入预览补足选择阶段状态。
-- 更新工作记录并使用 MSVC + qmake + nmake 验证。
+- 在 `ScanPage` 中新增按钮分派函数，让同一个按钮按当前阶段执行“开始选择/确认选择”。
+- 孔区确认后记录本批孔位列表，自动进入第一个孔位的视野选择；视野确认后要求用户继续给未完成孔位选视野。
+- 开始新一组孔区选择或最终确定前统一检查所有已分组孔位是否都有视野。
+- 更新工作记录并使用 `uic` 与 MSVC + qmake + nmake 验证。
 
 MVP/接口检查：
 - View：`CreateExperimentSubPage` 只发出选择请求；自绘孔板只负责输入和状态展示。
-- Presenter/页面协调：本轮仍由 `ScanPage` 临时协调浮层显示、右侧选择按钮和模拟状态。
+- Presenter/页面协调：本轮仍由 `ScanPage` 临时协调浮层显示、右侧选择按钮、孔位视野缓存和模拟状态。
 - Model/接口：继续使用孔位 QString 和视野索引缓存模拟数据，不新增持久化 model。
 - 不做：不接相机、样品台、SDK、线程或真实扫描流程。
 
 实际改动：
--
+- `scanpage.h/.cpp`：新增 `handleSelectWellsButtonClicked()`、`handleSelectFieldsButtonClicked()` 和 `finishPlateFieldSelection()`，把孔区确认、视野确认、最终完成拆成三个明确动作。
+- `scanpage.cpp`：`buttonSelectWells` 在孔区选择模式下负责确认当前框选孔位；否则在所有已有孔位都有视野后才允许进入下一组孔区选择。
+- `scanpage.cpp`：`buttonSelectFields` 在视野选择模式下负责确认当前孔位视野；确认后自动跳到下一个未选择视野的孔位。
+- `scanpage.cpp`：底部 `buttonConfirmSelection` 只做最终完成校验；若仍在孔区/视野选择阶段、未选孔位或任一孔位未选视野，都会给出提示。
+- `scanpage.cpp`：新增 `groupedWells()` 和 `firstWellWithoutFields()`，统一检查“每个孔位必须有视野”的条件，并复用于新分组选择、最终确定和模拟扫描计划。
 
 验证：
--
+- `uic scanpage.ui -o ui_scanpage.h`：通过。
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
 
 遗留事项：
--
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前流程状态仍暂放在 `ScanPage`，后续如果继续增加规则，建议迁移到 `ScanPresenter`。
+- 需要人工运行界面确认：框选孔位后点“选择孔区”确认、每个孔位逐个选择视野、底部“确定”只做最终完成。

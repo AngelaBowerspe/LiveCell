@@ -46,10 +46,14 @@ private:
     void showCreateExperimentPage();
     void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
     void enablePlateFieldSelection();
+    void handleSelectWellsButtonClicked();
+    void handleSelectFieldsButtonClicked();
+    void finishPlateFieldSelection();
     void beginWellSelection();
     void cancelWellSelection();
     void confirmWellSelection();
     void beginFieldSelection();
+    void beginFieldSelectionForWell(const QString &well);
     void cancelFieldSelection();
     void confirmFieldSelection();
     void handleWellClicked(const QString &well);
@@ -65,6 +69,8 @@ private:
     void restoreFieldsForActiveWell();
     void showCreateExperimentSelectionPage();
     void updateCreateExperimentPlateFieldSummary();
+    QStringList groupedWells() const;
+    QString firstWellWithoutFields() const;
     QColor currentGroupColor() const;
     static QColor groupColor(int groupIndex);
     static QString plateFormatText(WellPlateWidget::PlateFormat format);
