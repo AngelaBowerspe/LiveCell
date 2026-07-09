@@ -19,7 +19,6 @@ public:
     ~CreateExperimentSubPage();
 
     CreateExperimentSettings experimentSettings() const;
-    void resetToFirstPage();
 
 signals:
     void experimentSettingsChanged(const CreateExperimentSettings &settings);
@@ -29,14 +28,8 @@ signals:
 private:
     void initControls();
     void initConnections();
-    void goPreviousPage();
-    void goNextPage();
     void updatePageIndicator();
     void emitExperimentSettingsChanged();
-    bool validateCurrentPage();
-    bool validateFirstPage();
-    bool validateSecondPage();
-    bool validateFifthPage();
     QString selectedExperimentType() const;
     QString selectedScanChannelText() const;
     QString selectedFocusChannelText() const;
