@@ -72,3 +72,32 @@ MVP/接口检查：
 - 当前工作区混有 `BasicSettingPage.ui`、`form.*` 删除、`AENGRTS.md`、`LiveCell.sln` 等非本轮改动，暂未提交。
 - 后续建议新增轻量 `ExperimentConfig` model 和 `ScanPresenter`，把 `ScanPage::applyAcceptedExperimentPage` 从页面中迁出去。
 - 需要人工运行界面确认浮层尺寸、拖动体验和缩放效果。
+
+## 2026-07-09 延时扫描次数联动
+
+目标：
+- 让创建实验第 3 页的 `labelAutoCycleCountValue` 根据间隔时长和总时长自动计算扫描次数。
+
+计划：
+- 在 `CreateExperimentSubPage` 内增加轻量 View 层计算函数。
+- 监听第 3 页四个时间输入框变化，实时刷新 label。
+- 保持现有按页提交接口不变，让 `loopCountText()` 继续读取该 label。
+
+MVP/接口检查：
+- View：读取本页 QLineEdit，计算并显示自动扫描次数。
+- Presenter/页面协调：不新增页面协调逻辑。
+- Model/接口：不新增 model；后续若抽 `ExperimentConfig`，该值可作为派生字段。
+- 不做：不接扫描线程、不触发真实扫描、不做持久化。
+
+实际改动：
+- `CreateExperimentSubPage.h/.cpp`：新增 `updateAutoCycleCount()`、间隔/总时长分钟数读取函数和扫描次数计算函数。
+- `CreateExperimentSubPage.cpp`：监听 `lineEditIntervalHours`、`lineEditIntervalMinutes`、`lineEditTotalHours`、`lineEditTotalMinutes` 的 `textChanged` 信号，输入变化时实时刷新 `labelAutoCycleCountValue`。
+- `CreateExperimentSubPage.cpp`：初始化默认时间后立即刷新自动次数；`loopCountText()` 保持读取 `labelAutoCycleCountValue`，后续左侧实验信息可直接拿到计算后的次数。
+
+验证：
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+
+遗留事项：
+- 本轮提交仅包含 `CreateExperimentSubPage.h/.cpp` 和 `CODEX_WORKLOG.md`；当前工作区仍保留用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认输入变化时 `labelAutoCycleCountValue` 的显示符合预期。

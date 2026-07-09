@@ -54,6 +54,10 @@ private:
     void initConnections();
     void centerInContainer(QWidget *container);
     void updatePageIndicator();
+    void updateAutoCycleCount();
+    int intervalDurationMinutes() const;
+    int totalDurationMinutes() const;
+    int calculatedCycleCount() const;
     void goPreviousPage();
     void goNextPage();
     bool validateCurrentPage();

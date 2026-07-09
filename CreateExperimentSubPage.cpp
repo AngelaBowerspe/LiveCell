@@ -16,6 +16,22 @@
 #include <QStackedWidget>
 #include <QStringList>
 
+namespace {
+
+int lineEditToNonNegativeInt(const QLineEdit *lineEdit)
+{
+    bool ok = false;
+    const int value = lineEdit->text().trimmed().toInt(&ok);
+    if (!ok)
+    {
+        return 0;
+    }
+
+    return qMax(0, value);
+}
+
+}
+
 CreateExperimentSubPage::CreateExperimentSubPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::CreateExperimentSubPage)
@@ -200,6 +216,7 @@ void CreateExperimentSubPage::initControls()
     ui->lineEditPage4SelectedGroups->setText(QStringLiteral("1"));
     ui->lineEditPage4SelectedFields->setText(QStringLiteral("1"));
 
+    updateAutoCycleCount();
     resetToFirstPage();
 }
 
@@ -212,6 +229,14 @@ void CreateExperimentSubPage::initConnections()
         this, &CreateExperimentSubPage::goNextPage);
     connect(ui->buttonChoosePlateFields, &QPushButton::clicked,
         this, &CreateExperimentSubPage::choosePlateFieldsRequested);
+    connect(ui->lineEditIntervalHours, &QLineEdit::textChanged,
+        this, &CreateExperimentSubPage::updateAutoCycleCount);
+    connect(ui->lineEditIntervalMinutes, &QLineEdit::textChanged,
+        this, &CreateExperimentSubPage::updateAutoCycleCount);
+    connect(ui->lineEditTotalHours, &QLineEdit::textChanged,
+        this, &CreateExperimentSubPage::updateAutoCycleCount);
+    connect(ui->lineEditTotalMinutes, &QLineEdit::textChanged,
+        this, &CreateExperimentSubPage::updateAutoCycleCount);
 }
 
 void CreateExperimentSubPage::centerInContainer(QWidget *container)
@@ -233,6 +258,35 @@ void CreateExperimentSubPage::centerInContainer(QWidget *container)
 
     show();
     raise();
+}
+
+void CreateExperimentSubPage::updateAutoCycleCount()
+{
+    ui->labelAutoCycleCountValue->setText(QStringLiteral("%1次").arg(calculatedCycleCount()));
+}
+
+int CreateExperimentSubPage::intervalDurationMinutes() const
+{
+    return lineEditToNonNegativeInt(ui->lineEditIntervalHours) * 60
+        + lineEditToNonNegativeInt(ui->lineEditIntervalMinutes);
+}
+
+int CreateExperimentSubPage::totalDurationMinutes() const
+{
+    return lineEditToNonNegativeInt(ui->lineEditTotalHours) * 60
+        + lineEditToNonNegativeInt(ui->lineEditTotalMinutes);
+}
+
+int CreateExperimentSubPage::calculatedCycleCount() const
+{
+    const int intervalMinutes = intervalDurationMinutes();
+    const int totalMinutes = totalDurationMinutes();
+    if (intervalMinutes <= 0 || totalMinutes <= 0)
+    {
+        return 0;
+    }
+
+    return totalMinutes / intervalMinutes;
 }
 
 void CreateExperimentSubPage::updatePageIndicator()
