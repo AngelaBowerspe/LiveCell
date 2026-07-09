@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     BasicSettingPage.cpp \
+    CreateExperimentSubPage.cpp \
     FieldViewWidget.cpp \
     HistogramRangeSlider.cpp \
     ImageCorrectionPage.cpp \
@@ -21,7 +22,6 @@ SOURCES += \
     WellPlateWidget.cpp \
     ZStackSettingPage.cpp \
     datawidget.cpp \
-    form.cpp \
     main.cpp \
     mainwindow.cpp \
     previewpage.cpp \
@@ -29,6 +29,7 @@ SOURCES += \
 
 HEADERS += \
     BasicSettingPage.h \
+    CreateExperimentSubPage.h \
     FieldViewWidget.h \
     HistogramRangeSlider.h \
     ImageCorrectionPage.h \
@@ -46,18 +47,17 @@ HEADERS += \
     WellPlateWidget.h \
     ZStackSettingPage.h \
     datawidget.h \
-    form.h \
     mainwindow.h \
     previewpage.h \
     scanpage.h
 
 FORMS += \
     BasicSettingPage.ui \
+    CreateExperimentSubPage.ui \
     ImageCorrectionPage.ui \
     PreviewStatusBarWidget.ui \
     ZStackSettingPage.ui \
     datawidget.ui \
-    form.ui \
     mainwindow.ui \
     previewpage.ui \
     scanpage.ui

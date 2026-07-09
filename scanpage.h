@@ -1,6 +1,7 @@
 #ifndef SCANPAGE_H
 #define SCANPAGE_H
 
+#include "CreateExperimentSubPage.h"
 #include "WellPlateWidget.h"
 
 #include <QWidget>
@@ -34,11 +35,15 @@ signals:
 private:
     void initControls();
     void initConnections();
+    void showCreateExperimentPage();
+    void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
+    void setExperimentActionEnabled(bool enabled);
     void setPlateFormat(WellPlateWidget::PlateFormat format);
     static QString plateFormatText(WellPlateWidget::PlateFormat format);
 
 private:
     Ui::ScanPage *ui;
+    CreateExperimentSubPage *m_pCreateExperimentSubPage;
 };
 
 #endif // SCANPAGE_H

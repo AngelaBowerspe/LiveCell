@@ -1,0 +1,1793 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateExperimentSubPage</class>
+ <widget class="QWidget" name="CreateExperimentSubPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>850</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>850</width>
+    <height>700</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QStackedWidget" name="pageStackedWidget">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>42</y>
+     <width>850</width>
+     <height>598</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>5</number>
+   </property>
+   <widget class="QWidget" name="pageStep1">
+    <layout class="QVBoxLayout" name="pageStep1Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle1">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>1 新建实验或导入</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepTop1">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCreateMode">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>76</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>创建实验
+创建一个全新的实验方法进行扫描</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonImportMode">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>76</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>导入实验
+导入先前保存的实验方法进行新一轮的扫描</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepBottom1">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="methodNameLayout">
+       <property name="spacing">
+        <number>18</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelMethodName">
+         <property name="minimumSize">
+          <size>
+           <width>110</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>实验方法名称：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditExperimentName">
+         <property name="minimumSize">
+          <size>
+           <width>420</width>
+           <height>34</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>在此输入实验方法名称...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="methodNameSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="pageStep1Spacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="pageStep2">
+    <layout class="QVBoxLayout" name="pageStep2Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle2">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>2 选择实验类型</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepTop2">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="frameExperimentTypeHeader">
+       <layout class="QVBoxLayout" name="frameExperimentTypeHeaderLayout">
+        <property name="leftMargin">
+         <number>8</number>
+        </property>
+        <property name="topMargin">
+         <number>8</number>
+        </property>
+        <property name="rightMargin">
+         <number>8</number>
+        </property>
+        <property name="bottomMargin">
+         <number>8</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="labelCustomExperimentTitle">
+          <property name="text">
+           <string>自定义实验</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelCustomExperimentDesc">
+          <property name="text">
+           <string>根据研究设计和数据特点灵活设置实验分析参数，满足个性化研究需求。</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="analysisCardsLayout">
+       <property name="spacing">
+        <number>18</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="buttonConfluenceAnalysis">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>210</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>汇合度分析
+
+评估细胞密度和汇合状态，
+有助于了解细胞的增殖状态。</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="experimentType" stdset="0">
+          <string>汇合度分析</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonScratchAnalysis">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>210</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>划痕分析
+
+观察细胞损伤后迁移愈合、
+组织再生及侵袭的过程。</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="experimentType" stdset="0">
+          <string>划痕分析</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonTransfectionAnalysis">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>210</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>转染效率分析
+
+评估细胞密度和汇合状态，
+有助于了解细胞的增殖状态。</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="experimentType" stdset="0">
+          <string>转染效率分析</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="buttonCellActivityAnalysis">
+         <property name="minimumSize">
+          <size>
+           <width>160</width>
+           <height>210</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>细胞活性分析
+
+评估细胞密度和汇合状态，
+有助于了解细胞的增殖状态。</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="experimentType" stdset="0">
+          <string>细胞活性分析</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepBottom2">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="scanChannelLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelScanChannels">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>扫描通道：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBrightField">
+         <property name="text">
+          <string>明场</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBlueFluorescence">
+         <property name="text">
+          <string>蓝荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkGreenFluorescence">
+         <property name="text">
+          <string>绿荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkRedFluorescence">
+         <property name="text">
+          <string>红荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="scanChannelSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="cellRecognitionLayout">
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelCellRecognitionAlgorithm">
+         <property name="text">
+          <string>细胞识别算法：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QRadioButton" name="radioAiCellRecognition">
+         <property name="text">
+          <string>AI</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="pageStep2Spacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="pageStep3">
+    <layout class="QVBoxLayout" name="pageStep3Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle3">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>3 延时设置</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepTop3">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonLoopScanMode">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>循环扫描
+自定义延时设置扫描，可以重复扫描细胞。</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="scanMode" stdset="0">
+        <string>循环扫描</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonSingleScanMode">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>64</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>单次扫描
+选择此选项将只执行一次细胞扫描。</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="scanMode" stdset="0">
+        <string>单次扫描</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepBottom3">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QGridLayout" name="delaySettingGrid">
+       <property name="horizontalSpacing">
+        <number>16</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>18</number>
+       </property>
+       <item row="1" column="0">
+        <spacer name="horizontalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>100</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="8">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>100</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="2">
+         <widget class="QLineEdit" name="lineEditIntervalHours"/>
+       </item>
+       <item row="1" column="6">
+         <widget class="QLineEdit" name="lineEditTotalMinutes"/>
+       </item>
+       <item row="0" column="7">
+        <widget class="QLabel" name="labelIntervalMinuteUnit">
+         <property name="text">
+          <string>分钟</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+         <widget class="QLineEdit" name="lineEditTotalHours"/>
+       </item>
+       <item row="1" column="4">
+        <widget class="QLabel" name="labelTotalHourUnit">
+         <property name="text">
+          <string>小时</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="7">
+        <widget class="QLabel" name="labelTotalMinuteUnit">
+         <property name="text">
+          <string>分钟</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="labelIntervalDuration">
+         <property name="text">
+          <string>间隔时长：</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="labelTotalDuration">
+         <property name="text">
+          <string>总时长：</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLabel" name="labelIntervalHourUnit">
+         <property name="text">
+          <string>小时</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+         <widget class="QLineEdit" name="lineEditIntervalMinutes"/>
+       </item>
+       <item row="0" column="5">
+        <spacer name="horizontalSpacer_9">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelDurationHint">
+       <property name="text">
+        <string>为确保扫描完整性，请您设置完整的扫描次数，否则最后一次扫描将无法完整进行。</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="autoCycleLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelAutoCyclePrefix">
+         <property name="text">
+          <string>自动计算扫描次数为</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelAutoCycleCountValue">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>3次</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="autoCycleSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="pageStep3Spacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="pageStep4">
+    <layout class="QVBoxLayout" name="pageStep4Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle4">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>4 选择孔板和视野</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepTop4">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="page4ActionLayout">
+       <property name="spacing">
+        <number>18</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="buttonChoosePlateFields">
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>点击选择</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkPage4AllowFieldOffset">
+         <property name="text">
+          <string>允许视野偏移</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="page4ActionSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepMiddle4">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="page4StateStackedWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page4StateEmpty">
+        <layout class="QVBoxLayout" name="page4StateEmptyLayout">
+         <item>
+          <widget class="QLabel" name="labelPage4NoSelection">
+           <property name="text">
+            <string>暂未选择孔板和视野</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="page4EmptySpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="page4StateSummary">
+        <layout class="QVBoxLayout" name="page4StateSummaryLayout">
+         <property name="spacing">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="labelPage4SelectedSummary">
+           <property name="text">
+            <string>已选择孔板和视野</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="page4SummaryFormLayout">
+           <property name="horizontalSpacing">
+            <number>18</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>16</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPage4PlateType">
+             <property name="text">
+              <string>孔板类型:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineEditPage4PlateType">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelPage4SelectedWells">
+             <property name="text">
+              <string>已选孔区:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineEditPage4SelectedWells">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelPage4SelectedGroups">
+             <property name="text">
+              <string>已选分组:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineEditPage4SelectedGroups">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelPage4SelectedFields">
+             <property name="text">
+              <string>已选视野:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="lineEditPage4SelectedFields">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="page4SummarySpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="pageStep5">
+    <layout class="QVBoxLayout" name="pageStep5Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle5">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>5 扫描参数设置</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>50</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="page5FieldOverlapLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelPage5FieldOverlap">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>视野重合度:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEditFieldOverlap"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelPage5FieldOverlapUnit">
+         <property name="text">
+          <string>%</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="page5FieldOverlapSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepBottom5">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="page5FocusIntervalLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelPage5FocusInterval">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>对焦间隔:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+         <widget class="QLineEdit" name="lineEditFocusInterval"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelPage5FocusIntervalUnit">
+         <property name="text">
+          <string>视野</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <spacer name="page5FocusIntervalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="page5FocusChannelLayout">
+       <property name="spacing">
+        <number>16</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="labelPage5FocusChannel">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>对焦通道:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkPage5FocusBrightField">
+         <property name="text">
+          <string>明场</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkPage5FocusBlueFluorescence">
+         <property name="text">
+          <string>蓝荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkPage5FocusGreenFluorescence">
+         <property name="text">
+          <string>绿荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkPage5FocusRedFluorescence">
+         <property name="text">
+          <string>红荧光</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="page5FocusChannelSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <spacer name="pageStep5Spacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="pageStep6">
+    <layout class="QVBoxLayout" name="pageStep6Layout">
+     <property name="spacing">
+      <number>18</number>
+     </property>
+     <property name="leftMargin">
+      <number>28</number>
+     </property>
+     <property name="topMargin">
+      <number>16</number>
+     </property>
+     <property name="rightMargin">
+      <number>28</number>
+     </property>
+     <property name="bottomMargin">
+      <number>18</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="labelStepTitle6">
+       <property name="font">
+        <font>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>6 信息汇总</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QFrame" name="lineStepTop6">
+       <property name="frameShape">
+        <enum>QFrame::HLine</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="page6ContentLayout">
+       <property name="spacing">
+        <number>28</number>
+       </property>
+       <item>
+        <layout class="QVBoxLayout" name="page6LeftLayout">
+         <property name="spacing">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="labelPage6ExperimentSection">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="lineWidth">
+            <number>1</number>
+           </property>
+           <property name="text">
+            <string>实验设置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="page6ExperimentForm">
+           <property name="horizontalSpacing">
+            <number>16</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>12</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPage6ExperimentType">
+             <property name="text">
+              <string>实验类型:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineSummaryExperimentType">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelPage6ScanChannel">
+             <property name="text">
+              <string>扫描通道:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineSummaryScanChannel">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="labelPage6ScanSection">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>扫描设置</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="page6ScanForm">
+           <property name="horizontalSpacing">
+            <number>16</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>12</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPage6ScanMode">
+             <property name="text">
+              <string>扫描类型:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineSummaryScanMode">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelPage6IntervalTime">
+             <property name="text">
+              <string>间隔时间:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineSummaryIntervalTime">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelPage6CycleCount">
+             <property name="text">
+              <string>循环次数:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineSummaryCycleCount">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelPage6FieldOverlap">
+             <property name="text">
+              <string>视野重合度:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="lineSummaryFieldOverlap">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="labelPage6FocusInterval">
+             <property name="text">
+              <string>对焦间隔:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="lineSummaryFocusInterval">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="labelPage6FocusChannel">
+             <property name="text">
+              <string>对焦通道:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="lineSummaryFocusChannel">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="page6LeftSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QFrame" name="lineStepCenter6">
+         <property name="frameShape">
+          <enum>QFrame::VLine</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="page6RightLayout">
+         <property name="spacing">
+          <number>16</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="labelPage6PlateSection">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>孔板视野</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="page6PlateForm">
+           <property name="horizontalSpacing">
+            <number>16</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>12</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QLabel" name="labelPage6PlateType">
+             <property name="text">
+              <string>孔板类型:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="lineSummaryPlateType">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="labelPage6SelectedWells">
+             <property name="text">
+              <string>已选孔区:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QLineEdit" name="lineSummarySelectedWells">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="labelPage6SelectedGroups">
+             <property name="text">
+              <string>已选分组:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QLineEdit" name="lineSummarySelectedGroups">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="labelPage6SelectedFields">
+             <property name="text">
+              <string>已选视野:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QLineEdit" name="lineSummarySelectedFields">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="page6RightSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QFrame" name="titleBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>2</y>
+     <width>850</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>40</height>
+    </size>
+   </property>
+   <layout class="QHBoxLayout" name="titleBarLayout">
+    <property name="leftMargin">
+     <number>12</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>12</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QLabel" name="labelWindowTitle">
+      <property name="text">
+       <string>创建实验</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="titleBarSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonClose">
+      <property name="minimumSize">
+       <size>
+        <width>28</width>
+        <height>28</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>X</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QFrame" name="bottomBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>640</y>
+     <width>850</width>
+     <height>62</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>62</height>
+    </size>
+   </property>
+   <layout class="QHBoxLayout" name="bottomBarLayout">
+    <property name="leftMargin">
+     <number>20</number>
+    </property>
+    <property name="topMargin">
+     <number>6</number>
+    </property>
+    <property name="rightMargin">
+     <number>20</number>
+    </property>
+    <property name="bottomMargin">
+     <number>6</number>
+    </property>
+    <item>
+     <widget class="QPushButton" name="buttonPreviousPage">
+      <property name="minimumSize">
+       <size>
+        <width>60</width>
+        <height>34</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>&lt;-</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <spacer name="bottomLeftSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="pageIndicatorLayout">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="labelDot1">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelDot2">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelDot3">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelDot4">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelDot5">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelDot6">
+        <property name="text">
+         <string>○</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <spacer name="bottomCenterSpacer">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item>
+     <widget class="QPushButton" name="buttonNextPage">
+      <property name="minimumSize">
+       <size>
+        <width>60</width>
+        <height>34</height>
+       </size>
+      </property>
+      <property name="text">
+       <string>-&gt;</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

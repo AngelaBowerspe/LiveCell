@@ -3,14 +3,18 @@
 #include "ui_scanpage.h"
 
 #include <QComboBox>
+#include <QDateTime>
+#include <QLineEdit>
 #include <QPushButton>
 #include <QVariant>
 
 ScanPage::ScanPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ScanPage)
+    , m_pCreateExperimentSubPage(new CreateExperimentSubPage(this))
 {
     ui->setupUi(this);
+    m_pCreateExperimentSubPage->hide();
 
     initControls();
     initConnections();
@@ -41,12 +45,13 @@ void ScanPage::initControls()
 
     setPlateFormat(WellPlateWidget::PlateFormat::Plate12);
     ui->comboScanGroup->setCurrentIndex(0);
+    setExperimentActionEnabled(false);
 }
 
 void ScanPage::initConnections()
 {
     connect(ui->buttonCreateExperiment, &QPushButton::clicked,
-        this, &ScanPage::createExperimentRequested);
+        this, &ScanPage::showCreateExperimentPage);
     connect(ui->buttonEditExperimentConfig, &QPushButton::clicked,
         this, &ScanPage::editExperimentConfigRequested);
     connect(ui->buttonSaveExperimentConfig, &QPushButton::clicked,
@@ -75,6 +80,72 @@ void ScanPage::initConnections()
     connect(ui->comboScanGroup, &QComboBox::currentIndexChanged, this, [this](int index) {
         emit groupChanged(ui->comboScanGroup->itemData(index).toInt());
     });
+
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::experimentPageAccepted,
+        this, &ScanPage::applyAcceptedExperimentPage);
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::choosePlateFieldsRequested,
+        this, &ScanPage::selectFieldsRequested);
+}
+
+void ScanPage::showCreateExperimentPage()
+{
+    emit createExperimentRequested();
+
+    setExperimentActionEnabled(true);
+    m_pCreateExperimentSubPage->showCenteredIn(this);
+}
+
+void ScanPage::applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page)
+{
+    switch (page)
+    {
+    case CreateExperimentSubPage::AcceptedPage::CreateMode:
+    {
+        const QString experimentName = m_pCreateExperimentSubPage->experimentName();
+        ui->lineEditExperimentName->setText(experimentName.isEmpty() ? QStringLiteral("-") : experimentName);
+        if (ui->lineEditExperimentNumber->text().trimmed().isEmpty()
+            || ui->lineEditExperimentNumber->text().trimmed() == QStringLiteral("-"))
+        {
+            ui->lineEditExperimentNumber->setText(QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMddhhmmss")));
+        }
+        if (ui->lineEditExperimentDate->text().trimmed().isEmpty()
+            || ui->lineEditExperimentDate->text().trimmed() == QStringLiteral("-"))
+        {
+            ui->lineEditExperimentDate->setText(QDateTime::currentDateTime().toString(QStringLiteral("yyyy-MM-dd hh:mm:ss")));
+        }
+        break;
+    }
+    case CreateExperimentSubPage::AcceptedPage::ExperimentType:
+        ui->lineEditExperimentType->setText(m_pCreateExperimentSubPage->experimentType());
+        ui->lineEditScanChannel->setText(m_pCreateExperimentSubPage->scanChannelText());
+        break;
+    case CreateExperimentSubPage::AcceptedPage::DelaySetting:
+        ui->lineEditScanType->setText(m_pCreateExperimentSubPage->scanModeText());
+        ui->lineEditIntervalTime->setText(m_pCreateExperimentSubPage->intervalTimeText());
+        ui->lineEditLoopCount->setText(m_pCreateExperimentSubPage->loopCountText());
+        break;
+    case CreateExperimentSubPage::AcceptedPage::PlateField:
+        break;
+    case CreateExperimentSubPage::AcceptedPage::ScanParameter:
+        ui->lineEditFieldOverlap->setText(m_pCreateExperimentSubPage->fieldOverlapText());
+        ui->lineEditFocusInterval->setText(m_pCreateExperimentSubPage->focusIntervalText());
+        ui->lineEditFocusChannel->setText(m_pCreateExperimentSubPage->focusChannelText());
+        break;
+    case CreateExperimentSubPage::AcceptedPage::Summary:
+        applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage::CreateMode);
+        applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage::ExperimentType);
+        applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage::DelaySetting);
+        applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage::ScanParameter);
+        break;
+    }
+}
+
+void ScanPage::setExperimentActionEnabled(bool enabled)
+{
+    ui->buttonEditExperimentConfig->setEnabled(enabled);
+    ui->buttonSaveExperimentConfig->setEnabled(enabled);
+    ui->buttonStopScan->setEnabled(false);
+    ui->buttonBrowseData->setEnabled(enabled);
 }
 
 void ScanPage::setPlateFormat(WellPlateWidget::PlateFormat format)

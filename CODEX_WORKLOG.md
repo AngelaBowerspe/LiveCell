@@ -1,0 +1,74 @@
+# Codex 工作记录
+
+本文件用于记录 Codex 在本仓库中的计划、改动、验证和遗留事项。每次代码任务开始前先阅读，结束前更新。
+
+## 使用规则
+
+1. `目标` 写清楚本轮要解决什么，不扩大范围。
+2. `计划` 写准备怎么做，尽量对应轻量 MVP 和面向接口。
+3. `实际改动` 写改了哪些文件和为什么改。
+4. `验证` 写执行过的命令和结果。
+5. `遗留事项` 写未完成、未提交、需要人工确认的点。
+
+## 记录模板
+
+```markdown
+## YYYY-MM-DD 任务标题
+
+目标：
+-
+
+计划：
+-
+
+MVP/接口检查：
+- View：
+- Presenter/页面协调：
+- Model/接口：
+- 不做：
+
+实际改动：
+-
+
+验证：
+-
+
+遗留事项：
+-
+```
+
+## 2026-07-09 创建实验子页接入与浮层修正
+
+目标：
+- 将用户已创建的 `CreateExperimentSubPage.ui` 接入扫描页。
+- 修正创建实验页显示方式，使其作为扫描页内的悬浮子控件，而不是独立 Dialog/新窗口。
+- 创建实验数据按向导页逐步提交到左侧实验信息，不在点击“创建实验”时一次性灌入默认值。
+- 保留后续 Presenter/业务层可调用的数据接口。
+
+计划：
+- 先规范 `CreateExperimentSubPage.ui` 中关键控件 objectName。
+- 在 `CreateExperimentSubPage` 中保留 View 级 getter 和按页 accepted 信号。
+- 在 `ScanPage` 中持有子页实例，点击创建实验时调用子页自己的浮层显示接口。
+- 左侧实验信息只在页面校验通过并发出 accepted 信号后更新。
+
+MVP/接口检查：
+- View：`CreateExperimentSubPage` 负责控件读取、页切换、校验提示、浮层显示。
+- 页面协调：`ScanPage` 暂时负责接收向导页 accepted 信号并同步左侧 UI。
+- Model/接口：当前仅保留 getter 和 `AcceptedPage`，后续可抽成 `ExperimentConfig` model 与 Presenter。
+- 不做：不接真实相机、样品台、SDK、线程、图像算法，不做数据持久化。
+
+实际改动：
+- `CreateExperimentSubPage.ui`：规范关键 objectName，保留用户设计的布局结构。
+- `CreateExperimentSubPage.h/.cpp`：增加 `showCenteredIn(QWidget *)`、按父容器居中、标题栏拖动、按页 accepted 信号和数据 getter。
+- `scanpage.h/.cpp`：持有 `CreateExperimentSubPage` 子控件，点击创建实验时作为扫描页内浮层显示；按页同步左侧实验信息。
+- `LiveCell.pro`、`LiveCell.vcxproj`、`LiveCell.vcxproj.filters`：加入创建实验子页文件；同时当前工作区里存在 `form.*` 删除，需要人工确认是否属于本轮范围。
+
+验证：
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+- 已确认不再使用 `Qt::Dialog`、`setWindowModality`、`activateWindow` 或图像区域硬编码坐标显示创建实验页。
+
+遗留事项：
+- 当前工作区混有 `BasicSettingPage.ui`、`form.*` 删除、`AENGRTS.md`、`LiveCell.sln` 等非本轮改动，暂未提交。
+- 后续建议新增轻量 `ExperimentConfig` model 和 `ScanPresenter`，把 `ScanPage::applyAcceptedExperimentPage` 从页面中迁出去。
+- 需要人工运行界面确认浮层尺寸、拖动体验和缩放效果。

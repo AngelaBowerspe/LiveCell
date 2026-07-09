@@ -199,14 +199,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicSettingPage.cpp" />
+    <ClCompile Include="CreateExperimentSubPage.cpp" />
     <ClCompile Include="FieldViewWidget.cpp" />
+    <ClCompile Include="HistogramRangeSlider.cpp" />
     <ClCompile Include="ImageCorrectionPage.cpp" />
+    <ClCompile Include="mocks\MockCameraService.cpp" />
+    <ClCompile Include="mocks\MockStageService.cpp" />
+    <ClCompile Include="presenters\PreviewPresenter.cpp" />
     <ClCompile Include="PreviewStatusBarWidget.cpp" />
     <ClCompile Include="SampleStageWidget.cpp" />
     <ClCompile Include="WellPlateWidget.cpp" />
     <ClCompile Include="ZStackSettingPage.cpp" />
     <ClCompile Include="datawidget.cpp" />
-    <ClCompile Include="form.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mainwindow.cpp" />
     <ClCompile Include="previewpage.cpp" />
@@ -214,14 +218,24 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="BasicSettingPage.h" />
+    <ClInclude Include="models\CaptureSettings.h" />
+    <QtMoc Include="CreateExperimentSubPage.h" />
     <QtMoc Include="FieldViewWidget.h" />
+    <QtMoc Include="HistogramRangeSlider.h" />
+    <ClInclude Include="interfaces\ICameraService.h" />
+    <ClInclude Include="interfaces\IStageService.h" />
     <QtMoc Include="ImageCorrectionPage.h" />
+    <ClInclude Include="models\ImageCorrectionSettings.h" />
+    <ClInclude Include="mocks\MockCameraService.h" />
+    <ClInclude Include="mocks\MockStageService.h" />
+    <QtMoc Include="presenters\PreviewPresenter.h" />
     <QtMoc Include="PreviewStatusBarWidget.h" />
     <QtMoc Include="SampleStageWidget.h" />
+    <ClInclude Include="models\StageControlSettings.h" />
     <QtMoc Include="WellPlateWidget.h" />
     <QtMoc Include="ZStackSettingPage.h" />
+    <ClInclude Include="models\ZStackSettings.h" />
     <QtMoc Include="datawidget.h" />
-    <QtMoc Include="form.h" />
     <QtMoc Include="mainwindow.h" />
     <QtMoc Include="previewpage.h" />
     <QtMoc Include="scanpage.h" />
@@ -229,11 +243,11 @@
   <ItemGroup />
   <ItemGroup>
     <QtUic Include="BasicSettingPage.ui" />
+    <QtUic Include="CreateExperimentSubPage.ui" />
     <QtUic Include="ImageCorrectionPage.ui" />
     <QtUic Include="PreviewStatusBarWidget.ui" />
     <QtUic Include="ZStackSettingPage.ui" />
     <QtUic Include="datawidget.ui" />
-    <QtUic Include="form.ui" />
     <QtUic Include="mainwindow.ui" />
     <QtUic Include="previewpage.ui" />
     <QtUic Include="scanpage.ui" />
