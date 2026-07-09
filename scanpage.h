@@ -63,6 +63,8 @@ private:
     bool hasSelectedFieldsForActiveWell() const;
     bool buildMockScanPlan();
     void restoreFieldsForActiveWell();
+    void showCreateExperimentSelectionPage();
+    void updateCreateExperimentPlateFieldSummary();
     QColor currentGroupColor() const;
     static QColor groupColor(int groupIndex);
     static QString plateFormatText(WellPlateWidget::PlateFormat format);

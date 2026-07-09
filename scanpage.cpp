@@ -114,6 +114,7 @@ void ScanPage::showCreateExperimentPage()
     emit createExperimentRequested();
 
     setExperimentActionEnabled(true);
+    m_pCreateExperimentSubPage->resetToFirstPage();
     m_pCreateExperimentSubPage->showCenteredIn(this);
 }
 
@@ -165,8 +166,8 @@ void ScanPage::applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage
 void ScanPage::enablePlateFieldSelection()
 {
     m_bPlateFieldSelectionEnabled = true;
-    updatePlateFieldControls();
-    emit selectWellsRequested();
+    m_pCreateExperimentSubPage->hide();
+    beginWellSelection();
 }
 
 void ScanPage::beginWellSelection()
@@ -179,8 +180,11 @@ void ScanPage::beginWellSelection()
     ui->wellPlateWidget->setGroupColor(currentGroupColor());
     ui->wellPlateWidget->setSelectionEnabled(true);
     ui->fieldViewWidget->setSelectionEnabled(false);
+    ui->fieldViewWidget->clearAll();
     m_bWellSelectionMode = true;
     m_bFieldSelectionMode = false;
+    m_currentPreviewWell.clear();
+    ui->wellPlateWidget->setActiveWell(QString());
     updatePlateFieldControls();
     emit selectWellsRequested();
 }
@@ -202,10 +206,20 @@ void ScanPage::confirmWellSelection()
         return;
     }
 
+    const QStringList selectedWells = ui->wellPlateWidget->selectedWells();
+    if (selectedWells.isEmpty())
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个孔位。"));
+        return;
+    }
+
+    m_currentPreviewWell = selectedWells.first();
     ui->wellPlateWidget->confirmSelectedAsGroup(currentGroupColor());
     ui->wellPlateWidget->setSelectionEnabled(false);
+    ui->wellPlateWidget->setActiveWell(m_currentPreviewWell);
     m_bWellSelectionMode = false;
     updatePlateFieldControls();
+    beginFieldSelection();
     emit confirmSelectionRequested();
 }
 
@@ -252,7 +266,10 @@ void ScanPage::confirmFieldSelection()
     m_selectedFieldsByWell.insert(m_currentPreviewWell, fields);
     ui->fieldViewWidget->setSelectionEnabled(false);
     m_bFieldSelectionMode = false;
+    m_bPlateFieldSelectionEnabled = false;
+    updateCreateExperimentPlateFieldSummary();
     updatePlateFieldControls();
+    showCreateExperimentSelectionPage();
     emit confirmSelectionRequested();
 }
 
@@ -422,6 +439,29 @@ void ScanPage::restoreFieldsForActiveWell()
 
     ui->fieldViewWidget->setFieldStates(m_selectedFieldsByWell.value(m_currentPreviewWell),
         FieldViewWidget::FieldState::Selected);
+}
+
+void ScanPage::showCreateExperimentSelectionPage()
+{
+    m_pCreateExperimentSubPage->showCenteredIn(this);
+}
+
+void ScanPage::updateCreateExperimentPlateFieldSummary()
+{
+    const QStringList groupedWells = ui->wellPlateWidget->wellsByState(WellPlateWidget::WellState::Grouped)
+        + ui->wellPlateWidget->wellsByState(WellPlateWidget::WellState::Completed)
+        + ui->wellPlateWidget->wellsByState(WellPlateWidget::WellState::Scanning);
+    int fieldCount = 0;
+    for (const QString &well : groupedWells)
+    {
+        fieldCount += m_selectedFieldsByWell.value(well).count();
+    }
+
+    m_pCreateExperimentSubPage->setPlateFieldSelectionSummary(
+        ui->comboPlateFormat->currentText(),
+        groupedWells.join(QStringLiteral(", ")),
+        ui->comboScanGroup->currentText(),
+        fieldCount > 0 ? QStringLiteral("%1个").arg(fieldCount) : QString());
 }
 
 QColor ScanPage::currentGroupColor() const

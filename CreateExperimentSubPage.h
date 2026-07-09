@@ -4,6 +4,7 @@
 #include <QButtonGroup>
 #include <QEvent>
 #include <QPoint>
+#include <QString>
 #include <QWidget>
 
 namespace Ui {
@@ -40,6 +41,10 @@ public:
     QString focusChannelText() const;
     void showCenteredIn(QWidget *container);
     void resetToFirstPage();
+    void setPlateFieldSelectionSummary(const QString &plateType,
+        const QString &selectedWells,
+        const QString &selectedGroups,
+        const QString &selectedFields);
 
 signals:
     void experimentPageAccepted(CreateExperimentSubPage::AcceptedPage page);
@@ -56,6 +61,7 @@ private:
     void updatePageIndicator();
     void updateDelaySettingState();
     void updateAutoCycleCount();
+    void resetPlateFieldSelectionSummary();
     bool isLoopScanMode() const;
     int intervalDurationMinutes() const;
     int totalDurationMinutes() const;

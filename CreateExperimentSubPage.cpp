@@ -119,7 +119,6 @@ void CreateExperimentSubPage::showCenteredIn(QWidget *container)
         setParent(container);
     }
 
-    resetToFirstPage();
     centerInContainer(container);
 }
 
@@ -127,6 +126,30 @@ void CreateExperimentSubPage::resetToFirstPage()
 {
     ui->pageStackedWidget->setCurrentWidget(ui->pageStep1);
     updatePageIndicator();
+}
+
+void CreateExperimentSubPage::setPlateFieldSelectionSummary(const QString &plateType,
+    const QString &selectedWells,
+    const QString &selectedGroups,
+    const QString &selectedFields)
+{
+    const bool hasSelection = !selectedWells.trimmed().isEmpty()
+        && !selectedFields.trimmed().isEmpty();
+    if (!hasSelection)
+    {
+        resetPlateFieldSelectionSummary();
+        return;
+    }
+
+    ui->lineEditPage4PlateType->setText(plateType);
+    ui->lineEditPage4SelectedWells->setText(selectedWells);
+    ui->lineEditPage4SelectedGroups->setText(selectedGroups);
+    ui->lineEditPage4SelectedFields->setText(selectedFields);
+    ui->lineSummaryPlateType->setText(plateType);
+    ui->lineSummarySelectedWells->setText(selectedWells);
+    ui->lineSummarySelectedGroups->setText(selectedGroups);
+    ui->lineSummarySelectedFields->setText(selectedFields);
+    ui->page4StateStackedWidget->setCurrentWidget(ui->page4StateSummary);
 }
 
 bool CreateExperimentSubPage::eventFilter(QObject *watched, QEvent *event)
@@ -216,10 +239,7 @@ void CreateExperimentSubPage::initControls()
     ui->lineEditTotalMinutes->setText(QStringLiteral("30"));
     ui->lineEditFieldOverlap->setText(QStringLiteral("0.05"));
     ui->lineEditFocusInterval->setText(QStringLiteral("1"));
-    ui->lineEditPage4PlateType->setText(QStringLiteral("24孔板"));
-    ui->lineEditPage4SelectedWells->setText(QStringLiteral("1"));
-    ui->lineEditPage4SelectedGroups->setText(QStringLiteral("1"));
-    ui->lineEditPage4SelectedFields->setText(QStringLiteral("1"));
+    resetPlateFieldSelectionSummary();
 
     updateDelaySettingState();
     resetToFirstPage();
@@ -281,6 +301,19 @@ void CreateExperimentSubPage::updateDelaySettingState()
 void CreateExperimentSubPage::updateAutoCycleCount()
 {
     ui->labelAutoCycleCountValue->setText(QStringLiteral("%1次").arg(calculatedCycleCount()));
+}
+
+void CreateExperimentSubPage::resetPlateFieldSelectionSummary()
+{
+    ui->lineEditPage4PlateType->clear();
+    ui->lineEditPage4SelectedWells->clear();
+    ui->lineEditPage4SelectedGroups->clear();
+    ui->lineEditPage4SelectedFields->clear();
+    ui->lineSummaryPlateType->clear();
+    ui->lineSummarySelectedWells->clear();
+    ui->lineSummarySelectedGroups->clear();
+    ui->lineSummarySelectedFields->clear();
+    ui->page4StateStackedWidget->setCurrentWidget(ui->page4StateEmpty);
 }
 
 bool CreateExperimentSubPage::isLoopScanMode() const

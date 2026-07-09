@@ -28,13 +28,22 @@ MVP/接口检查：
 - 不做：
 
 实际改动：
--
+- `CreateExperimentSubPage.h/.cpp`：新增 `setPlateFieldSelectionSummary()`，右侧选择完成后可把孔板类型、孔位、分组和视野数量写回第 4 页及汇总页。
+- `CreateExperimentSubPage.cpp`：`showCenteredIn()` 不再强制重置到第一页；新建实验入口单独调用 `resetToFirstPage()`，右侧选择完成后可回到当前第 4 页。
+- `CreateExperimentSubPage.cpp`：初始化时清空第 4 页默认假数据，显示“暂未选择孔板和视野”。
+- `scanpage.h/.cpp`：点击第 4 页“点击选择”后隐藏创建实验浮层，并直接进入右侧孔板选择模式，修复用户以为点击孔板无反应的问题。
+- `scanpage.cpp`：孔区确认时若未选择任何孔位弹出提示；孔区确认后自动进入当前孔位视野选择。
+- `scanpage.cpp`：视野确认时若未选择任何视野弹出提示；确认成功后禁用右侧选择控件，更新创建实验第 4 页汇总并重新显示浮层。
 
 验证：
--
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- `uic scanpage.ui -o ui_scanpage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
 
 遗留事项：
--
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前选择流程仍由 `ScanPage` 协调，后续如果流程继续变复杂，应迁入 `ScanPresenter`。
+- 需要人工运行界面确认：第 4 页点击选择后浮层隐藏、孔板单击/框选可见、右侧确定后浮层回到第 4 页。
 ```
 
 ## 2026-07-09 创建实验子页接入与浮层修正
@@ -202,3 +211,32 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 当前模拟扫描仍在 `ScanPage` 内，后续建议迁移到 `ScanPresenter` 或 mock service。
 - 需要人工运行界面确认选择孔区入口、视野选择提示和 5 秒模拟扫描的视觉状态是否符合预期。
+
+## 2026-07-09 创建实验浮层与孔区选择确认修正
+
+目标：
+- 点击创建实验第 4 页“点击选择”后隐藏创建实验浮层，让用户操作右侧孔板和视野。
+- 点击右侧“确定”完成选择后重新显示创建实验浮层。
+- 未选择任何孔位就确认孔区选择时给出提示。
+- 排查孔板点击无反应的问题，保持右侧选择流程可点击、可框选。
+
+计划：
+- 查看 `CreateExperimentSubPage` 第 4 页选择信号和 `ScanPage` 右侧选择按钮连接。
+- 在 `ScanPage` 中集中处理浮层隐藏/恢复，不把逻辑放到 MainWindow。
+- 为确认孔区增加空选择判断，为点击孔位进入预览补足选择阶段状态。
+- 更新工作记录并使用 MSVC + qmake + nmake 验证。
+
+MVP/接口检查：
+- View：`CreateExperimentSubPage` 只发出选择请求；自绘孔板只负责输入和状态展示。
+- Presenter/页面协调：本轮仍由 `ScanPage` 临时协调浮层显示、右侧选择按钮和模拟状态。
+- Model/接口：继续使用孔位 QString 和视野索引缓存模拟数据，不新增持久化 model。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+-
+
+验证：
+-
+
+遗留事项：
+-
