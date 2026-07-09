@@ -406,6 +406,10 @@ bool CreateExperimentSubPage::validateCurrentPage()
     {
         return validateExperimentTypePage();
     }
+    if (ui->pageStackedWidget->currentWidget() == ui->pageStep4)
+    {
+        return validatePlateFieldPage();
+    }
     if (ui->pageStackedWidget->currentWidget() == ui->pageStep5)
     {
         return validateScanParameterPage();
@@ -437,6 +441,20 @@ bool CreateExperimentSubPage::validateExperimentTypePage()
     if (scanChannelText() == QStringLiteral("-"))
     {
         QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个扫描通道。"));
+        return false;
+    }
+
+    return true;
+}
+
+bool CreateExperimentSubPage::validatePlateFieldPage()
+{
+    const bool hasPlateFields = ui->page4StateStackedWidget->currentWidget() == ui->page4StateSummary
+        && !ui->lineEditPage4SelectedWells->text().trimmed().isEmpty()
+        && !ui->lineEditPage4SelectedFields->text().trimmed().isEmpty();
+    if (!hasPlateFields)
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先选择孔板和视野。"));
         return false;
     }
 

@@ -248,3 +248,40 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 当前流程状态仍暂放在 `ScanPage`，后续如果继续增加规则，建议迁移到 `ScanPresenter`。
 - 需要人工运行界面确认：框选孔位后点“选择孔区”确认、每个孔位逐个选择视野、底部“确定”只做最终完成。
+
+## 2026-07-09 扫描实验完成态与多分组选区修正
+
+目标：
+- 修正多分组孔位汇总不完整的问题，避免只显示当前分组或部分孔位。
+- 实验未完整创建完成前，修改、保存实验配置、开始扫描、数据浏览必须保持禁用。
+- 站在显微镜扫描使用流程上补齐基础防呆：未完成实验配置不能开始扫描，未给每个孔位选择视野不能最终确认。
+
+计划：
+- 在 `ScanPage` 中维护轻量选择模型：孔位名 -> 分组序号，不再只从自绘控件单一状态反推汇总。
+- 将实验配置完成状态独立为布尔状态，只在 `CreateExperimentSubPage::experimentFinished` 后解锁左侧操作按钮。
+- 汇总显示使用孔位选择模型和视野缓存统一生成，确保多分组、多孔位计数一致。
+- 继续保持 UI 联动和模拟数据范围，不接真实硬件或线程。
+
+MVP/接口检查：
+- View：自绘控件继续只负责显示和输入。
+- Presenter/页面协调：`ScanPage` 暂时保存选择模型和完成态，后续可整体迁移到 `ScanPresenter`。
+- Model/接口：使用 `QMap<QString, int>` 表示孔位分组，仍不新增持久化 model。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+- `scanpage.h/.cpp`：新增 `m_bExperimentConfigured`，创建实验开始时保持左侧修改、保存、开始扫描、数据浏览禁用，只在 `experimentFinished` 后解锁。
+- `scanpage.h/.cpp`：新增 `m_selectedGroupByWell`，用 `孔位名 -> 分组序号` 保存孔位选择模型，汇总和扫描计划不再只依赖自绘控件当前状态。
+- `scanpage.cpp`：确认孔区时把所有选中孔位写入选择模型；汇总时按孔板顺序输出所有已选孔位，并显示所有涉及的分组。
+- `scanpage.cpp`：新建实验时清空上一次孔区、视野和分组缓存，避免旧实验数据残留。
+- `scanpage.cpp`：开始扫描前再次检查实验是否完成、所有孔位是否已选择视野。
+- `CreateExperimentSubPage.h/.cpp`：新增第 4 页校验，未选择孔板和视野时不能继续下一步完成实验。
+
+验证：
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- `uic scanpage.ui -o ui_scanpage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+
+遗留事项：
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前选择模型仍暂存在 `ScanPage`，后续建议迁移到 `ScanPresenter` 或独立轻量 model。
+- 需要人工运行界面确认多分组 A1/A2/A3 + B2/B3 这类场景汇总能显示 5 个孔位，且左侧按钮只在完整创建后解锁。

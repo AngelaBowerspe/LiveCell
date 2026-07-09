@@ -45,6 +45,7 @@ private:
     void initConnections();
     void showCreateExperimentPage();
     void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
+    void completeExperimentConfiguration();
     void enablePlateFieldSelection();
     void handleSelectWellsButtonClicked();
     void handleSelectFieldsButtonClicked();
@@ -69,7 +70,10 @@ private:
     void restoreFieldsForActiveWell();
     void showCreateExperimentSelectionPage();
     void updateCreateExperimentPlateFieldSummary();
+    void refreshPlateSelectionFromModel();
     QStringList groupedWells() const;
+    QStringList selectedWellsInPlateOrder() const;
+    QString selectedGroupsText() const;
     QString firstWellWithoutFields() const;
     QColor currentGroupColor() const;
     static QColor groupColor(int groupIndex);
@@ -83,10 +87,12 @@ private:
     bool m_bWellSelectionMode;
     bool m_bFieldSelectionMode;
     bool m_bScanning;
+    bool m_bExperimentConfigured;
     QString m_currentPreviewWell;
     QVector<QPair<QString, int>> m_mockScanPlan;
     int m_nMockScanIndex;
     QMap<QString, QSet<int>> m_selectedFieldsByWell;
+    QMap<QString, int> m_selectedGroupByWell;
     QPair<QString, int> m_currentScanningTarget;
 };
 

@@ -2,6 +2,8 @@
 
 #include "ui_scanpage.h"
 
+#include <algorithm>
+
 #include <QColor>
 #include <QComboBox>
 #include <QDateTime>
@@ -21,10 +23,12 @@ ScanPage::ScanPage(QWidget *parent)
     , m_bWellSelectionMode(false)
     , m_bFieldSelectionMode(false)
     , m_bScanning(false)
+    , m_bExperimentConfigured(false)
     , m_currentPreviewWell()
     , m_mockScanPlan()
     , m_nMockScanIndex(0)
     , m_selectedFieldsByWell()
+    , m_selectedGroupByWell()
     , m_currentScanningTarget()
 {
     ui->setupUi(this);
@@ -106,6 +110,8 @@ void ScanPage::initConnections()
 
     connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::experimentPageAccepted,
         this, &ScanPage::applyAcceptedExperimentPage);
+    connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::experimentFinished,
+        this, &ScanPage::completeExperimentConfiguration);
     connect(m_pCreateExperimentSubPage, &CreateExperimentSubPage::choosePlateFieldsRequested,
         this, &ScanPage::enablePlateFieldSelection);
 }
@@ -114,7 +120,18 @@ void ScanPage::showCreateExperimentPage()
 {
     emit createExperimentRequested();
 
-    setExperimentActionEnabled(true);
+    m_bExperimentConfigured = false;
+    m_bPlateFieldSelectionEnabled = false;
+    m_bWellSelectionMode = false;
+    m_bFieldSelectionMode = false;
+    m_currentPreviewWell.clear();
+    m_selectedFieldsByWell.clear();
+    m_selectedGroupByWell.clear();
+    ui->wellPlateWidget->clearAll();
+    ui->fieldViewWidget->clearAll();
+    m_pCreateExperimentSubPage->setPlateFieldSelectionSummary(QString(), QString(), QString(), QString());
+    setExperimentActionEnabled(false);
+    updatePlateFieldControls();
     m_pCreateExperimentSubPage->resetToFirstPage();
     m_pCreateExperimentSubPage->showCenteredIn(this);
 }
@@ -162,6 +179,12 @@ void ScanPage::applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage
         applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage::ScanParameter);
         break;
     }
+}
+
+void ScanPage::completeExperimentConfiguration()
+{
+    m_bExperimentConfigured = true;
+    setExperimentActionEnabled(true);
 }
 
 void ScanPage::enablePlateFieldSelection()
@@ -275,6 +298,7 @@ void ScanPage::beginWellSelection()
 void ScanPage::cancelWellSelection()
 {
     ui->wellPlateWidget->clearSelected();
+    refreshPlateSelectionFromModel();
     ui->wellPlateWidget->setSelectionEnabled(false);
     m_bWellSelectionMode = false;
     updatePlateFieldControls();
@@ -293,6 +317,12 @@ void ScanPage::confirmWellSelection()
     {
         QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个孔位。"));
         return;
+    }
+
+    const int groupIndex = ui->comboScanGroup->currentData().toInt();
+    for (const QString &well : selectedWells)
+    {
+        m_selectedGroupByWell.insert(well, groupIndex);
     }
 
     m_currentPreviewWell = selectedWells.first();
@@ -407,10 +437,24 @@ void ScanPage::handleWellClicked(const QString &well)
 
 void ScanPage::toggleScan()
 {
+    if (!m_bExperimentConfigured)
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先完成实验创建。"));
+        return;
+    }
+
     if (m_bScanning)
     {
         stopMockScan();
         emit stopScanRequested();
+        return;
+    }
+
+    const QString missingWell = firstWellWithoutFields();
+    if (!missingWell.isEmpty())
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"),
+            QStringLiteral("请先为孔位 %1 选择视野。").arg(missingWell));
         return;
     }
 
@@ -502,6 +546,7 @@ void ScanPage::setPlateFormat(WellPlateWidget::PlateFormat format)
     ui->fieldViewWidget->setPlateFormat(format);
     m_currentPreviewWell.clear();
     m_selectedFieldsByWell.clear();
+    m_selectedGroupByWell.clear();
     m_mockScanPlan.clear();
     updatePlateFieldControls();
 
@@ -557,7 +602,7 @@ void ScanPage::showCreateExperimentSelectionPage()
 
 void ScanPage::updateCreateExperimentPlateFieldSummary()
 {
-    const QStringList wells = groupedWells();
+    const QStringList wells = selectedWellsInPlateOrder();
     int fieldCount = 0;
     for (const QString &well : wells)
     {
@@ -567,25 +612,38 @@ void ScanPage::updateCreateExperimentPlateFieldSummary()
     m_pCreateExperimentSubPage->setPlateFieldSelectionSummary(
         ui->comboPlateFormat->currentText(),
         wells.join(QStringLiteral(", ")),
-        ui->comboScanGroup->currentText(),
+        selectedGroupsText(),
         fieldCount > 0 ? QStringLiteral("%1个").arg(fieldCount) : QString());
+}
+
+void ScanPage::refreshPlateSelectionFromModel()
+{
+    QMap<int, QStringList> wellsByGroup;
+    for (auto it = m_selectedGroupByWell.cbegin(); it != m_selectedGroupByWell.cend(); ++it)
+    {
+        wellsByGroup[it.value()].append(it.key());
+    }
+
+    for (auto it = wellsByGroup.cbegin(); it != wellsByGroup.cend(); ++it)
+    {
+        ui->wellPlateWidget->setGroupedWells(it.value(), groupColor(it.key()));
+    }
 }
 
 QStringList ScanPage::groupedWells() const
 {
-    QStringList wells;
-    const QList<WellPlateWidget::WellState> states = {
-        WellPlateWidget::WellState::Grouped,
-        WellPlateWidget::WellState::Completed,
-        WellPlateWidget::WellState::Scanning
-    };
+    return selectedWellsInPlateOrder();
+}
 
-    for (const WellPlateWidget::WellState state : states)
+QStringList ScanPage::selectedWellsInPlateOrder() const
+{
+    QStringList wells;
+    for (int row = 0; row < ui->wellPlateWidget->rowCount(); ++row)
     {
-        const QStringList stateWells = ui->wellPlateWidget->wellsByState(state);
-        for (const QString &well : stateWells)
+        for (int column = 0; column < ui->wellPlateWidget->columnCount(); ++column)
         {
-            if (!wells.contains(well))
+            const QString well = ui->wellPlateWidget->wellName(row, column);
+            if (m_selectedGroupByWell.contains(well))
             {
                 wells.append(well);
             }
@@ -593,6 +651,28 @@ QStringList ScanPage::groupedWells() const
     }
 
     return wells;
+}
+
+QString ScanPage::selectedGroupsText() const
+{
+    QList<int> groupIndexes;
+    for (auto it = m_selectedGroupByWell.cbegin(); it != m_selectedGroupByWell.cend(); ++it)
+    {
+        const int groupIndex = it.value();
+        if (!groupIndexes.contains(groupIndex))
+        {
+            groupIndexes.append(groupIndex);
+        }
+    }
+    std::sort(groupIndexes.begin(), groupIndexes.end());
+
+    QStringList groupTexts;
+    for (const int groupIndex : groupIndexes)
+    {
+        groupTexts.append(QStringLiteral("分组%1").arg(groupIndex));
+    }
+
+    return groupTexts.join(QStringLiteral(", "));
 }
 
 QString ScanPage::firstWellWithoutFields() const

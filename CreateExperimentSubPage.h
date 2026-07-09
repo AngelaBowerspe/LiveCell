@@ -71,6 +71,7 @@ private:
     bool validateCurrentPage();
     bool validateFirstPage();
     bool validateExperimentTypePage();
+    bool validatePlateFieldPage();
     bool validateScanParameterPage();
     QString checkedButtonText(const QButtonGroup *buttonGroup) const;
     QString checkedChannelText() const;
