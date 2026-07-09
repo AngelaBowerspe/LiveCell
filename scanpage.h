@@ -2,10 +2,17 @@
 #define SCANPAGE_H
 
 #include "CreateExperimentSubPage.h"
+#include "FieldViewWidget.h"
 #include "WellPlateWidget.h"
 
 #include <QColor>
+#include <QMap>
+#include <QSet>
+#include <QStringList>
+#include <QVector>
 #include <QWidget>
+
+class QTimer;
 
 namespace Ui {
 class ScanPage;
@@ -38,12 +45,24 @@ private:
     void initConnections();
     void showCreateExperimentPage();
     void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
+    void enablePlateFieldSelection();
     void beginWellSelection();
     void cancelWellSelection();
     void confirmWellSelection();
+    void beginFieldSelection();
+    void cancelFieldSelection();
+    void confirmFieldSelection();
+    void handleWellClicked(const QString &well);
+    void toggleScan();
+    void runNextMockScanStep();
+    void stopMockScan();
     void updateGroupColorButton();
+    void updatePlateFieldControls();
     void setExperimentActionEnabled(bool enabled);
     void setPlateFormat(WellPlateWidget::PlateFormat format);
+    bool hasSelectedFieldsForActiveWell() const;
+    bool buildMockScanPlan();
+    void restoreFieldsForActiveWell();
     QColor currentGroupColor() const;
     static QColor groupColor(int groupIndex);
     static QString plateFormatText(WellPlateWidget::PlateFormat format);
@@ -51,6 +70,16 @@ private:
 private:
     Ui::ScanPage *ui;
     CreateExperimentSubPage *m_pCreateExperimentSubPage;
+    QTimer *m_pMockScanTimer;
+    bool m_bPlateFieldSelectionEnabled;
+    bool m_bWellSelectionMode;
+    bool m_bFieldSelectionMode;
+    bool m_bScanning;
+    QString m_currentPreviewWell;
+    QVector<QPair<QString, int>> m_mockScanPlan;
+    int m_nMockScanIndex;
+    QMap<QString, QSet<int>> m_selectedFieldsByWell;
+    QPair<QString, int> m_currentScanningTarget;
 };
 
 #endif // SCANPAGE_H

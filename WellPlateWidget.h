@@ -22,6 +22,7 @@ public:
         Previewing,
         Grouped,
         Selected,
+        Scanning,
         Completed
     };
     Q_ENUM(WellState)
@@ -117,6 +118,7 @@ private:
     QVector<WellState> m_states;
     QVector<QColor> m_backgroundColors;
     QColor m_groupColor;
+    QString m_activeWell;
     bool m_bSelectionEnabled;
     bool m_bDragging;
     QPoint m_dragStart;

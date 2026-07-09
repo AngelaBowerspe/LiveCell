@@ -15,6 +15,7 @@ WellPlateWidget::WellPlateWidget(QWidget *parent)
     , m_states(m_nRows * m_nColumns, WellState::Default)
     , m_backgroundColors(m_nRows * m_nColumns, QColor(0, 0, 0, 0))
     , m_groupColor(110, 164, 235, 120)
+    , m_activeWell()
     , m_bSelectionEnabled(false)
     , m_bDragging(false)
 {
@@ -51,6 +52,7 @@ void WellPlateWidget::setPlateFormat(PlateFormat format)
     m_nColumns = size.width();
     m_states.fill(WellState::Default, m_nRows * m_nColumns);
     m_backgroundColors.fill(QColor(0, 0, 0, 0), m_nRows * m_nColumns);
+    m_activeWell.clear();
     m_bDragging = false;
     m_dragSnapshot.clear();
 
@@ -282,41 +284,31 @@ QStringList WellPlateWidget::selectedWells() const
 
 void WellPlateWidget::setActiveWell(const QString &well)
 {
+    int activeRow = -1;
+    int activeColumn = -1;
     QString nextActive;
-    bool changed = false;
-
-    for (int row = 0; row < m_nRows; ++row)
+    if (parseWell(well, &activeRow, &activeColumn))
     {
-        for (int column = 0; column < m_nColumns; ++column)
+        const WellState state = wellState(activeRow, activeColumn);
+        if (state != WellState::Default)
         {
-            if (wellState(row, column) == WellState::Previewing)
-            {
-                setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
-                changed |= setWellStateInternal(row, column, WellState::Default, true);
-            }
+            nextActive = wellName(activeRow, activeColumn);
         }
     }
 
-    int activeRow = -1;
-    int activeColumn = -1;
-    if (parseWell(well, &activeRow, &activeColumn))
+    if (m_activeWell == nextActive)
     {
-        nextActive = wellName(activeRow, activeColumn);
-        setWellBackgroundColor(activeRow, activeColumn, QColor(82, 152, 245, 105));
-        changed |= setWellStateInternal(activeRow, activeColumn, WellState::Previewing, true);
+        return;
     }
 
-    if (changed)
-    {
-        emit activeWellChanged(nextActive);
-        update();
-    }
+    m_activeWell = nextActive;
+    emit activeWellChanged(m_activeWell);
+    update();
 }
 
 QString WellPlateWidget::activeWell() const
 {
-    const QStringList wells = wellsByState(WellState::Previewing);
-    return wells.isEmpty() ? QString() : wells.first();
+    return m_activeWell;
 }
 
 void WellPlateWidget::paintEvent(QPaintEvent *event)
@@ -354,7 +346,11 @@ void WellPlateWidget::paintEvent(QPaintEvent *event)
         {
             const WellState state = wellState(row, column);
             const QRectF cell = cellRect(row, column);
-            const QColor backgroundColor = wellBackgroundColor(row, column, state);
+            QColor backgroundColor = wellBackgroundColor(row, column, state);
+            if (wellName(row, column) == m_activeWell)
+            {
+                backgroundColor = QColor(82, 152, 245, 105);
+            }
             if (backgroundColor.alpha() > 0)
             {
                 painter.fillRect(cell.adjusted(1.0, 1.0, -1.0, -1.0), backgroundColor);
@@ -572,7 +568,8 @@ void WellPlateWidget::updateSelectionFromDrag()
         for (int column = 0; column < m_nColumns; ++column)
         {
             const int index = stateIndex(row, column);
-            if (nextStates.at(index) == WellState::Completed)
+            if (nextStates.at(index) == WellState::Completed
+                || nextStates.at(index) == WellState::Scanning)
             {
                 continue;
             }
@@ -655,11 +652,10 @@ QColor WellPlateWidget::wellBackgroundColor(int row, int column, WellState state
     {
         return m_groupColor;
     }
-    if (state == WellState::Previewing)
+    if (state == WellState::Selected)
     {
-        return QColor(82, 152, 245, 105);
+        return m_groupColor;
     }
-
     return QColor(0, 0, 0, 0);
 }
 
@@ -671,10 +667,11 @@ void WellPlateWidget::drawWell(QPainter *pPainter, const QRectF &rect, WellState
     switch (state)
     {
     case WellState::Grouped:
-        fillColor = QColor(139, 226, 83);
-        borderColor = QColor(80, 175, 64);
         break;
     case WellState::Selected:
+        borderColor = QColor(230, 174, 35);
+        break;
+    case WellState::Scanning:
         fillColor = QColor(255, 224, 91);
         borderColor = QColor(230, 174, 35);
         break;
