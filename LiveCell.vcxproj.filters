@@ -40,25 +40,10 @@
     <ClCompile Include="BasicSettingPage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreateExperimentSubPage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FieldViewWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="HistogramRangeSlider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ImageCorrectionPage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mocks\MockCameraService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mocks\MockStageService.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="presenters\PreviewPresenter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PreviewStatusBarWidget.cpp">
@@ -96,40 +81,10 @@
     <QtMoc Include="BasicSettingPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="models\CaptureSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="models\CreateExperimentSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <QtMoc Include="CreateExperimentSubPage.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
     <QtMoc Include="FieldViewWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="HistogramRangeSlider.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClInclude Include="interfaces\ICameraService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="interfaces\IStageService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <QtMoc Include="ImageCorrectionPage.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
-    <ClInclude Include="models\ImageCorrectionSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\MockCameraService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="mocks\MockStageService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <QtMoc Include="presenters\PreviewPresenter.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="PreviewStatusBarWidget.h">
@@ -138,18 +93,12 @@
     <QtMoc Include="SampleStageWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="models\StageControlSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <QtMoc Include="WellPlateWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="ZStackSettingPage.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <ClInclude Include="models\ZStackSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <QtMoc Include="datawidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -169,9 +118,6 @@
   <ItemGroup />
   <ItemGroup>
     <QtUic Include="BasicSettingPage.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="CreateExperimentSubPage.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="ImageCorrectionPage.ui">
