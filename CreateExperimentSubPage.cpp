@@ -75,6 +75,11 @@ QString CreateExperimentSubPage::scanModeText() const
 
 QString CreateExperimentSubPage::intervalTimeText() const
 {
+    if (!isLoopScanMode())
+    {
+        return QStringLiteral("-");
+    }
+
     return QStringLiteral("%1小时%2分钟")
         .arg(ui->lineEditIntervalHours->text().trimmed())
         .arg(ui->lineEditIntervalMinutes->text().trimmed());
@@ -216,7 +221,7 @@ void CreateExperimentSubPage::initControls()
     ui->lineEditPage4SelectedGroups->setText(QStringLiteral("1"));
     ui->lineEditPage4SelectedFields->setText(QStringLiteral("1"));
 
-    updateAutoCycleCount();
+    updateDelaySettingState();
     resetToFirstPage();
 }
 
@@ -229,6 +234,8 @@ void CreateExperimentSubPage::initConnections()
         this, &CreateExperimentSubPage::goNextPage);
     connect(ui->buttonChoosePlateFields, &QPushButton::clicked,
         this, &CreateExperimentSubPage::choosePlateFieldsRequested);
+    connect(ui->buttonLoopScanMode, &QPushButton::toggled,
+        this, &CreateExperimentSubPage::updateDelaySettingState);
     connect(ui->lineEditIntervalHours, &QLineEdit::textChanged,
         this, &CreateExperimentSubPage::updateAutoCycleCount);
     connect(ui->lineEditIntervalMinutes, &QLineEdit::textChanged,
@@ -260,9 +267,25 @@ void CreateExperimentSubPage::centerInContainer(QWidget *container)
     raise();
 }
 
+void CreateExperimentSubPage::updateDelaySettingState()
+{
+    const bool enabled = isLoopScanMode();
+    ui->lineEditIntervalHours->setEnabled(enabled);
+    ui->lineEditIntervalMinutes->setEnabled(enabled);
+    ui->lineEditTotalHours->setEnabled(enabled);
+    ui->lineEditTotalMinutes->setEnabled(enabled);
+
+    updateAutoCycleCount();
+}
+
 void CreateExperimentSubPage::updateAutoCycleCount()
 {
     ui->labelAutoCycleCountValue->setText(QStringLiteral("%1次").arg(calculatedCycleCount()));
+}
+
+bool CreateExperimentSubPage::isLoopScanMode() const
+{
+    return ui->buttonLoopScanMode->isChecked();
 }
 
 int CreateExperimentSubPage::intervalDurationMinutes() const
@@ -279,6 +302,11 @@ int CreateExperimentSubPage::totalDurationMinutes() const
 
 int CreateExperimentSubPage::calculatedCycleCount() const
 {
+    if (!isLoopScanMode())
+    {
+        return 1;
+    }
+
     const int intervalMinutes = intervalDurationMinutes();
     const int totalMinutes = totalDurationMinutes();
     if (intervalMinutes <= 0 || totalMinutes <= 0)

@@ -54,7 +54,9 @@ private:
     void initConnections();
     void centerInContainer(QWidget *container);
     void updatePageIndicator();
+    void updateDelaySettingState();
     void updateAutoCycleCount();
+    bool isLoopScanMode() const;
     int intervalDurationMinutes() const;
     int totalDurationMinutes() const;
     int calculatedCycleCount() const;

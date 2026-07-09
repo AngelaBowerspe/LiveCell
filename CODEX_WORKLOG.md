@@ -101,3 +101,34 @@ MVP/接口检查：
 遗留事项：
 - 本轮提交仅包含 `CreateExperimentSubPage.h/.cpp` 和 `CODEX_WORKLOG.md`；当前工作区仍保留用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认输入变化时 `labelAutoCycleCountValue` 的显示符合预期。
+
+## 2026-07-09 单次扫描禁用延时输入
+
+目标：
+- 创建实验第 3 页选中“单次扫描”时，禁用间隔时长和总时长的 4 个 QLineEdit；选中“循环扫描”时恢复可编辑。
+- 单次扫描模式下自动扫描次数显示为 `1次`。
+
+计划：
+- 在 `CreateExperimentSubPage` 内新增扫描模式相关的轻量 View 状态函数。
+- 用扫描模式按钮的 `toggled` 信号统一刷新延时输入状态和自动次数。
+- 保持现有 getter/accepted 信号不变，不引入 Presenter 或业务服务。
+
+MVP/接口检查：
+- View：根据本页扫描模式按钮状态启用/禁用本页输入框。
+- Presenter/页面协调：不新增页面协调逻辑。
+- Model/接口：不新增 model；后续若抽 `ExperimentConfig`，扫描模式可作为配置字段。
+- 不做：不触发真实扫描、不接线程/SDK、不做硬件或算法。
+
+实际改动：
+- `CreateExperimentSubPage.h/.cpp`：新增 `updateDelaySettingState()` 和 `isLoopScanMode()`，统一处理延时输入可用状态。
+- `CreateExperimentSubPage.cpp`：选中单次扫描时禁用 `lineEditIntervalHours`、`lineEditIntervalMinutes`、`lineEditTotalHours`、`lineEditTotalMinutes`，并将自动扫描次数显示为 `1次`。
+- `CreateExperimentSubPage.cpp`：选中循环扫描时恢复 4 个时间输入框可编辑，并继续按总时长/间隔时长计算次数。
+- `CreateExperimentSubPage.cpp`：单次扫描模式下 `intervalTimeText()` 返回 `-`，避免左侧实验信息显示已禁用的旧时间。
+
+验证：
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+
+遗留事项：
+- 本轮提交仅包含 `CreateExperimentSubPage.h/.cpp` 和 `CODEX_WORKLOG.md`；当前工作区仍保留用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认单次/循环扫描切换时禁用状态、自动次数和左侧实验信息显示符合预期。
