@@ -4,6 +4,7 @@
 #include "CreateExperimentSubPage.h"
 #include "WellPlateWidget.h"
 
+#include <QColor>
 #include <QWidget>
 
 namespace Ui {
@@ -37,8 +38,14 @@ private:
     void initConnections();
     void showCreateExperimentPage();
     void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
+    void beginWellSelection();
+    void cancelWellSelection();
+    void confirmWellSelection();
+    void updateGroupColorButton();
     void setExperimentActionEnabled(bool enabled);
     void setPlateFormat(WellPlateWidget::PlateFormat format);
+    QColor currentGroupColor() const;
+    static QColor groupColor(int groupIndex);
     static QString plateFormatText(WellPlateWidget::PlateFormat format);
 
 private:

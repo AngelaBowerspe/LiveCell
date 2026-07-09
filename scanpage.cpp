@@ -2,6 +2,7 @@
 
 #include "ui_scanpage.h"
 
+#include <QColor>
 #include <QComboBox>
 #include <QDateTime>
 #include <QLineEdit>
@@ -45,6 +46,7 @@ void ScanPage::initControls()
 
     setPlateFormat(WellPlateWidget::PlateFormat::Plate12);
     ui->comboScanGroup->setCurrentIndex(0);
+    updateGroupColorButton();
     setExperimentActionEnabled(false);
 }
 
@@ -61,15 +63,15 @@ void ScanPage::initConnections()
     connect(ui->buttonBrowseData, &QPushButton::clicked,
         this, &ScanPage::browseDataRequested);
     connect(ui->buttonSelectWells, &QPushButton::clicked,
-        this, &ScanPage::selectWellsRequested);
+        this, &ScanPage::beginWellSelection);
     connect(ui->buttonCancelWellSelection, &QPushButton::clicked,
-        this, &ScanPage::cancelWellSelectionRequested);
+        this, &ScanPage::cancelWellSelection);
     connect(ui->buttonSelectFields, &QPushButton::clicked,
         this, &ScanPage::selectFieldsRequested);
     connect(ui->buttonCancelFieldSelection, &QPushButton::clicked,
         this, &ScanPage::cancelFieldSelectionRequested);
     connect(ui->buttonConfirmSelection, &QPushButton::clicked,
-        this, &ScanPage::confirmSelectionRequested);
+        this, &ScanPage::confirmWellSelection);
 
     connect(ui->comboPlateFormat, &QComboBox::currentIndexChanged, this, [this](int index) {
         const WellPlateWidget::PlateFormat format = static_cast<WellPlateWidget::PlateFormat>(
@@ -78,6 +80,7 @@ void ScanPage::initConnections()
         emit plateFormatChanged(format);
     });
     connect(ui->comboScanGroup, &QComboBox::currentIndexChanged, this, [this](int index) {
+        updateGroupColorButton();
         emit groupChanged(ui->comboScanGroup->itemData(index).toInt());
     });
 
@@ -140,6 +143,39 @@ void ScanPage::applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage
     }
 }
 
+void ScanPage::beginWellSelection()
+{
+    ui->wellPlateWidget->setGroupColor(currentGroupColor());
+    ui->wellPlateWidget->setSelectionEnabled(true);
+    emit selectWellsRequested();
+}
+
+void ScanPage::cancelWellSelection()
+{
+    ui->wellPlateWidget->clearSelected();
+    ui->wellPlateWidget->setSelectionEnabled(false);
+    emit cancelWellSelectionRequested();
+}
+
+void ScanPage::confirmWellSelection()
+{
+    ui->wellPlateWidget->confirmSelectedAsGroup(currentGroupColor());
+    ui->wellPlateWidget->setSelectionEnabled(false);
+    emit confirmSelectionRequested();
+}
+
+void ScanPage::updateGroupColorButton()
+{
+    const QColor color = currentGroupColor();
+    ui->buttonGroupColor->setStyleSheet(QStringLiteral(
+        "QPushButton#buttonGroupColor { background-color: rgba(%1, %2, %3, %4); border: 1px solid rgb(80, 130, 210); }")
+        .arg(color.red())
+        .arg(color.green())
+        .arg(color.blue())
+        .arg(color.alpha()));
+    ui->wellPlateWidget->setGroupColor(color);
+}
+
 void ScanPage::setExperimentActionEnabled(bool enabled)
 {
     ui->buttonEditExperimentConfig->setEnabled(enabled);
@@ -161,6 +197,40 @@ void ScanPage::setPlateFormat(WellPlateWidget::PlateFormat format)
             ui->comboPlateFormat->setCurrentIndex(index);
             return;
         }
+    }
+}
+
+QColor ScanPage::currentGroupColor() const
+{
+    return groupColor(ui->comboScanGroup->currentData().toInt());
+}
+
+QColor ScanPage::groupColor(int groupIndex)
+{
+    switch (groupIndex)
+    {
+    case 1:
+        return QColor(112, 166, 238, 125);
+    case 2:
+        return QColor(118, 212, 122, 125);
+    case 3:
+        return QColor(255, 209, 84, 130);
+    case 4:
+        return QColor(226, 132, 230, 125);
+    case 5:
+        return QColor(255, 147, 103, 125);
+    case 6:
+        return QColor(94, 204, 212, 125);
+    case 7:
+        return QColor(176, 150, 245, 125);
+    case 8:
+        return QColor(184, 206, 89, 125);
+    case 9:
+        return QColor(238, 140, 168, 125);
+    case 10:
+        return QColor(142, 186, 224, 125);
+    default:
+        return QColor(112, 166, 238, 125);
     }
 }
 

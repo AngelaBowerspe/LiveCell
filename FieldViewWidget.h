@@ -14,12 +14,11 @@ class FieldViewWidget : public QWidget
 public:
     enum class FieldState
     {
-        Empty,
+        Default,
+        Previewing,
+        Grouped,
         Selected,
-        Acquired,
-        Focused,
-        Scanning,
-        Disabled
+        Completed
     };
     Q_ENUM(FieldState)
 

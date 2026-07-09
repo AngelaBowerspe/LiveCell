@@ -10,7 +10,7 @@ FieldViewWidget::FieldViewWidget(QWidget *parent)
     , m_plateFormat(WellPlateWidget::PlateFormat::Plate24)
     , m_nRows(11)
     , m_nColumns(11)
-    , m_states(m_nRows * m_nColumns, FieldState::Empty)
+    , m_states(m_nRows * m_nColumns, FieldState::Default)
 {
     setMinimumSize(minimumSizeHint());
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -42,7 +42,7 @@ void FieldViewWidget::setPlateFormat(WellPlateWidget::PlateFormat format)
     const QSize size = dimensionsForFormat(m_plateFormat);
     m_nRows = size.height();
     m_nColumns = size.width();
-    m_states.fill(FieldState::Empty, m_nRows * m_nColumns);
+    m_states.fill(FieldState::Default, m_nRows * m_nColumns);
 
     emit plateFormatChanged(m_plateFormat);
     update();
@@ -62,7 +62,7 @@ FieldViewWidget::FieldState FieldViewWidget::fieldState(int row, int column) con
 {
     if (!isValidField(row, column))
     {
-        return FieldState::Empty;
+        return FieldState::Default;
     }
 
     return m_states.at(stateIndex(row, column));
@@ -96,7 +96,7 @@ void FieldViewWidget::clearState(FieldState state)
             FieldState &slot = m_states[stateIndex(row, column)];
             if (slot == state)
             {
-                slot = FieldState::Empty;
+                slot = FieldState::Default;
                 emit fieldStateChanged(row, column, slot);
                 changed = true;
             }
@@ -117,9 +117,9 @@ void FieldViewWidget::clearAll()
         for (int column = 0; column < m_nColumns; ++column)
         {
             FieldState &slot = m_states[stateIndex(row, column)];
-            if (slot != FieldState::Empty)
+            if (slot != FieldState::Default)
             {
-                slot = FieldState::Empty;
+                slot = FieldState::Default;
                 emit fieldStateChanged(row, column, slot);
                 changed = true;
             }
@@ -215,22 +215,19 @@ void FieldViewWidget::drawFieldStates(QPainter *pPainter, const QRectF &rect)
             QColor color(0, 0, 0, 0);
             switch (state)
             {
+            case FieldState::Previewing:
+                color = QColor(80, 155, 255, 70);
+                break;
+            case FieldState::Grouped:
+                color = QColor(112, 166, 238, 90);
+                break;
             case FieldState::Selected:
-                color = QColor(80, 155, 255, 80);
-                break;
-            case FieldState::Acquired:
-                color = QColor(84, 190, 120, 95);
-                break;
-            case FieldState::Focused:
-                color = QColor(40, 122, 255, 120);
-                break;
-            case FieldState::Scanning:
                 color = QColor(252, 205, 72, 120);
                 break;
-            case FieldState::Disabled:
-                color = QColor(180, 180, 180, 70);
+            case FieldState::Completed:
+                color = QColor(84, 190, 120, 120);
                 break;
-            case FieldState::Empty:
+            case FieldState::Default:
                 break;
             }
 

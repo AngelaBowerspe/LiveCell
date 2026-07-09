@@ -1,8 +1,11 @@
 #ifndef WELLPLATEWIDGET_H
 #define WELLPLATEWIDGET_H
 
+#include <QColor>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPoint>
+#include <QRect>
 #include <QRectF>
 #include <QStringList>
 #include <QVector>
@@ -15,13 +18,11 @@ class WellPlateWidget : public QWidget
 public:
     enum class WellState
     {
-        Empty,
+        Default,
+        Previewing,
+        Grouped,
         Selected,
-        Confirmed,
-        Focused,
-        Scanning,
-        Disabled,
-        Error
+        Completed
     };
     Q_ENUM(WellState)
 
@@ -47,15 +48,25 @@ public:
     int columnCount() const;
     QString wellName(int row, int column) const;
 
+    void setSelectionEnabled(bool enabled);
+    bool isSelectionEnabled() const;
+
+    QColor groupColor() const;
+    void setGroupColor(const QColor &color);
+
     WellState wellState(int row, int column) const;
     WellState wellState(const QString &well) const;
     void setWellState(int row, int column, WellState state);
     void setWellState(const QString &well, WellState state);
     void setWellStates(const QStringList &wells, WellState state);
+    void setGroupedWells(const QStringList &wells, const QColor &groupColor);
 
     void clearState(WellState state);
+    void clearSelected();
+    void confirmSelectedAsGroup(const QColor &groupColor);
     void clearAll();
     QStringList wellsByState(WellState state) const;
+    QStringList selectedWells() const;
 
     void setActiveWell(const QString &well);
     QString activeWell() const;
@@ -64,11 +75,14 @@ signals:
     void plateFormatChanged(WellPlateWidget::PlateFormat format);
     void wellClicked(const QString &well);
     void wellStateChanged(const QString &well, WellPlateWidget::WellState state);
+    void wellSelectionChanged();
     void activeWellChanged(const QString &well);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
     struct PlateMetrics
@@ -88,8 +102,12 @@ private:
     bool isValidWell(int row, int column) const;
     bool parseWell(const QString &well, int *row, int *column) const;
     bool hitTest(const QPoint &point, int *row, int *column) const;
+    QRect selectionRect() const;
+    void updateSelectionFromDrag();
     QRectF cellRect(int row, int column) const;
     bool setWellStateInternal(int row, int column, WellState state, bool emitSignal);
+    void setWellBackgroundColor(int row, int column, const QColor &color);
+    QColor wellBackgroundColor(int row, int column, WellState state) const;
     void drawWell(QPainter *pPainter, const QRectF &rect, WellState state);
 
 private:
@@ -97,6 +115,13 @@ private:
     int m_nRows;
     int m_nColumns;
     QVector<WellState> m_states;
+    QVector<QColor> m_backgroundColors;
+    QColor m_groupColor;
+    bool m_bSelectionEnabled;
+    bool m_bDragging;
+    QPoint m_dragStart;
+    QPoint m_dragCurrent;
+    QVector<WellState> m_dragSnapshot;
 };
 
 #endif // WELLPLATEWIDGET_H

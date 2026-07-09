@@ -132,3 +132,38 @@ MVP/接口检查：
 遗留事项：
 - 本轮提交仅包含 `CreateExperimentSubPage.h/.cpp` 和 `CODEX_WORKLOG.md`；当前工作区仍保留用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认单次/循环扫描切换时禁用状态、自动次数和左侧实验信息显示符合预期。
+
+## 2026-07-09 孔板与视野状态接口调整
+
+目标：
+- 将右侧孔板控件整理为 5 种明确状态：默认、预览中、扫描前分组、扫描前已选择、扫描中已完成。
+- 保留按 A1、A2、C4 等孔位名称读写状态的接口，方便外部 Presenter/服务调用。
+- 让扫描页的 `buttonGroupColor` 作为当前分组颜色来源，点击选择孔区后用该颜色显示分组孔区背景。
+- 参考 `Test_2` 中的选择/状态接口，避免照搬冗余实现。
+
+计划：
+- 优先改 `WellPlateWidget` 的状态枚举、批量接口和绘制逻辑，不引入硬件或业务服务。
+- 让分组状态支持背景色和孔内填充色同时显示，避免二者冲突。
+- 为 `FieldViewWidget` 补齐外部查询/批量设置接口，保持视野控件可被后续 Presenter 驱动。
+- 在 `ScanPage` 中只接入轻量 UI 联动：选择孔区、取消选择、确认选择与分组颜色。
+
+MVP/接口检查：
+- View：自绘控件负责状态展示、点击/选择信号和基础状态读写。
+- Presenter/页面协调：本轮 `ScanPage` 仅临时协调按钮与控件状态，后续可迁到 `ScanPresenter`。
+- Model/接口：不新增持久化 model；孔位以 QStringList 暴露。
+- 不做：不接相机、样品台、SDK、线程、真实扫描流程和图像算法。
+
+实际改动：
+- `WellPlateWidget.h/.cpp`：将孔板状态整理为 `Default`、`Previewing`、`Grouped`、`Selected`、`Completed` 五态，保留 `wellName()`、`setWellState()`、`setWellStates()`、`wellsByState()` 等 A1/A2/C4 字符串接口。
+- `WellPlateWidget.h/.cpp`：新增选择模式、拖拽选择、`selectedWells()`、`setGroupedWells()`、`confirmSelectedAsGroup()`、`wellSelectionChanged()`，用于后续外部 Presenter 获取/写入孔区。
+- `WellPlateWidget.cpp`：分组状态绘制支持背景色和孔内填充色同时存在；预览状态只显示背景色，避免和孔内状态冲突。
+- `FieldViewWidget.h/.cpp`：将视野状态枚举同步为同一套五态命名，便于外部统一调用。
+- `scanpage.h/.cpp`：让 `buttonGroupColor` 显示当前分组颜色；点击“选择孔区”进入孔板选择模式，取消选择清除临时选择，确认选择后用当前分组颜色写入孔板分组状态。
+
+验证：
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+
+遗留事项：
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前 `ScanPage` 仍临时承担按钮与控件联动，后续扫描流程稳定后建议迁入 `ScanPresenter`。
+- 需要人工运行界面确认拖拽选择、分组颜色显示、取消/确认选择的交互是否符合预期。
