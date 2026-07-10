@@ -220,16 +220,6 @@ void ScanPage::enablePlateFieldSelection()
 {
     m_bPlateFieldSelectionEnabled = true;
     m_pCreateExperimentSubPage->hide();
-
-    const QString missingWell = firstWellWithoutFields();
-    if (!missingWell.isEmpty())
-    {
-        QMessageBox::warning(this, QStringLiteral("提示"),
-            QStringLiteral("请先为孔位 %1 选择视野。").arg(missingWell));
-        updatePlateFieldControls();
-        return;
-    }
-
     beginWellSelection();
 }
 
@@ -241,21 +231,12 @@ void ScanPage::handleSelectWellsButtonClicked()
     }
     if (m_bFieldSelectionMode)
     {
-        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择视野”确认当前孔位视野。"));
-        return;
+        discardUnconfirmedFieldSelection();
     }
 
-    if (m_bWellSelectionMode)
+    if (!ui->wellPlateWidget->selectedWells().isEmpty())
     {
         confirmWellSelection();
-        return;
-    }
-
-    const QString missingWell = firstWellWithoutFields();
-    if (!missingWell.isEmpty())
-    {
-        QMessageBox::warning(this, QStringLiteral("提示"),
-            QStringLiteral("请先为孔位 %1 选择视野，再选择新的分组孔位。").arg(missingWell));
         return;
     }
 
@@ -294,8 +275,11 @@ void ScanPage::finishPlateFieldSelection()
 
     if (m_bWellSelectionMode)
     {
-        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前孔位。"));
-        return;
+        if (!ui->wellPlateWidget->selectedWells().isEmpty())
+        {
+            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前孔位。"));
+            return;
+        }
     }
     if (m_bFieldSelectionMode)
     {
@@ -376,13 +360,9 @@ void ScanPage::cancelWellSelection()
             ui->wellPlateWidget->clearSelected();
         }
         refreshPlateSelectionFromModel();
-    }
-    else
-    {
-        removeCurrentWellSelection();
+        beginWellSelection();
     }
 
-    beginWellSelection();
     updateCreateExperimentPlateFieldSummary();
     updatePlateFieldControls();
     emit cancelWellSelectionRequested();
@@ -390,15 +370,10 @@ void ScanPage::cancelWellSelection()
 
 void ScanPage::confirmWellSelection()
 {
-    if (!m_bWellSelectionMode)
-    {
-        return;
-    }
-
     const QStringList selectedWells = ui->wellPlateWidget->selectedWells();
     if (selectedWells.isEmpty())
     {
-        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请至少选择一个孔位。"));
+        beginWellSelection();
         return;
     }
 
@@ -591,11 +566,8 @@ void ScanPage::updatePlateFieldControls()
     ui->wellPlateWidget->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning);
     ui->fieldViewWidget->setEnabled(m_bPlateFieldSelectionEnabled && m_bFieldSelectionMode && !m_bScanning);
 
-    const bool canCancelWellSelection = m_bWellSelectionMode
-        || (!m_currentPreviewWell.isEmpty() && m_selectedGroupByWell.contains(m_currentPreviewWell));
-
-    ui->buttonSelectWells->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning && !m_bFieldSelectionMode);
-    ui->buttonCancelWellSelection->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning && canCancelWellSelection);
+    ui->buttonSelectWells->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning);
+    ui->buttonCancelWellSelection->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning);
     ui->buttonSelectFields->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning && m_bFieldSelectionMode);
     ui->buttonCancelFieldSelection->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning && m_bFieldSelectionMode);
     ui->buttonConfirmSelection->setEnabled(m_bPlateFieldSelectionEnabled && !m_bScanning);
@@ -651,28 +623,6 @@ void ScanPage::discardUnconfirmedFieldSelection()
     ui->fieldViewWidget->clearState(FieldViewWidget::FieldState::Selected);
     ui->fieldViewWidget->setSelectionEnabled(false);
     m_bFieldSelectionMode = false;
-}
-
-bool ScanPage::removeCurrentWellSelection()
-{
-    if (m_currentPreviewWell.isEmpty()
-        || !m_selectedGroupByWell.contains(m_currentPreviewWell))
-    {
-        return false;
-    }
-
-    const QString removedWell = m_currentPreviewWell;
-    m_selectedGroupByWell.remove(removedWell);
-    m_selectedFieldsByWell.remove(removedWell);
-    m_currentPreviewWell.clear();
-    m_bFieldSelectionMode = false;
-
-    ui->fieldViewWidget->setSelectionEnabled(false);
-    ui->fieldViewWidget->clearAll();
-    ui->wellPlateWidget->setActiveWell(QString());
-    ui->wellPlateWidget->clearAll();
-    refreshPlateSelectionFromModel();
-    return true;
 }
 
 void ScanPage::restoreFieldsForActiveWell()

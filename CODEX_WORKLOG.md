@@ -390,3 +390,40 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 当前选择流程仍由 `ScanPage` 协调，后续若规则继续增加，建议迁移到 `ScanPresenter` 或独立轻量选择 model。
 - 需要人工运行界面确认：选中已分组孔位后点“取消选择”能删除该孔位；未确认视野时点击其他孔位不弹窗且临时视野会清空；取消后仍能继续直接选择孔区/视野。
+
+## 2026-07-10 孔区确认与取消解耦
+
+目标：
+- “选择孔区”和“取消选择”不再互斥，也不再作为彼此的前置条件。
+- “选择孔区”始终可点击；有临时鼠标选中的孔位时，将这些孔位提交到当前分组。
+- “取消选择”只移除当前鼠标临时选中的孔位，不再删除当前激活孔位。
+- 当前分组里存在未选择视野的孔位时，仍允许继续选择同一分组的新孔位。
+- 删除前一轮为了删除当前激活孔位引入的冗余逻辑。
+
+计划：
+- 精简 `ScanPage` 的孔区按钮状态机，去掉同组继续选孔位时的缺失视野拦截。
+- 保留跨分组和最终确定前的视野完整性校验。
+- 移除不再符合语义的 `removeCurrentWellSelection()`。
+- 使用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：自绘孔板仍只负责临时选中和状态显示。
+- Presenter/页面协调：`ScanPage` 继续临时协调按钮语义和选择缓存。
+- Model/接口：沿用孔位名到分组、孔位名到视野集合的轻量缓存。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+- `scanpage.cpp`：`enablePlateFieldSelection()` 直接进入孔区选择模式，不再因已有孔位未选视野而阻止进入。
+- `scanpage.cpp`：`handleSelectWellsButtonClicked()` 去掉缺失视野拦截；按钮始终可点击，有临时选中孔位时提交到当前分组，没有临时选中时仅开启孔区选择模式。
+- `scanpage.cpp`：`cancelWellSelection()` 只处理当前临时选中的孔位；没有临时选中孔位时不再删除当前激活孔位，也不再清视野。
+- `scanpage.cpp`：`updatePlateFieldControls()` 让“选择孔区”和“取消选择”在孔板选择流程中保持可点击，不再互斥。
+- `scanpage.h/.cpp`：移除不再符合语义的 `removeCurrentWellSelection()` 冗余逻辑。
+
+验证：
+- `git diff --check -- scanpage.cpp scanpage.h CODEX_WORKLOG.md`：通过。
+- 源码外 Release 增量构建：`cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake`：通过。
+
+遗留事项：
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 跨分组和最终确定前仍保留“已选孔位必须有视野”的校验；同一分组内允许先继续添加孔位。
+- 需要人工运行界面确认：A1 未选视野时仍可继续在分组 1 选择 A3/B1 等孔位；“取消选择”只移除当前临时选中孔位。

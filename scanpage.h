@@ -65,7 +65,6 @@ private:
     void setPlateFormat(WellPlateWidget::PlateFormat format);
     bool buildMockScanPlan();
     void discardUnconfirmedFieldSelection();
-    bool removeCurrentWellSelection();
     void restoreFieldsForActiveWell();
     void showCreateExperimentSelectionPage();
     void updateCreateExperimentPlateFieldSummary();
