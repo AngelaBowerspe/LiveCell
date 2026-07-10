@@ -425,6 +425,12 @@ void WellPlateWidget::mouseReleaseEvent(QMouseEvent *event)
         return;
     }
 
+    if (!m_bDragging)
+    {
+        event->accept();
+        return;
+    }
+
     m_dragCurrent = event->pos();
     updateSelectionFromDrag();
     m_bDragging = false;
@@ -659,7 +665,7 @@ QColor WellPlateWidget::wellBackgroundColor(int row, int column, WellState state
     }
     if (state == WellState::Selected)
     {
-        return m_groupColor;
+        return QColor(82, 152, 245, 105);
     }
     return QColor(0, 0, 0, 0);
 }
@@ -674,7 +680,7 @@ void WellPlateWidget::drawWell(QPainter *pPainter, const QRectF &rect, WellState
     case WellState::Grouped:
         break;
     case WellState::Selected:
-        borderColor = QColor(230, 174, 35);
+        borderColor = QColor(40, 122, 255);
         break;
     case WellState::Scanning:
         fillColor = QColor(255, 224, 91);

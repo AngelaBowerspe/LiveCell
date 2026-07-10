@@ -134,6 +134,8 @@ void ScanPage::initConnections()
     });
     connect(ui->wellPlateWidget, &WellPlateWidget::wellClicked,
         this, &ScanPage::handleWellClicked);
+    connect(ui->wellPlateWidget, &WellPlateWidget::wellSelectionChanged,
+        this, &ScanPage::handleWellSelectionChanged);
     connect(m_pMockScanTimer, &QTimer::timeout,
         this, &ScanPage::runNextMockScanStep);
 
@@ -435,6 +437,13 @@ void ScanPage::handleWellClicked(const QString &well)
         return;
     }
 
+    if (!ui->wellPlateWidget->selectedWells().isEmpty())
+    {
+        QMessageBox::warning(this, QStringLiteral("提示"),
+            QStringLiteral("请先点击“选择孔区”确认当前孔位，或点击“取消选择”清除当前孔位。"));
+        return;
+    }
+
     if (m_bFieldSelectionMode)
     {
         discardUnconfirmedFieldSelection();
@@ -448,6 +457,25 @@ void ScanPage::handleWellClicked(const QString &well)
     }
 
     beginFieldSelectionForWell(well);
+}
+
+void ScanPage::handleWellSelectionChanged()
+{
+    if (!m_bPlateFieldSelectionEnabled || !m_bFieldSelectionMode)
+    {
+        return;
+    }
+
+    if (ui->wellPlateWidget->selectedWells().isEmpty())
+    {
+        return;
+    }
+
+    discardUnconfirmedFieldSelection();
+    m_currentPreviewWell.clear();
+    m_bWellSelectionMode = true;
+    ui->wellPlateWidget->setActiveWell(QString());
+    updatePlateFieldControls();
 }
 
 void ScanPage::toggleScan()

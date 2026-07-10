@@ -56,6 +56,7 @@ private:
     void cancelFieldSelection();
     void confirmFieldSelection();
     void handleWellClicked(const QString &well);
+    void handleWellSelectionChanged();
     void toggleScan();
     void runNextMockScanStep();
     void stopMockScan();

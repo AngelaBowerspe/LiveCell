@@ -463,3 +463,37 @@ MVP/接口检查：
 遗留事项：
 - 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面重点确认：进入第 4 页后不点“选择孔区”也能直接鼠标选孔位；“选择孔区”只确认临时选中的孔位；“取消选择”只清除临时选中的孔位；已分组孔位点击后进入对应视野选择。
+
+## 2026-07-10 孔区确认状态与视野入口修正
+
+目标：
+- 未确认的临时孔区不能进入视野选择。
+- 点击“取消选择”后，临时孔区必须回到未选中状态。
+- 恢复临时孔区的 Windows 风格蓝色选区显示，避免和分组颜色混淆。
+- 点击已确认孔位进入视野选择时，不再被鼠标释放阶段的旧拖拽逻辑干扰。
+
+计划：
+- 调整 `WellPlateWidget` 的鼠标释放逻辑，只在真实拖拽/临时选择时更新选择。
+- 调整 `WellPlateWidget` 的 `Selected` 绘制为蓝色临时选区，`Grouped` 保持当前分组色。
+- 在 `ScanPage` 中监听临时孔区选择变化，若正在选择视野则清掉未确认视野并关闭视野选择。
+- 使用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：孔板控件只负责状态显示、鼠标临时选择和已确认孔位点击信号。
+- Presenter/页面协调：`ScanPage` 负责“临时孔区选择会关闭视野选择”的页面状态联动。
+- Model/接口：继续用孔位名 `A1/A2` 和视野索引集合传递数据，不接真实硬件。
+- 不做：不接相机、样品台、SDK、线程或图像算法。
+
+实际改动：
+- `WellPlateWidget.cpp`：鼠标释放阶段只有在本次确实处于拖拽/临时选择时才更新选择，避免点击已确认孔位后被旧拖拽快照覆盖。
+- `WellPlateWidget.cpp`：`Selected` 临时孔区恢复为蓝色背景和蓝色圆环，`Grouped` 确认孔区继续使用当前分组颜色。
+- `scanpage.h/.cpp`：新增 `handleWellSelectionChanged()`，在视野选择过程中一旦出现未确认孔区，自动关闭视野选择、清空当前预览孔位，避免给未确认孔区选视野。
+- `scanpage.cpp`：点击已确认孔位前若还存在临时未确认孔区，会提示用户先确认孔区或取消选择，不进入视野选择。
+
+验证：
+- `git diff --check -- WellPlateWidget.cpp scanpage.cpp scanpage.h CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾转换提示。
+- `cmd.exe /c "call C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat && cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake"`：通过。
+
+遗留事项：
+- 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认：未确认蓝色孔区无法进入视野选择；取消选择后蓝色孔区恢复未选中；点击已确认孔位可以进入视野选择。
