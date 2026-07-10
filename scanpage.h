@@ -9,10 +9,9 @@
 #include <QMap>
 #include <QSet>
 #include <QStringList>
+#include <QTimer>
 #include <QVector>
 #include <QWidget>
-
-class QTimer;
 
 namespace Ui {
 class ScanPage;
@@ -53,7 +52,6 @@ private:
     void beginWellSelection();
     void cancelWellSelection();
     void confirmWellSelection();
-    void beginFieldSelection();
     void beginFieldSelectionForWell(const QString &well);
     void cancelFieldSelection();
     void confirmFieldSelection();
@@ -65,7 +63,6 @@ private:
     void updatePlateFieldControls();
     void setExperimentActionEnabled(bool enabled);
     void setPlateFormat(WellPlateWidget::PlateFormat format);
-    bool hasSelectedFieldsForActiveWell() const;
     bool buildMockScanPlan();
     void restoreFieldsForActiveWell();
     void showCreateExperimentSelectionPage();
@@ -94,6 +91,7 @@ private:
     QMap<QString, QSet<int>> m_selectedFieldsByWell;
     QMap<QString, int> m_selectedGroupByWell;
     QPair<QString, int> m_currentScanningTarget;
+    int m_nCurrentGroupIndex;
 };
 
 #endif // SCANPAGE_H
