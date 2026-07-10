@@ -427,3 +427,39 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 跨分组和最终确定前仍保留“已选孔位必须有视野”的校验；同一分组内允许先继续添加孔位。
 - 需要人工运行界面确认：A1 未选视野时仍可继续在分组 1 选择 A3/B1 等孔位；“取消选择”只移除当前临时选中孔位。
+
+## 2026-07-10 孔板鼠标选择常驻化
+
+目标：
+- 去掉“必须点一次选择孔区才能开始鼠标选择、再点一次才确认”的双态逻辑。
+- 孔区选择流程打开后，鼠标选择孔区常驻可用。
+- `buttonSelectWells` 只确认当前鼠标临时选择的孔区。
+- `buttonCancelWellSelection` 只取消当前鼠标临时选择的孔区。
+- 已分组孔位点击后用于进入该孔位视野选择，不再被孔区临时选择逻辑吞掉。
+
+计划：
+- 调整 `WellPlateWidget`：选择可用时，未分组孔位参与临时选择，已分组/已完成孔位发出点击信号给页面进入视野选择。
+- 调整 `ScanPage`：确认孔区后继续保持孔板选择可用；确认视野后回到孔板选择常驻状态。
+- 删除取消孔区里的分组删除分支，保持取消按钮单一职责。
+- 使用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：`WellPlateWidget` 只区分鼠标输入语义和状态显示。
+- Presenter/页面协调：`ScanPage` 只协调确认/取消和缓存写入。
+- Model/接口：继续沿用孔位名和视野索引缓存，不新增业务服务。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+- `WellPlateWidget.cpp`：鼠标选择启用后，未分组孔位直接参与临时选择；已分组/已完成孔位不再被临时选择覆盖，而是发出点击信号给页面进入该孔位视野选择。
+- `WellPlateWidget.cpp`：拖拽临时选择时跳过已分组孔位，避免把已确认分组孔位重新变成临时选中状态。
+- `scanpage.cpp`：`buttonSelectWells` 只确认当前鼠标临时选中的孔区；没有临时选中孔位时只提示用户先用鼠标选择，不再进入/重启孔区选择模式。
+- `scanpage.cpp`：`buttonCancelWellSelection` 只清除当前临时选中的孔区，不删除已分组孔位、不清视野、不切换模式。
+- `scanpage.cpp`：确认孔区或确认视野后保持孔板鼠标选择可用，用户可继续直接点/拖选择同组新孔位。
+
+验证：
+- `git diff --check -- scanpage.cpp WellPlateWidget.cpp CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾转换提示。
+- `cmd.exe /c "call C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat && cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake"`：通过。
+
+遗留事项：
+- 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面重点确认：进入第 4 页后不点“选择孔区”也能直接鼠标选孔位；“选择孔区”只确认临时选中的孔位；“取消选择”只清除临时选中的孔位；已分组孔位点击后进入对应视野选择。

@@ -375,7 +375,19 @@ void WellPlateWidget::mousePressEvent(QMouseEvent *event)
         return;
     }
 
-    if (m_bSelectionEnabled)
+    int row = -1;
+    int column = -1;
+    if (!hitTest(event->pos(), &row, &column))
+    {
+        QWidget::mousePressEvent(event);
+        return;
+    }
+
+    const WellState state = wellState(row, column);
+    if (m_bSelectionEnabled
+        && state != WellState::Grouped
+        && state != WellState::Completed
+        && state != WellState::Scanning)
     {
         m_bDragging = true;
         m_dragStart = event->pos();
@@ -383,14 +395,6 @@ void WellPlateWidget::mousePressEvent(QMouseEvent *event)
         m_dragSnapshot = m_states;
         updateSelectionFromDrag();
         event->accept();
-        return;
-    }
-
-    int row = -1;
-    int column = -1;
-    if (!hitTest(event->pos(), &row, &column))
-    {
-        QWidget::mousePressEvent(event);
         return;
     }
 
@@ -569,6 +573,7 @@ void WellPlateWidget::updateSelectionFromDrag()
         {
             const int index = stateIndex(row, column);
             if (nextStates.at(index) == WellState::Completed
+                || nextStates.at(index) == WellState::Grouped
                 || nextStates.at(index) == WellState::Scanning)
             {
                 continue;
