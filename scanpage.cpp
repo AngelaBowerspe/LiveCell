@@ -573,7 +573,8 @@ bool ScanPage::buildMockScanPlan()
     m_mockScanPlan.clear();
     for (const QString &well : groupedWells())
     {
-        const QSet<int> fields = m_selectedFieldsByWell.value(well);
+        QList<int> fields = m_selectedFieldsByWell.value(well).values();
+        std::sort(fields.begin(), fields.end());
         for (const int field : fields)
         {
             m_mockScanPlan.append(qMakePair(well, field));

@@ -285,3 +285,33 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 当前选择模型仍暂存在 `ScanPage`，后续建议迁移到 `ScanPresenter` 或独立轻量 model。
 - 需要人工运行界面确认多分组 A1/A2/A3 + B2/B3 这类场景汇总能显示 5 个孔位，且左侧按钮只在完整创建后解锁。
+
+## 2026-07-10 视野扫描顺序固定
+
+目标：
+- 固定每个孔位内的视野扫描顺序为从左到右、从上到下。
+- 避免 `QSet` 无序迭代导致模拟扫描顺序不稳定。
+
+计划：
+- 只调整 `ScanPage::buildMockScanPlan()` 的模拟扫描计划生成。
+- 保持孔位顺序使用孔板顺序；视野索引排序后再加入扫描计划。
+- 不改自绘控件、不接真实硬件、不引入新 model。
+
+MVP/接口检查：
+- View：不改。
+- Presenter/页面协调：`ScanPage` 临时生成稳定模拟扫描计划。
+- Model/接口：继续使用视野索引，按索引排序表达从左到右、从上到下。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+- `scanpage.cpp`：在 `buildMockScanPlan()` 中将当前孔位的视野索引从 `QSet` 转为 `QList` 后排序，再加入模拟扫描计划。
+- 视野索引仍使用 `row * columnCount + column` 语义，因此排序后扫描顺序稳定为从左到右、从上到下。
+
+验证：
+- `uic scanpage.ui -o ui_scanpage.h`：通过。
+- `uic CreateExperimentSubPage.ui -o ui_CreateExperimentSubPage.h`：通过。
+- MSVC + qmake + nmake Release：通过完整编译和链接。
+
+遗留事项：
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前仍是模拟扫描计划；真实扫描执行层接入时也需要沿用同一排序规则。
