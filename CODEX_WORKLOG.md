@@ -528,3 +528,32 @@ MVP/接口检查：
 遗留事项：
 - 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认：点击已确认孔位后按“取消选择”，该孔位恢复未选中，左侧/弹窗汇总不再包含该孔位和它的视野。
+
+## 2026-07-10 取消选择不清临时孔位
+
+目标：
+- `buttonCancelWellSelection` 不再把 `Selected` 临时孔位改回未选中状态。
+- `buttonCancelWellSelection` 只处理当前已确认/激活孔位的取消。
+
+计划：
+- 精简 `ScanPage::cancelWellSelection()`，删除 `selectedWells()` 分支。
+- 保留 active well 的分组缓存和视野缓存清除逻辑。
+- 使用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：`WellPlateWidget` 的临时选择状态不由取消按钮直接清理。
+- Presenter/页面协调：`ScanPage` 只根据 active well 移除业务缓存并写回 UI。
+- Model/接口：继续使用孔位名和视野索引集合，不接真实硬件。
+- 不做：不接相机、样品台、SDK、线程或图像算法。
+
+实际改动：
+- `scanpage.cpp`：删除 `cancelWellSelection()` 中清理 `ui->wellPlateWidget->selectedWells()` 的分支。
+- `scanpage.cpp`：`cancelWellSelection()` 只根据 `activeWell()` 删除已确认孔位、分组缓存和视野缓存。
+
+验证：
+- `git diff --check -- scanpage.cpp CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾转换提示。
+- `cmd.exe /c "call C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat && cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake"`：通过。
+
+遗留事项：
+- 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认：蓝色临时孔位存在时点击“取消选择”不会被清除；点击已确认 active well 后点击“取消选择”仍会删除该已确认孔位。

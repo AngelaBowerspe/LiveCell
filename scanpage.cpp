@@ -332,29 +332,20 @@ void ScanPage::beginWellSelection()
 
 void ScanPage::cancelWellSelection()
 {
-    const QStringList selectedWells = ui->wellPlateWidget->selectedWells();
-    if (!selectedWells.isEmpty())
+    const QString activeWell = ui->wellPlateWidget->activeWell();
+    if (!activeWell.isEmpty() && m_selectedGroupByWell.contains(activeWell))
     {
-        ui->wellPlateWidget->clearSelected();
-        refreshPlateSelectionFromModel();
-    }
-    else
-    {
-        const QString activeWell = ui->wellPlateWidget->activeWell();
-        if (!activeWell.isEmpty() && m_selectedGroupByWell.contains(activeWell))
+        m_selectedGroupByWell.remove(activeWell);
+        m_selectedFieldsByWell.remove(activeWell);
+        if (m_currentPreviewWell == activeWell)
         {
-            m_selectedGroupByWell.remove(activeWell);
-            m_selectedFieldsByWell.remove(activeWell);
-            if (m_currentPreviewWell == activeWell)
-            {
-                m_currentPreviewWell.clear();
-            }
-            ui->wellPlateWidget->clearWell(activeWell);
-            ui->fieldViewWidget->clearAll();
-            ui->fieldViewWidget->setSelectionEnabled(false);
-            m_bFieldSelectionMode = false;
-            m_bWellSelectionMode = true;
+            m_currentPreviewWell.clear();
         }
+        ui->wellPlateWidget->clearWell(activeWell);
+        ui->fieldViewWidget->clearAll();
+        ui->fieldViewWidget->setSelectionEnabled(false);
+        m_bFieldSelectionMode = false;
+        m_bWellSelectionMode = true;
     }
 
     updateCreateExperimentPlateFieldSummary();
