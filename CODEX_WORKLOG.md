@@ -353,3 +353,40 @@ MVP/接口检查：
 - 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 当前孔区/视野选择流程仍由 `ScanPage` 临时协调；若后续规则继续增多，建议迁移到 `ScanPresenter`。
 - 需要人工运行界面确认：第 4 页点击选择后浮层隐藏、孔区可直接鼠标选择、确认孔区不自动跳视野、点击孔位后再选择视野、未完成视野时分组/最终确认提示。
+
+## 2026-07-10 孔区与视野取消选择行为修正
+
+目标：
+- 点击已确认孔位后，“取消选择”可以删除当前孔位及其视野缓存。
+- 用户切换到其他孔位时，如果当前视野只是临时选择且未点击“选择视野”确认，则自动清除，不弹窗提示。
+- 用户点击“取消选择”后仍保持当前选择模式，不需要再点击“选择孔区”或“选择视野”才能继续选择。
+- 不恢复“自动跳转到下一个孔位”的逻辑，孔位切换继续由用户鼠标决定。
+
+计划：
+- 继续只调整 `ScanPage` 的 UI 状态协调，不引入真实硬件、线程或 SDK。
+- 让孔区取消优先清临时选中；没有临时选中时删除当前激活孔位。
+- 让视野切换和取消只清未确认临时选择，并保持视野选择模式可继续操作。
+- 使用源码外 Release build + 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：自绘控件仍负责展示和鼠标输入。
+- Presenter/页面协调：`ScanPage` 临时维护孔位/视野选择缓存和按钮状态。
+- Model/接口：仍使用孔位名和视野索引缓存，不新增持久化 model。
+- 不做：不接相机、样品台、SDK、线程或真实扫描流程。
+
+实际改动：
+- `scanpage.cpp`：切换分组时若存在未确认视野，先丢弃临时视野状态，再按“是否有孔位缺视野”统一校验。
+- `scanpage.cpp`：点击其他已确认孔位时，如果当前孔位有未确认视野选择，自动清除临时视野并切换到新孔位，不再弹出“请先点击选择视野”的提示。
+- `scanpage.cpp`：`buttonCancelWellSelection` 现在会优先清除当前临时孔位；若临时孔位本身已在分组模型中，则从分组和视野缓存中删除。
+- `scanpage.cpp`：没有临时孔位时，`buttonCancelWellSelection` 会删除当前激活孔位及其视野缓存，然后继续保持孔区选择模式。
+- `scanpage.cpp`：`buttonCancelFieldSelection` 保持当前视野选择模式可继续操作，不需要重新点击“选择视野”才能继续选择。
+- `scanpage.cpp/.h`：新增 `discardUnconfirmedFieldSelection()` 和 `removeCurrentWellSelection()`，把临时视野丢弃和当前孔位删除拆成明确的页面协调方法。
+
+验证：
+- `git diff --check -- scanpage.cpp scanpage.h CODEX_WORKLOG.md`：通过。
+- 源码外 Release 增量构建：`cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake`：通过。
+
+遗留事项：
+- 本轮提交不包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 当前选择流程仍由 `ScanPage` 协调，后续若规则继续增加，建议迁移到 `ScanPresenter` 或独立轻量选择 model。
+- 需要人工运行界面确认：选中已分组孔位后点“取消选择”能删除该孔位；未确认视野时点击其他孔位不弹窗且临时视野会清空；取消后仍能继续直接选择孔区/视野。
