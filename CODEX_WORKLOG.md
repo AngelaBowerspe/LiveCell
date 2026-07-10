@@ -557,3 +557,35 @@ MVP/接口检查：
 遗留事项：
 - 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认：蓝色临时孔位存在时点击“取消选择”不会被清除；点击已确认 active well 后点击“取消选择”仍会删除该已确认孔位。
+
+## 2026-07-10 防止未确认孔位误激活已确认孔位
+
+目标：
+- 存在蓝色临时孔位时，点击其他已确认孔位不能把该已确认孔位设为 active。
+- 后续点击“确定”或“取消选择”不能误影响未操作的已确认孔位。
+- 文案不再提示用“取消选择”清理蓝色临时孔位，避免与最新按钮语义冲突。
+
+计划：
+- 调整 `WellPlateWidget`：点击孔位只发 `wellClicked`，不自行设置 active。
+- 保留 `ScanPage::beginFieldSelectionForWell()` 作为唯一激活已确认孔位的入口。
+- 精简临时孔位阻断提示文案。
+- 使用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：`WellPlateWidget` 只发用户点击信号，不决定页面业务状态。
+- Presenter/页面协调：`ScanPage` 负责校验临时孔位、决定是否激活已确认孔位。
+- Model/接口：继续使用孔位名和视野索引集合，不接真实硬件。
+- 不做：不接相机、样品台、SDK、线程或图像算法。
+
+实际改动：
+- `WellPlateWidget.cpp`：点击已确认孔位时只发出 `wellClicked`，不再由控件自行调用 `setActiveWell()`。
+- `scanpage.cpp`：保持 `beginFieldSelectionForWell()` 作为唯一激活已确认孔位的入口，只有临时孔位校验通过后才会激活孔位。
+- `scanpage.cpp`：存在蓝色临时孔位时的提示改为只要求点击“选择孔区”确认当前蓝色孔位，不再提示用“取消选择”清除。
+
+验证：
+- `git diff --check -- WellPlateWidget.cpp scanpage.cpp CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾转换提示。
+- `cmd.exe /c "call C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat && cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake"`：通过。
+
+遗留事项：
+- 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认：蓝色临时孔位存在时，点击其他绿色已确认孔位不会把它设为 active；之后点击“确定”或“取消选择”不会误影响该绿色孔位。

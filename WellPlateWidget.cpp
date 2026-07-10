@@ -431,7 +431,6 @@ void WellPlateWidget::mousePressEvent(QMouseEvent *event)
 
     const QString well = wellName(row, column);
     emit wellClicked(well);
-    setActiveWell(well);
     event->accept();
 }
 

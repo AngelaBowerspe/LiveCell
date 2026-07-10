@@ -255,7 +255,7 @@ void ScanPage::handleSelectFieldsButtonClicked()
     {
         if (!ui->wellPlateWidget->selectedWells().isEmpty())
         {
-            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前孔位。"));
+            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前蓝色孔位。"));
             return;
         }
     }
@@ -279,7 +279,7 @@ void ScanPage::finishPlateFieldSelection()
     {
         if (!ui->wellPlateWidget->selectedWells().isEmpty())
         {
-            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前孔位。"));
+            QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前蓝色孔位。"));
             return;
         }
     }
@@ -448,8 +448,7 @@ void ScanPage::handleWellClicked(const QString &well)
 
     if (!ui->wellPlateWidget->selectedWells().isEmpty())
     {
-        QMessageBox::warning(this, QStringLiteral("提示"),
-            QStringLiteral("请先点击“选择孔区”确认当前孔位，或点击“取消选择”清除当前孔位。"));
+        QMessageBox::warning(this, QStringLiteral("提示"), QStringLiteral("请先点击“选择孔区”确认当前蓝色孔位。"));
         return;
     }
 
