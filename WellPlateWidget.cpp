@@ -226,6 +226,37 @@ void WellPlateWidget::clearState(WellState state)
     }
 }
 
+void WellPlateWidget::clearWell(const QString &well)
+{
+    int row = -1;
+    int column = -1;
+    if (!parseWell(well, &row, &column))
+    {
+        return;
+    }
+
+    const int index = stateIndex(row, column);
+    bool changed = false;
+    if (m_backgroundColors.at(index).alpha() > 0)
+    {
+        setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
+        changed = true;
+    }
+    changed |= setWellStateInternal(row, column, WellState::Default, true);
+    if (m_activeWell == wellName(row, column))
+    {
+        m_activeWell.clear();
+        emit activeWellChanged(QString());
+        changed = true;
+    }
+
+    if (changed)
+    {
+        emit wellSelectionChanged();
+        update();
+    }
+}
+
 void WellPlateWidget::clearSelected()
 {
     clearState(WellState::Selected);

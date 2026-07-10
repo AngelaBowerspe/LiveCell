@@ -497,3 +497,34 @@ MVP/接口检查：
 遗留事项：
 - 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认：未确认蓝色孔区无法进入视野选择；取消选择后蓝色孔区恢复未选中；点击已确认孔位可以进入视野选择。
+
+## 2026-07-10 取消已确认孔位
+
+目标：
+- 当前鼠标点中的已确认孔位，点击“取消选择”后应从分组中移除并恢复未选中状态。
+- 删除该孔位对应的视野缓存，避免后续汇总和扫描仍包含它。
+- 保留“有蓝色临时孔位时，取消选择只清蓝色临时孔位”的优先级。
+
+计划：
+- 在 `WellPlateWidget` 暴露单孔位清除接口，清状态同时清背景色。
+- 在 `ScanPage::cancelWellSelection()` 中，当没有临时孔位时处理当前 active well。
+- 更新工作记录并用源码外 Release 增量 `nmake` 验证。
+
+MVP/接口检查：
+- View：`WellPlateWidget` 提供按孔位名清状态的接口，不保存业务分组关系。
+- Presenter/页面协调：`ScanPage` 负责移除分组缓存和视野缓存，并写回 UI。
+- Model/接口：继续使用 `A1/A2` 孔位名和视野索引集合，不接真实硬件。
+- 不做：不接相机、样品台、SDK、线程或图像算法。
+
+实际改动：
+- `WellPlateWidget.h/.cpp`：新增 `clearWell(const QString &well)`，按 `A1/A2` 这类孔位名清除单个孔位状态、背景色和激活状态。
+- `scanpage.cpp`：`cancelWellSelection()` 保持临时蓝色孔区优先清除；没有临时孔区时，移除当前 active well 的分组缓存和视野缓存，并将该孔位恢复为未选中。
+- `scanpage.cpp`：取消已确认孔位后关闭视野选择并清空视野控件，避免被删除孔位继续显示旧视野。
+
+验证：
+- `git diff --check -- WellPlateWidget.h WellPlateWidget.cpp scanpage.cpp CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾转换提示。
+- `cmd.exe /c "call C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat && cd /d D:\qt\QtMingMe\LiveCell_build_release && nmake"`：通过。
+
+遗留事项：
+- 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
+- 需要人工运行界面确认：点击已确认孔位后按“取消选择”，该孔位恢复未选中，左侧/弹窗汇总不再包含该孔位和它的视野。

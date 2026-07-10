@@ -63,6 +63,7 @@ public:
     void setGroupedWells(const QStringList &wells, const QColor &groupColor);
 
     void clearState(WellState state);
+    void clearWell(const QString &well);
     void clearSelected();
     void confirmSelectedAsGroup(const QColor &groupColor);
     void clearAll();
