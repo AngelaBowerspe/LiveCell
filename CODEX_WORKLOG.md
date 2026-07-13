@@ -833,6 +833,95 @@ Verification:
 - Qt 6.5.3 MSVC `uic SystemSettingsSubPage.ui`: passed; generated temporary header was removed by explicit file path.
 - Verified no static `setText(QStringLiteral(...))`, `setItemText`, or `setWindowTitle` calls remain for UI translation.
 - `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
+
+Commit scope:
+- Commit only `SystemSettingsSubPage.ui`, `resources.qrc`, `styles/app.qss`, and this worklog.
+- Exclude user-owned `datawidget.ui` and untracked `AENGRTS.md`.
+- Exclude unrelated project-file ordering and newline-only changes in `LiveCell.vcxproj` and `LiveCell.vcxproj.filters`.
+- No full build was run, per the current small-change workflow.
+
+# 2026-07-13 QSS Smoke Test
+
+Goal:
+- Add a small visible QSS style so the existing resource-based stylesheet loading can be verified manually.
+
+Plan:
+- Add simple button, checked-button, line-edit, and combo-box rules to `styles/app.qss`.
+- Keep the change limited to presentation styling; do not change UI data flow or signal wiring.
+
+MVP/interface check:
+- View/data: no data is read or written.
+- Signal/interface: no signal or service interface changes.
+- Page coordination: no Presenter or `MainWindow` logic changes.
+
+Actual:
+- `styles/app.qss`: added simple button, hover, checked-button, line-edit, and combo-box rules for a visible stylesheet smoke test.
+- Existing `main.cpp`, `resources.qrc`, and `LiveCell.pro` resource loading was left unchanged.
+
+Verification:
+- QSS smoke checks for required selectors: passed.
+- Confirmed `main.cpp` loads `:/styles/app.qss` and `resources.qrc` includes `styles/app.qss`.
+- `git diff --check -- styles/app.qss CODEX_WORKLOG.md`: passed; only existing LF/CRLF conversion warnings were reported.
+- No full build was run for this presentation-only smoke-test change.
+
+# 2026-07-13 QSS Resource Path Fix
+
+Goal:
+- Fix the existing QSS resource path so `main.cpp` can load `:/styles/app.qss`.
+
+Plan:
+- Align the `resources.qrc` prefix with the path already used by `main.cpp`.
+- Preserve the current `styles/app.qss` test rules and do not change widget logic.
+
+MVP/interface check:
+- No View data is read or written.
+- No signal, Presenter, Model, or device interface changes.
+
+Actual:
+- `resources.qrc`: changed the qresource prefix from `/styles` to `/`, making the embedded path `:/styles/app.qss` match `main.cpp`.
+- Preserved the existing test rules in `styles/app.qss`.
+
+Verification:
+- Qt 6.5.3 `rcc` output: confirmed `:/styles/app.qss` is embedded.
+- Qt 6.5.3 qmake + MSVC 2022 `nmake /f Makefile.Release`: passed; qrc was regenerated and linked.
+- Confirmed the old `debug/qrc_resources.cpp` still contains the previous wrong `:/styles/styles/app.qss` path; the rebuilt `build-msvc/release` resource contains the corrected path.
+- MSVC 2022 `nmake /f Makefile.Debug`: passed; Debug qrc and executable were regenerated with the corrected path.
+- Visual Studio `MSBuild LiveCell.sln /t:Build /p:Configuration=Debug /p:Platform=x64`: passed with 0 warnings and 0 errors; root `debug\LiveCell.exe` was rebuilt.
+- `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
+
+# 2026-07-13 Settings Form Alignment Follow-up
+
+Goal:
+- Align settings-page labels and line edits consistently, especially on the monitoring parameters page.
+
+Plan:
+- Configure the existing `QFormLayout` label columns in `SystemSettingsSubPage.ui` to use right and vertical-center alignment.
+- Keep the change limited to View layout properties; do not change settings data flow or device-facing interfaces.
+
+MVP/interface check:
+- View: only the `.ui` layout alignment is changed.
+- Signal/interface: no signal or `SystemSettings` interface changes.
+- Page coordination: no Presenter or `MainWindow` changes.
+
+Actual:
+- `SystemSettingsSubPage.ui`: restored the named `titleBar` QWidget wrapper required by `SystemSettingsSubPage.cpp` for the drag event filter.
+- `SystemSettingsSubPage.ui`: changed all visible settings text to single-line UTF-8 strings so QLabel text does not gain unintended line height.
+- `SystemSettingsSubPage.ui`: kept the four `QFormLayout` label columns right-aligned and vertically centered; field groups continue to use their existing `QHBoxLayout` rows.
+
+Verification:
+- Qt 6.5.3 `uic SystemSettingsSubPage.ui`: passed; generated header contains `titleBar`.
+- MSVC 2022 developer environment + Qt 6.5.3 qmake + `nmake /f Makefile.Release`: passed compile and link.
+- UTF-8 XML inspection: passed; no visible widget text remains multiline and all four form layouts have the requested label alignment.
+- `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
+- User-modified `datawidget.ui` and untracked `AENGRTS.md` were not edited.
+
+Actual:
+- `SystemSettingsSubPage.ui`: set `labelAlignment` to `Qt::AlignRight|Qt::AlignVCenter` on the basic, plate, scale, and monitoring `QFormLayout` instances.
+
+Verification:
+- UTF-8 XML parsing and layout-property inspection: passed; all four form layouts have the requested alignment.
+- Qt 6.5.3 MSVC `uic SystemSettingsSubPage.ui`: passed; generated temporary header was removed by explicit file path.
+- `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
 - No full build was run, per the current small-change workflow.
 
 Open:

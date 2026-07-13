@@ -1,1 +1,28 @@
+QPushButton {
+        background-color: #ffcccc;
+    border: 1px solid #ff3333;
+    border-radius: 3px;
+    padding: 5px 12px;
+}
 
+QPushButton:hover {
+    background-color: #ffcccc;
+}
+
+QPushButton:checked {
+    background-color: #8fc5f5;
+    border: 1px solid #2675bd;
+}
+
+QLineEdit,
+QComboBox {
+    background-color: #ffffff;
+    border: 1px solid #9aa8b5;
+    border-radius: 2px;
+    padding: 3px 6px;
+}
+
+QLineEdit:focus,
+QComboBox:focus {
+    border: 1px solid #2675bd;
+}
