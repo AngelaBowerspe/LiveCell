@@ -19,7 +19,6 @@ public:
     enum class WellState
     {
         Default,
-        Previewing,
         Grouped,
         Selected,
         Scanning,

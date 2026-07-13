@@ -589,3 +589,127 @@ MVP/接口检查：
 遗留事项：
 - 本轮仍未包含用户/Designer 已改动的 `CreateExperimentSubPage.ui`、`scanpage.ui` 和未跟踪的 `AENGRTS.md`。
 - 需要人工运行界面确认：蓝色临时孔位存在时，点击其他绿色已确认孔位不会把它设为 active；之后点击“确定”或“取消选择”不会误影响该绿色孔位。
+## 2026-07-10 视野临时选择与确认状态拆分
+
+目标：
+- “取消选择”恢复为既能取消蓝色临时孔位，也能取消当前已确认孔位。
+- 视野临时选择显示为灰色，点击“选择视野”后才写入黄色确认状态。
+- 点击“选择视野”后继续停留在当前孔位，选择视野和取消选择按钮保持可用，由用户自己点击切换孔位。
+
+计划：
+- 在 `FieldViewWidget` 增加按状态读取视野索引的轻量接口。
+- 在 `ScanPage` 中只把灰色临时视野作为“未确认”判断依据。
+- 不接入真实硬件、线程或 SDK，不提交、不编译，按用户要求只做小范围逻辑修正。
+
+实际改动：
+- `FieldViewWidget.h/.cpp`：新增 `fieldIndexesByState()`，用于页面层判断是否存在灰色临时视野；将 `FieldState::Selected` 绘制为灰色，保留 `FieldState::Completed` 为黄色确认状态。
+- `scanpage.cpp`：`buttonCancelWellSelection` 恢复为优先取消蓝色临时孔位；没有蓝色临时孔位时取消当前 active 的已确认孔位。
+- `scanpage.cpp`：`buttonSelectFields` 确认当前孔位视野后写入黄色状态，继续停留在当前孔位，视野选择和取消按钮保持可用。
+- `scanpage.cpp`：最终“确定”只在存在灰色临时视野时提示先确认视野，不再因为处于视野模式就直接拦截。
+- `scanpage.cpp`：恢复当前孔位视野时使用黄色确认状态，避免已确认视野重新显示成临时选择。
+
+验证：
+- `git diff --check -- scanpage.cpp FieldViewWidget.cpp FieldViewWidget.h CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾提示。
+- 按用户最新要求，本轮小改动未运行编译，未提交，等待相关 bug 合并后统一提交。
+
+遗留事项：
+- 需要人工运行界面确认：灰色临时视野点击“选择视野”后变黄色；确认后仍停留当前孔位；取消孔区可清蓝色临时孔位，也可在无临时孔位时取消当前已确认孔位。
+
+## 2026-07-13 孔位预览与视野编辑资格分离
+
+目标：
+- 第 1 步“创建实验”和“导入实验”保持互斥。
+- 存在蓝色临时孔位时，仍可点击已确认或临时孔位进行预览，也可切换分组；不再出现阻塞预览的提示。
+- 未确认孔位只允许单视野预览，不能确认或取消视野；只有已确认分组孔位且没有蓝色临时孔位时才能编辑视野。
+
+计划：
+- 用 `QButtonGroup` 统一管理创建/导入模式的互斥状态。
+- 由 `ScanPage` 根据当前预览孔位和临时孔位计算视野编辑资格，避免以按钮状态反推业务状态。
+- 为 `FieldViewWidget` 增加非编辑的单视野预览接口及信号，不接入相机、样品台、SDK、线程或图像算法。
+
+实际改动：
+- `CreateExperimentSubPage.h/.cpp`：增加创建方式按钮组，`buttonCreateMode` 与 `buttonImportMode` 现在互斥，默认仍选中“创建实验”。
+- `WellPlateWidget.cpp`：只有空孔位进入拖拽框选；已确认分组孔位和蓝色临时孔位会发出点击信号，因此可随时点击预览。
+- `FieldViewWidget.h/.cpp`：增加独立于视野编辑的单视野预览接口和 `fieldPreviewed(int)` 信号；预览以蓝色覆盖显示，不改变灰色临时选择或黄色已确认视野数据。
+- `FieldViewWidget.h`：按项目约定改用 `#include <QMouseEvent>`，移除 Qt 基础类前置声明。
+- `scanpage.h/.cpp`：移除临时蓝色孔位对孔位预览、分组切换的阻塞；仅在“当前孔位已分组且不存在蓝色临时孔位”时启用“选择视野/取消选择”。页面通过 `fieldPreviewRequested(well, fieldIndex)` 提供后续 mock 或 Presenter 对接入口。
+- `scanpage.cpp`：最终确认仍会阻止未确认的蓝色孔位或灰色临时视野，防止不完整实验配置进入下一步。
+
+验证：
+- `git diff --check -- CreateExperimentSubPage.cpp CreateExperimentSubPage.h FieldViewWidget.cpp FieldViewWidget.h WellPlateWidget.cpp scanpage.cpp scanpage.h CODEX_WORKLOG.md`：通过，仅有 Git CRLF 行尾提示。
+- 按用户要求，本轮为小范围交互修正，未编译、未提交。
+
+遗留事项：
+- 请人工验证：保留蓝色临时孔位时，点击 A1/A2/A3 或临时孔位均可显示视野；此时单击视野只出现蓝色预览，两个视野提交/取消按钮不可用；清除或确认蓝色孔位后，已确认孔位恢复灰色选择和黄色确认流程。
+
+## 2026-07-13 单一当前预览孔位
+
+目标：
+- 进入新的临时孔位框选时，清除旧孔位的 active 高亮和旧视野预览，避免同时出现两个蓝色状态。
+- 保留一次拖拽框选多个孔位的能力；“唯一”仅指当前预览孔位，不改变已确认分组数据。
+
+计划：
+- `WellPlateWidget` 在空孔位开始鼠标框选时主动清空 active well。
+- `ScanPage` 收到新的临时孔位选择后退出旧视野预览，由用户点击目标孔位开启唯一的新预览。
+- 不接入硬件、SDK、线程或图像算法；不编译、不提交，按用户小改动规则执行。
+
+实际改动：
+- `WellPlateWidget.h/.cpp`：删除从未写入的 `WellState::Previewing`。
+- `scanpage.h/.cpp`：删除只写不读的 `m_bWellSelectionMode`，不再以冗余模式变量推断孔位交互。
+- `WellPlateWidget.cpp`：`activeWell` 保留为唯一当前预览标识，但绘制改为橙色外框，不再覆盖分组背景或临时选择蓝色背景。
+- `scanpage.cpp`：点击已确认孔位或蓝色临时孔位时始终切换 `activeWell`，无需先点击“取消选择”；视野预览随之切换。
+
+当前孔板状态：
+- `Default`：未分组、未临时框选的孔位。
+- `Grouped`：已确认并归属某个分组，显示该分组背景色。
+- `Selected`：鼠标临时框选，显示 Windows 风格蓝色背景；可多个，点击“选择孔区”后转为 `Grouped`。
+- `Scanning`：mock 扫描过程中的当前孔位。
+- `Completed`：mock 扫描已完成的孔位。
+- `activeWell`：不是 `WellState`，是唯一当前预览孔位，以橙色外框叠加显示，可位于 `Grouped` 或 `Selected` 状态上。
+
+验证：
+- `rg -n "Previewing|m_bWellSelectionMode" WellPlateWidget.cpp WellPlateWidget.h scanpage.cpp scanpage.h`：无残留引用。
+- `git diff --check -- WellPlateWidget.cpp WellPlateWidget.h scanpage.cpp scanpage.h CODEX_WORKLOG.md`：通过，仅有 Git CRLF 行尾提示。
+- 按用户要求，本轮小改动未编译、未提交。
+
+实际改动：
+- `WellPlateWidget.cpp`：空孔位开始拖拽/单击临时选择前，清空旧 active well，旧孔位不再保留预览蓝色高亮。
+- `scanpage.cpp`：产生新的蓝色临时孔位后，清空旧视野预览和当前预览孔位；用户随后点击已确认或临时孔位即可建立新的预览。
+- `scanpage.cpp`：存在蓝色临时孔位时，孔板不再额外绘制当前预览孔位的 active 蓝底，避免预览高亮与临时选择同时出现在不同孔位而造成状态混淆。
+
+验证：
+- `git diff --check -- WellPlateWidget.cpp scanpage.cpp CODEX_WORKLOG.md`：通过，仅有 Git CRLF 行尾提示。
+- 按用户要求，本轮小改动未编译、未提交。
+
+遗留事项：
+- 请人工验证：框选新空孔位后，旧 active 高亮立即消失；存在蓝色临时孔位时点击 A1/A2/A3 仍能更新视野预览但孔板不额外出现第二个 active 蓝底；清除或确认临时孔位后，点击单个已确认孔位恢复唯一 active 高亮。
+## 2026-07-13 空 QSS 文件接入
+
+目标：
+- 创建一个项目级 QSS 文件，当前不写任何样式代码。
+- 在程序启动时加载并应用该 QSS，为后续统一界面美化预留入口。
+
+计划：
+- 新增空的 `styles/app.qss`。
+- 新增 Qt 资源文件，把 QSS 打包到程序资源中，避免运行目录依赖。
+- 在 `main.cpp` 中从资源读取 QSS 并设置到 `QApplication`。
+- 更新 `LiveCell.pro`，让 qmake 构建时包含资源文件。
+
+MVP/接口检查：
+- View：不修改具体页面控件和布局。
+- Presenter/页面协调：不新增页面协调逻辑。
+- Model/接口：不新增业务数据结构。
+- 不做：不写实际 QSS 样式、不接硬件、不调整现有 UI 交互。
+
+实际改动：
+- `styles/app.qss`：新增空 QSS 文件，当前不写任何样式代码。
+- `resources.qrc`：新增 Qt Resource，把 `styles/app.qss` 打包到 `:/styles/app.qss`。
+- `main.cpp`：程序启动时读取 `:/styles/app.qss` 并应用到 `QApplication`。
+- `LiveCell.pro`：新增 `RESOURCES += resources.qrc`，让 qmake 构建包含 QSS 资源。
+
+验证：
+- `git diff --check -- main.cpp LiveCell.pro resources.qrc styles/app.qss CODEX_WORKLOG.md`：通过，仅有 CRLF 行尾提示。
+- 源码外 Release 构建：`qmake D:\qt\QtMingMe\LiveCell\LiveCell.pro -spec win32-msvc CONFIG+=release && nmake`：通过。
+
+遗留事项：
+- 本轮未提交；当前工作区仍有用户此前未提交的 `CreateExperimentSubPage.*`、`FieldViewWidget.*`、`WellPlateWidget.*`、`scanpage.*`、`AENGRTS.md` 等改动。

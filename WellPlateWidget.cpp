@@ -210,7 +210,7 @@ void WellPlateWidget::clearState(WellState state)
         {
             if (wellState(row, column) == state)
             {
-                if (state == WellState::Grouped || state == WellState::Previewing)
+                if (state == WellState::Grouped)
                 {
                     setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
                 }
@@ -377,16 +377,21 @@ void WellPlateWidget::paintEvent(QPaintEvent *event)
         {
             const WellState state = wellState(row, column);
             const QRectF cell = cellRect(row, column);
-            QColor backgroundColor = wellBackgroundColor(row, column, state);
-            if (wellName(row, column) == m_activeWell)
-            {
-                backgroundColor = QColor(82, 152, 245, 105);
-            }
+            const QColor backgroundColor = wellBackgroundColor(row, column, state);
             if (backgroundColor.alpha() > 0)
             {
                 painter.fillRect(cell.adjusted(1.0, 1.0, -1.0, -1.0), backgroundColor);
             }
             drawWell(&painter, cell, state);
+
+            if (wellName(row, column) == m_activeWell)
+            {
+                const qreal padding = qMax(1.0, cell.width() * 0.025);
+                const QRectF activeRect = cell.adjusted(padding, padding, -padding, -padding);
+                painter.setPen(QPen(QColor(235, 158, 35), qMax(1.4, cell.width() * 0.045)));
+                painter.setBrush(Qt::NoBrush);
+                painter.drawRect(activeRect);
+            }
         }
     }
 
@@ -415,11 +420,9 @@ void WellPlateWidget::mousePressEvent(QMouseEvent *event)
     }
 
     const WellState state = wellState(row, column);
-    if (m_bSelectionEnabled
-        && state != WellState::Grouped
-        && state != WellState::Completed
-        && state != WellState::Scanning)
+    if (m_bSelectionEnabled && state == WellState::Default)
     {
+        setActiveWell(QString());
         m_bDragging = true;
         m_dragStart = event->pos();
         m_dragCurrent = event->pos();
@@ -720,7 +723,6 @@ void WellPlateWidget::drawWell(QPainter *pPainter, const QRectF &rect, WellState
         fillColor = QColor(113, 224, 72);
         borderColor = QColor(74, 180, 55);
         break;
-    case WellState::Previewing:
     case WellState::Default:
         break;
     }

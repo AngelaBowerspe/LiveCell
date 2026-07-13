@@ -36,6 +36,7 @@ signals:
     void selectFieldsRequested();
     void cancelFieldSelectionRequested();
     void confirmSelectionRequested();
+    void fieldPreviewRequested(const QString &well, int fieldIndex);
     void plateFormatChanged(WellPlateWidget::PlateFormat format);
     void groupChanged(int groupIndex);
 
@@ -70,6 +71,7 @@ private:
     void showCreateExperimentSelectionPage();
     void updateCreateExperimentPlateFieldSummary();
     void refreshPlateSelectionFromModel();
+    bool canEditCurrentWellFields() const;
     QStringList groupedWells() const;
     QStringList selectedWellsInPlateOrder() const;
     QString selectedGroupsText() const;
@@ -83,7 +85,6 @@ private:
     CreateExperimentSubPage *m_pCreateExperimentSubPage;
     QTimer *m_pMockScanTimer;
     bool m_bPlateFieldSelectionEnabled;
-    bool m_bWellSelectionMode;
     bool m_bFieldSelectionMode;
     bool m_bScanning;
     bool m_bExperimentConfigured;

@@ -35,6 +35,7 @@ int lineEditToNonNegativeInt(const QLineEdit *lineEdit)
 CreateExperimentSubPage::CreateExperimentSubPage(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::CreateExperimentSubPage)
+    , m_pCreateModeButtonGroup(new QButtonGroup(this))
     , m_pExperimentTypeButtonGroup(new QButtonGroup(this))
     , m_pScanModeButtonGroup(new QButtonGroup(this))
     , m_bDragging(false)
@@ -209,6 +210,10 @@ void CreateExperimentSubPage::initControls()
 
     ui->titleBar->installEventFilter(this);
     ui->labelWindowTitle->installEventFilter(this);
+
+    m_pCreateModeButtonGroup->setExclusive(true);
+    m_pCreateModeButtonGroup->addButton(ui->buttonCreateMode);
+    m_pCreateModeButtonGroup->addButton(ui->buttonImportMode);
 
     m_pExperimentTypeButtonGroup->setExclusive(true);
     m_pExperimentTypeButtonGroup->addButton(ui->buttonConfluenceAnalysis);

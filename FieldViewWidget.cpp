@@ -13,6 +13,8 @@ FieldViewWidget::FieldViewWidget(QWidget *parent)
     , m_nColumns(11)
     , m_states(m_nRows * m_nColumns, FieldState::Default)
     , m_bSelectionEnabled(false)
+    , m_bPreviewEnabled(false)
+    , m_nPreviewFieldIndex(-1)
     , m_bDragging(false)
 {
     setMouseTracking(true);
@@ -47,6 +49,7 @@ void FieldViewWidget::setPlateFormat(WellPlateWidget::PlateFormat format)
     m_nRows = size.height();
     m_nColumns = size.width();
     m_states.fill(FieldState::Default, m_nRows * m_nColumns);
+    m_nPreviewFieldIndex = -1;
     m_bDragging = false;
     m_dragSnapshot.clear();
 
@@ -85,6 +88,44 @@ void FieldViewWidget::setSelectionEnabled(bool enabled)
 bool FieldViewWidget::isSelectionEnabled() const
 {
     return m_bSelectionEnabled;
+}
+
+void FieldViewWidget::setPreviewEnabled(bool enabled)
+{
+    if (m_bPreviewEnabled == enabled)
+    {
+        return;
+    }
+
+    m_bPreviewEnabled = enabled;
+    if (!m_bPreviewEnabled)
+    {
+        m_nPreviewFieldIndex = -1;
+    }
+
+    update();
+}
+
+bool FieldViewWidget::isPreviewEnabled() const
+{
+    return m_bPreviewEnabled;
+}
+
+void FieldViewWidget::setPreviewFieldIndex(int index)
+{
+    const int nextIndex = index >= 0 && index < m_states.size() ? index : -1;
+    if (m_nPreviewFieldIndex == nextIndex)
+    {
+        return;
+    }
+
+    m_nPreviewFieldIndex = nextIndex;
+    update();
+}
+
+int FieldViewWidget::previewFieldIndex() const
+{
+    return m_nPreviewFieldIndex;
 }
 
 FieldViewWidget::FieldState FieldViewWidget::fieldState(int row, int column) const
@@ -192,6 +233,12 @@ void FieldViewWidget::clearAll()
         }
     }
 
+    if (m_nPreviewFieldIndex >= 0)
+    {
+        m_nPreviewFieldIndex = -1;
+        changed = true;
+    }
+
     if (changed)
     {
         emit fieldSelectionChanged();
@@ -207,6 +254,20 @@ QSet<int> FieldViewWidget::selectedFieldIndexes() const
         if (m_states.at(index) == FieldState::Selected
             || m_states.at(index) == FieldState::Scanning
             || m_states.at(index) == FieldState::Completed)
+        {
+            indexes.insert(index);
+        }
+    }
+
+    return indexes;
+}
+
+QSet<int> FieldViewWidget::fieldIndexesByState(FieldState state) const
+{
+    QSet<int> indexes;
+    for (int index = 0; index < m_states.size(); ++index)
+    {
+        if (m_states.at(index) == state)
         {
             indexes.insert(index);
         }
@@ -241,8 +302,26 @@ void FieldViewWidget::paintEvent(QPaintEvent *event)
 
 void FieldViewWidget::mousePressEvent(QMouseEvent *event)
 {
-    if (!m_bSelectionEnabled || event->button() != Qt::LeftButton)
+    if (event->button() != Qt::LeftButton)
     {
+        QWidget::mousePressEvent(event);
+        return;
+    }
+
+    if (!m_bSelectionEnabled)
+    {
+        if (m_bPreviewEnabled)
+        {
+            const int index = fieldIndexAt(event->pos());
+            if (index >= 0)
+            {
+                setPreviewFieldIndex(index);
+                emit fieldPreviewed(index);
+                event->accept();
+                return;
+            }
+        }
+
         QWidget::mousePressEvent(event);
         return;
     }
@@ -426,7 +505,7 @@ void FieldViewWidget::drawFieldStates(QPainter *pPainter, const QRectF &rect)
                 color = QColor(80, 155, 255, 70);
                 break;
             case FieldState::Selected:
-                color = QColor(252, 205, 72, 120);
+                color = QColor(155, 155, 155, 120);
                 break;
             case FieldState::Scanning:
                 color = QColor(84, 190, 120, 135);
@@ -449,5 +528,16 @@ void FieldViewWidget::drawFieldStates(QPainter *pPainter, const QRectF &rect)
                                   cellHeight);
             pPainter->fillRect(cellRect.adjusted(1, 1, -1, -1), color);
         }
+    }
+
+    if (m_nPreviewFieldIndex >= 0 && m_nPreviewFieldIndex < m_states.size())
+    {
+        const int row = m_nPreviewFieldIndex / m_nColumns;
+        const int column = m_nPreviewFieldIndex % m_nColumns;
+        const QRectF previewRect = fieldRect(row, column).adjusted(1.5, 1.5, -1.5, -1.5);
+        pPainter->fillRect(previewRect, QColor(80, 155, 255, 80));
+        pPainter->setPen(QPen(QColor(55, 130, 240), 1.2));
+        pPainter->setBrush(Qt::NoBrush);
+        pPainter->drawRect(previewRect);
     }
 }

@@ -78,6 +78,7 @@ private:
     QString checkedFocusChannelText() const;
 
     Ui::CreateExperimentSubPage *ui;
+    QButtonGroup *m_pCreateModeButtonGroup;
     QButtonGroup *m_pExperimentTypeButtonGroup;
     QButtonGroup *m_pScanModeButtonGroup;
     bool m_bDragging;

@@ -3,13 +3,12 @@
 
 #include "WellPlateWidget.h"
 
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPoint>
 #include <QSet>
 #include <QVector>
 #include <QWidget>
-
-class QMouseEvent;
 
 class FieldViewWidget : public QWidget
 {
@@ -38,6 +37,10 @@ public:
     int columnCount() const;
     void setSelectionEnabled(bool enabled);
     bool isSelectionEnabled() const;
+    void setPreviewEnabled(bool enabled);
+    bool isPreviewEnabled() const;
+    void setPreviewFieldIndex(int index);
+    int previewFieldIndex() const;
     FieldState fieldState(int row, int column) const;
     void setFieldState(int row, int column, FieldState state);
     void setFieldState(int index, FieldState state);
@@ -45,11 +48,13 @@ public:
     void clearState(FieldState state);
     void clearAll();
     QSet<int> selectedFieldIndexes() const;
+    QSet<int> fieldIndexesByState(FieldState state) const;
 
 signals:
     void plateFormatChanged(WellPlateWidget::PlateFormat format);
     void fieldStateChanged(int row, int column, FieldViewWidget::FieldState state);
     void fieldSelectionChanged();
+    void fieldPreviewed(int index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -75,6 +80,8 @@ private:
     int m_nColumns;
     QVector<FieldState> m_states;
     bool m_bSelectionEnabled;
+    bool m_bPreviewEnabled;
+    int m_nPreviewFieldIndex;
     bool m_bDragging;
     QPoint m_dragStart;
     QPoint m_dragCurrent;
