@@ -1,6 +1,9 @@
 #include "BasicSettingPage.h"
 #include "ImageCorrectionPage.h"
+#include "mocks/MockCameraService.h"
+#include "mocks/MockStageService.h"
 #include "PreviewStatusBarWidget.h"
+#include "presenters/PreviewPresenter.h"
 #include "previewpage.h"
 #include "SampleStageWidget.h"
 #include "ui_previewpage.h"
@@ -22,6 +25,7 @@ PreviewPage::PreviewPage(QWidget *parent)
     , m_pZStackSettingPage(nullptr)
     , m_pSampleStageWidget(nullptr)
     , m_pStatusBarWidget(nullptr)
+    , m_pPreviewPresenter(nullptr)
 {
     m_pUi->setupUi(this);
 
@@ -34,6 +38,16 @@ PreviewPage::~PreviewPage()
 {
     delete m_pRecordElapsedTimer;
     delete m_pUi;
+}
+
+ObjectiveMagnification PreviewPage::objectiveMagnification() const
+{
+    if (m_pBasicSettingPage == nullptr)
+    {
+        return ObjectiveMagnification::Objective10X;
+    }
+
+    return m_pBasicSettingPage->captureSettings().objective;
 }
 
 void PreviewPage::initPanels()
@@ -61,8 +75,20 @@ void PreviewPage::initLeftPages()
     m_pUi->leftPageStackedWidget->addWidget(m_pZStackSettingPage);
     m_pUi->leftPageStackedWidget->setCurrentWidget(m_pBasicSettingPage);
 
-    connect(m_pBasicSettingPage, &BasicSettingPage::recordVideoToggled,
+    m_pCameraService = std::make_unique<MockCameraService>();
+    m_pStageService = std::make_unique<MockStageService>();
+    m_pPreviewPresenter = new PreviewPresenter(m_pBasicSettingPage,
+        m_pStatusBarWidget,
+        m_pCameraService.get(),
+        m_pStageService.get(),
+        this);
+
+    connect(m_pPreviewPresenter, &PreviewPresenter::recordingStateChanged,
         this, &PreviewPage::setRecordingEnabled);
+    connect(m_pBasicSettingPage, &BasicSettingPage::captureSettingsChanged,
+        this, [this]() {
+            emit objectiveMagnificationChanged(objectiveMagnification());
+        });
 }
 
 void PreviewPage::initNavigation()

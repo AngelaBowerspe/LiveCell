@@ -55,20 +55,31 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="doubleSpinStepDistance">
-        <property name="suffix">
-         <string> μm</string>
+       <layout class="QHBoxLayout" name="stepDistanceValueLayout">
+        <property name="spacing">
+         <number>4</number>
         </property>
-        <property name="minimum">
-         <double>0.100000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>9999.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>20.000000000000000</double>
-        </property>
-       </widget>
+        <item>
+         <widget class="QLineEdit" name="lineEditStepDistance">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>20.00</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelStepDistanceUnit">
+          <property name="text">
+           <string>μm</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="labelScanLayerCount">
@@ -78,20 +89,31 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QSpinBox" name="spinScanLayerCount">
-        <property name="minimum">
-         <number>1</number>
+       <layout class="QHBoxLayout" name="scanLayerCountValueLayout">
+        <property name="spacing">
+         <number>4</number>
         </property>
-        <property name="maximum">
-         <number>1000</number>
-        </property>
-        <property name="value">
-         <number>7</number>
-        </property>
-        <property name="suffix">
-         <string> 层</string>
-        </property>
-       </widget>
+        <item>
+         <widget class="QLineEdit" name="lineEditScanLayerCount">
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>7</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelScanLayerCountUnit">
+          <property name="text">
+           <string>层</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QPushButton" name="buttonStartZStack">

@@ -12,7 +12,12 @@ WellPlateWidget::WellPlateWidget(QWidget *parent)
     , m_plateFormat(PlateFormat::Plate24)
     , m_nRows(4)
     , m_nColumns(6)
-    , m_states(m_nRows * m_nColumns, WellState::Empty)
+    , m_states(m_nRows * m_nColumns, WellState::Default)
+    , m_backgroundColors(m_nRows * m_nColumns, QColor(0, 0, 0, 0))
+    , m_groupColor(110, 164, 235, 120)
+    , m_activeWell()
+    , m_bSelectionEnabled(false)
+    , m_bDragging(false)
 {
     setMouseTracking(true);
     setMinimumSize(minimumSizeHint());
@@ -45,10 +50,15 @@ void WellPlateWidget::setPlateFormat(PlateFormat format)
     const QSize size = dimensionsForFormat(m_plateFormat);
     m_nRows = size.height();
     m_nColumns = size.width();
-    m_states.fill(WellState::Empty, m_nRows * m_nColumns);
+    m_states.fill(WellState::Default, m_nRows * m_nColumns);
+    m_backgroundColors.fill(QColor(0, 0, 0, 0), m_nRows * m_nColumns);
+    m_activeWell.clear();
+    m_bDragging = false;
+    m_dragSnapshot.clear();
 
     emit plateFormatChanged(m_plateFormat);
     emit activeWellChanged(QString());
+    emit wellSelectionChanged();
     update();
 }
 
@@ -72,11 +82,49 @@ QString WellPlateWidget::wellName(int row, int column) const
     return QString(QChar('A' + row)) + QString::number(column + 1);
 }
 
+void WellPlateWidget::setSelectionEnabled(bool enabled)
+{
+    if (m_bSelectionEnabled == enabled)
+    {
+        return;
+    }
+
+    m_bSelectionEnabled = enabled;
+    if (!m_bSelectionEnabled)
+    {
+        m_bDragging = false;
+        m_dragSnapshot.clear();
+    }
+
+    update();
+}
+
+bool WellPlateWidget::isSelectionEnabled() const
+{
+    return m_bSelectionEnabled;
+}
+
+QColor WellPlateWidget::groupColor() const
+{
+    return m_groupColor;
+}
+
+void WellPlateWidget::setGroupColor(const QColor &color)
+{
+    if (!color.isValid() || m_groupColor == color)
+    {
+        return;
+    }
+
+    m_groupColor = color;
+    update();
+}
+
 WellPlateWidget::WellState WellPlateWidget::wellState(int row, int column) const
 {
     if (!isValidWell(row, column))
     {
-        return WellState::Empty;
+        return WellState::Default;
     }
 
     return m_states.at(stateIndex(row, column));
@@ -88,7 +136,7 @@ WellPlateWidget::WellState WellPlateWidget::wellState(const QString &well) const
     int column = -1;
     if (!parseWell(well, &row, &column))
     {
-        return WellState::Empty;
+        return WellState::Default;
     }
 
     return wellState(row, column);
@@ -127,6 +175,28 @@ void WellPlateWidget::setWellStates(const QStringList &wells, WellState state)
 
     if (changed)
     {
+        emit wellSelectionChanged();
+        update();
+    }
+}
+
+void WellPlateWidget::setGroupedWells(const QStringList &wells, const QColor &groupColor)
+{
+    bool changed = false;
+    for (const QString &well : wells)
+    {
+        int row = -1;
+        int column = -1;
+        if (parseWell(well, &row, &column))
+        {
+            setWellBackgroundColor(row, column, groupColor);
+            changed |= setWellStateInternal(row, column, WellState::Grouped, true);
+        }
+    }
+
+    if (changed || !wells.isEmpty())
+    {
+        emit wellSelectionChanged();
         update();
     }
 }
@@ -140,15 +210,61 @@ void WellPlateWidget::clearState(WellState state)
         {
             if (wellState(row, column) == state)
             {
-                changed |= setWellStateInternal(row, column, WellState::Empty, true);
+                if (state == WellState::Grouped)
+                {
+                    setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
+                }
+                changed |= setWellStateInternal(row, column, WellState::Default, true);
             }
         }
     }
 
     if (changed)
     {
+        emit wellSelectionChanged();
         update();
     }
+}
+
+void WellPlateWidget::clearWell(const QString &well)
+{
+    int row = -1;
+    int column = -1;
+    if (!parseWell(well, &row, &column))
+    {
+        return;
+    }
+
+    const int index = stateIndex(row, column);
+    bool changed = false;
+    if (m_backgroundColors.at(index).alpha() > 0)
+    {
+        setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
+        changed = true;
+    }
+    changed |= setWellStateInternal(row, column, WellState::Default, true);
+    if (m_activeWell == wellName(row, column))
+    {
+        m_activeWell.clear();
+        emit activeWellChanged(QString());
+        changed = true;
+    }
+
+    if (changed)
+    {
+        emit wellSelectionChanged();
+        update();
+    }
+}
+
+void WellPlateWidget::clearSelected()
+{
+    clearState(WellState::Selected);
+}
+
+void WellPlateWidget::confirmSelectedAsGroup(const QColor &groupColor)
+{
+    setGroupedWells(selectedWells(), groupColor);
 }
 
 void WellPlateWidget::clearAll()
@@ -158,9 +274,11 @@ void WellPlateWidget::clearAll()
     {
         for (int column = 0; column < m_nColumns; ++column)
         {
-            if (wellState(row, column) != WellState::Empty)
+            if (wellState(row, column) != WellState::Default
+                || m_backgroundColors.at(stateIndex(row, column)).alpha() > 0)
             {
-                changed |= setWellStateInternal(row, column, WellState::Empty, true);
+                setWellBackgroundColor(row, column, QColor(0, 0, 0, 0));
+                changed |= setWellStateInternal(row, column, WellState::Default, true);
             }
         }
     }
@@ -168,6 +286,7 @@ void WellPlateWidget::clearAll()
     if (changed)
     {
         emit activeWellChanged(QString());
+        emit wellSelectionChanged();
         update();
     }
 }
@@ -189,41 +308,38 @@ QStringList WellPlateWidget::wellsByState(WellState state) const
     return wells;
 }
 
+QStringList WellPlateWidget::selectedWells() const
+{
+    return wellsByState(WellState::Selected);
+}
+
 void WellPlateWidget::setActiveWell(const QString &well)
 {
+    int activeRow = -1;
+    int activeColumn = -1;
     QString nextActive;
-    bool changed = false;
-
-    for (int row = 0; row < m_nRows; ++row)
+    if (parseWell(well, &activeRow, &activeColumn))
     {
-        for (int column = 0; column < m_nColumns; ++column)
+        const WellState state = wellState(activeRow, activeColumn);
+        if (state != WellState::Default)
         {
-            if (wellState(row, column) == WellState::Focused)
-            {
-                changed |= setWellStateInternal(row, column, WellState::Confirmed, true);
-            }
+            nextActive = wellName(activeRow, activeColumn);
         }
     }
 
-    int activeRow = -1;
-    int activeColumn = -1;
-    if (parseWell(well, &activeRow, &activeColumn))
+    if (m_activeWell == nextActive)
     {
-        nextActive = wellName(activeRow, activeColumn);
-        changed |= setWellStateInternal(activeRow, activeColumn, WellState::Focused, true);
+        return;
     }
 
-    if (changed)
-    {
-        emit activeWellChanged(nextActive);
-        update();
-    }
+    m_activeWell = nextActive;
+    emit activeWellChanged(m_activeWell);
+    update();
 }
 
 QString WellPlateWidget::activeWell() const
 {
-    const QStringList wells = wellsByState(WellState::Focused);
-    return wells.isEmpty() ? QString() : wells.first();
+    return m_activeWell;
 }
 
 void WellPlateWidget::paintEvent(QPaintEvent *event)
@@ -259,8 +375,31 @@ void WellPlateWidget::paintEvent(QPaintEvent *event)
     {
         for (int column = 0; column < m_nColumns; ++column)
         {
-            drawWell(&painter, cellRect(row, column), wellState(row, column));
+            const WellState state = wellState(row, column);
+            const QRectF cell = cellRect(row, column);
+            const QColor backgroundColor = wellBackgroundColor(row, column, state);
+            if (backgroundColor.alpha() > 0)
+            {
+                painter.fillRect(cell.adjusted(1.0, 1.0, -1.0, -1.0), backgroundColor);
+            }
+            drawWell(&painter, cell, state);
+
+            if (wellName(row, column) == m_activeWell)
+            {
+                const qreal padding = qMax(1.0, cell.width() * 0.025);
+                const QRectF activeRect = cell.adjusted(padding, padding, -padding, -padding);
+                painter.setPen(QPen(QColor(235, 158, 35), qMax(1.4, cell.width() * 0.045)));
+                painter.setBrush(Qt::NoBrush);
+                painter.drawRect(activeRect);
+            }
         }
+    }
+
+    if (m_bDragging)
+    {
+        painter.setPen(QPen(QColor(55, 140, 255, 220), 1.2));
+        painter.setBrush(QColor(80, 155, 255, 42));
+        painter.drawRect(selectionRect());
     }
 }
 
@@ -280,9 +419,56 @@ void WellPlateWidget::mousePressEvent(QMouseEvent *event)
         return;
     }
 
+    const WellState state = wellState(row, column);
+    if (m_bSelectionEnabled && state == WellState::Default)
+    {
+        setActiveWell(QString());
+        m_bDragging = true;
+        m_dragStart = event->pos();
+        m_dragCurrent = event->pos();
+        m_dragSnapshot = m_states;
+        updateSelectionFromDrag();
+        event->accept();
+        return;
+    }
+
     const QString well = wellName(row, column);
     emit wellClicked(well);
-    setActiveWell(well);
+    event->accept();
+}
+
+void WellPlateWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    if (!m_bSelectionEnabled || !m_bDragging || !(event->buttons() & Qt::LeftButton))
+    {
+        QWidget::mouseMoveEvent(event);
+        return;
+    }
+
+    m_dragCurrent = event->pos();
+    updateSelectionFromDrag();
+    event->accept();
+}
+
+void WellPlateWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (!m_bSelectionEnabled || event->button() != Qt::LeftButton)
+    {
+        QWidget::mouseReleaseEvent(event);
+        return;
+    }
+
+    if (!m_bDragging)
+    {
+        event->accept();
+        return;
+    }
+
+    m_dragCurrent = event->pos();
+    updateSelectionFromDrag();
+    m_bDragging = false;
+    m_dragSnapshot.clear();
+    update();
     event->accept();
 }
 
@@ -401,6 +587,58 @@ bool WellPlateWidget::hitTest(const QPoint &point, int *row, int *column) const
     return false;
 }
 
+QRect WellPlateWidget::selectionRect() const
+{
+    return QRect(m_dragStart, m_dragCurrent).normalized();
+}
+
+void WellPlateWidget::updateSelectionFromDrag()
+{
+    const QRect dragRect = selectionRect();
+    const bool pointPick = dragRect.width() < 3 && dragRect.height() < 3;
+    QVector<WellState> nextStates = m_dragSnapshot.isEmpty() ? m_states : m_dragSnapshot;
+
+    for (int index = 0; index < nextStates.size(); ++index)
+    {
+        if (nextStates.at(index) == WellState::Selected)
+        {
+            nextStates[index] = WellState::Default;
+        }
+    }
+
+    for (int row = 0; row < m_nRows; ++row)
+    {
+        for (int column = 0; column < m_nColumns; ++column)
+        {
+            const int index = stateIndex(row, column);
+            if (nextStates.at(index) == WellState::Completed
+                || nextStates.at(index) == WellState::Grouped
+                || nextStates.at(index) == WellState::Scanning)
+            {
+                continue;
+            }
+
+            const QRectF cell = cellRect(row, column);
+            const bool inside = pointPick ? cell.contains(m_dragCurrent) : cell.intersects(QRectF(dragRect));
+            if (inside)
+            {
+                nextStates[index] = WellState::Selected;
+            }
+        }
+    }
+
+    if (nextStates != m_states)
+    {
+        m_states = nextStates;
+        update();
+        emit wellSelectionChanged();
+    }
+    else if (m_bDragging)
+    {
+        update();
+    }
+}
+
 QRectF WellPlateWidget::cellRect(int row, int column) const
 {
     const PlateMetrics metrics = computeMetrics();
@@ -431,40 +669,61 @@ bool WellPlateWidget::setWellStateInternal(int row, int column, WellState state,
     return true;
 }
 
+void WellPlateWidget::setWellBackgroundColor(int row, int column, const QColor &color)
+{
+    if (!isValidWell(row, column))
+    {
+        return;
+    }
+
+    m_backgroundColors[stateIndex(row, column)] = color;
+}
+
+QColor WellPlateWidget::wellBackgroundColor(int row, int column, WellState state) const
+{
+    if (!isValidWell(row, column))
+    {
+        return QColor(0, 0, 0, 0);
+    }
+
+    const QColor color = m_backgroundColors.at(stateIndex(row, column));
+    if (color.alpha() > 0)
+    {
+        return color;
+    }
+
+    if (state == WellState::Grouped)
+    {
+        return m_groupColor;
+    }
+    if (state == WellState::Selected)
+    {
+        return QColor(82, 152, 245, 105);
+    }
+    return QColor(0, 0, 0, 0);
+}
+
 void WellPlateWidget::drawWell(QPainter *pPainter, const QRectF &rect, WellState state)
 {
     QColor fillColor(250, 250, 250);
     QColor borderColor(130, 172, 215);
-    QColor markerColor(0, 0, 0, 0);
 
     switch (state)
     {
+    case WellState::Grouped:
+        break;
     case WellState::Selected:
-        fillColor = QColor(220, 236, 255);
         borderColor = QColor(40, 122, 255);
         break;
-    case WellState::Confirmed:
-        fillColor = QColor(235, 225, 252);
-        borderColor = QColor(134, 79, 215);
-        break;
-    case WellState::Focused:
-        fillColor = QColor(219, 244, 229);
-        borderColor = QColor(45, 154, 94);
-        markerColor = QColor(45, 154, 94);
-        break;
     case WellState::Scanning:
-        fillColor = QColor(252, 230, 146);
+        fillColor = QColor(255, 224, 91);
         borderColor = QColor(230, 174, 35);
         break;
-    case WellState::Disabled:
-        fillColor = QColor(230, 230, 230);
-        borderColor = QColor(180, 180, 180);
+    case WellState::Completed:
+        fillColor = QColor(113, 224, 72);
+        borderColor = QColor(74, 180, 55);
         break;
-    case WellState::Error:
-        fillColor = QColor(255, 225, 225);
-        borderColor = QColor(220, 70, 70);
-        break;
-    case WellState::Empty:
+    case WellState::Default:
         break;
     }
 
@@ -473,16 +732,4 @@ void WellPlateWidget::drawWell(QPainter *pPainter, const QRectF &rect, WellState
     pPainter->setPen(QPen(borderColor, qMax(1.2, rect.width() * 0.045)));
     pPainter->setBrush(fillColor);
     pPainter->drawEllipse(circleRect);
-
-    if (markerColor.alpha() > 0)
-    {
-        const qreal markerSize = qMax(5.0, circleRect.width() * 0.18);
-        const QRectF markerRect(circleRect.right() - markerSize,
-                                circleRect.top(),
-                                markerSize,
-                                markerSize);
-        pPainter->setPen(Qt::NoPen);
-        pPainter->setBrush(markerColor);
-        pPainter->drawEllipse(markerRect);
-    }
 }
