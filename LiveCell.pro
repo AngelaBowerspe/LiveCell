@@ -19,6 +19,7 @@ SOURCES += \
     PreviewStatusBarWidget.cpp \
     presenters/PreviewPresenter.cpp \
     SampleStageWidget.cpp \
+    SystemSettingsSubPage.cpp \
     WellPlateWidget.cpp \
     ZStackSettingPage.cpp \
     datawidget.cpp \
@@ -40,6 +41,7 @@ HEADERS += \
     models/CaptureSettings.h \
     models/ImageCorrectionSettings.h \
     models/StageControlSettings.h \
+    models/SystemSettings.h \
     models/ZStackSettings.h \
     PreviewStatusBarWidget.h \
     presenters/PreviewPresenter.h \
@@ -49,7 +51,8 @@ HEADERS += \
     datawidget.h \
     mainwindow.h \
     previewpage.h \
-    scanpage.h
+    scanpage.h \
+    SystemSettingsSubPage.h
 
 FORMS += \
     BasicSettingPage.ui \
@@ -60,7 +63,8 @@ FORMS += \
     datawidget.ui \
     mainwindow.ui \
     previewpage.ui \
-    scanpage.ui
+    scanpage.ui \
+    SystemSettingsSubPage.ui
 
 RESOURCES += \
     resources.qrc

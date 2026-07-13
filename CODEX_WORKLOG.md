@@ -799,3 +799,71 @@ Open:
 - Verify that changing the Preview objective immediately updates the Scan objective field.
 - Verify that `修改` opens the existing wizard with previous form data intact.
 - Changes remain uncommitted to batch with related fixes. User-modified `.ui` files and untracked `AENGRTS.md` were not edited.
+
+# 2026-07-13 System Settings Popup
+
+Goal:
+- Add a lightweight Qt Widgets system settings popup opened by `buttonSettings`.
+- Provide Chinese labels for the four settings pages shown in the reference images.
+- Keep settings data independent from QWidget code and leave styling to the project QSS.
+
+Plan:
+- Add a `SystemSettings` value model with no QWidget dependency.
+- Add `SystemSettingsSubPage` as the settings View for navigation, input collection, and confirmation/cancellation signals.
+- Let `MainWindow` own the current settings value, open the popup, and receive confirmed values.
+- Keep file browsing and color selection as View-level input collection; expose position calibration as a future-facing signal without real hardware behavior.
+
+MVP/interface check:
+- View data comes from the controls in `SystemSettingsSubPage.ui`.
+- `SystemSettingsSubPage::settingsAccepted` carries the structured `SystemSettings` value to `MainWindow`.
+- `MainWindow` writes the confirmed value to its model and only handles the global settings popup entry point.
+- No real file persistence, hardware calibration, SDK, threads, or image processing is added.
+
+Actual changes:
+- `models/SystemSettings.h`: added a QWidget-independent structured settings value with generic MVP defaults.
+- `SystemSettingsSubPage.h/.cpp/.ui`: added the four-page settings View, Chinese UI text, input collection, storage-directory browsing, color selection, and future-facing position calibration signal.
+- `SystemSettingsSubPage.cpp`: reopens the popup on the basic settings page while preserving the confirmed model value.
+- `SystemSettingsSubPage.ui`: moved all static visible Chinese text into the UTF-8 form file; removed the previous runtime label translation block from `SystemSettingsSubPage.cpp`.
+- Naming follows the referenced convention for the new class/files, methods, members, and readable English `objectName` values; document comment examples were not copied.
+- `mainwindow.h/.cpp`: connected `buttonSettings` to the centered settings popup and accepted-value writeback.
+- `LiveCell.pro`, `LiveCell.vcxproj`, and `LiveCell.vcxproj.filters`: added the new model, source, header, and form files.
+
+Verification:
+- XML parsing for `SystemSettingsSubPage.ui`: passed.
+- Qt 6.5.3 MSVC `uic SystemSettingsSubPage.ui`: passed; generated temporary header was removed by explicit file path.
+- Verified no static `setText(QStringLiteral(...))`, `setItemText`, or `setWindowTitle` calls remain for UI translation.
+- `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
+- No full build was run, per the current small-change workflow.
+
+Open:
+- Settings are currently held in `MainWindow` memory only; persistence and real calibration remain intentionally unimplemented.
+- Existing user changes in `datawidget.ui` and untracked `AENGRTS.md` were not edited.
+
+# 2026-07-13 Settings Language Selection Follow-up
+
+Goal:
+- Fix the language combo box appearing blank when the current in-memory language is `中文`.
+- Keep all static UI text in the UTF-8 `.ui` file and remove escaped Chinese literals from the settings View.
+
+Plan:
+- Match combo-box entries by trimmed text and select a valid fallback index.
+- Remove the old runtime language-item setup and use direct UTF-8 Chinese for the two dynamic dialog titles.
+
+MVP/interface check:
+- Read language and plate type from the settings View controls.
+- Transfer the selected values through the existing `SystemSettings` value interface.
+- Keep `SystemSettingsSubPage` responsible for writing control state and `MainWindow` responsible only for accepted settings ownership.
+
+Actual:
+- Normalized `SystemSettingsSubPage.cpp` to valid UTF-8 and removed the old runtime language-item setup.
+- Initialized the language combo to its `.ui` item and restored language/plate selections by trimmed item text and index.
+- Made language and plate-type combo items single-line Chinese text in `SystemSettingsSubPage.ui` so XML indentation cannot enter the displayed values.
+- Trimmed language and plate values when creating the `SystemSettings` value.
+- Replaced escaped Chinese dialog titles with direct UTF-8 Chinese literals.
+
+Verification:
+- UTF-8 decoding check for `SystemSettingsSubPage.cpp`: passed without replacement characters.
+- UTF-8 XML parsing for `SystemSettingsSubPage.ui`: passed.
+- Qt 6.5.3 MSVC `uic SystemSettingsSubPage.ui`: passed; generated temporary header was removed by explicit file path.
+- `git diff --check`: passed; only existing LF/CRLF conversion warnings were reported.
+- No full build was run, per the current small-change workflow.

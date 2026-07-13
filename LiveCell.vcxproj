@@ -224,6 +224,7 @@
     <ClCompile Include="presenters\PreviewPresenter.cpp" />
     <ClCompile Include="PreviewStatusBarWidget.cpp" />
     <ClCompile Include="SampleStageWidget.cpp" />
+    <ClCompile Include="SystemSettingsSubPage.cpp" />
     <ClCompile Include="WellPlateWidget.cpp" />
     <ClCompile Include="ZStackSettingPage.cpp" />
     <ClCompile Include="datawidget.cpp" />
@@ -248,6 +249,8 @@
     <QtMoc Include="PreviewStatusBarWidget.h" />
     <QtMoc Include="SampleStageWidget.h" />
     <ClInclude Include="models\StageControlSettings.h" />
+    <ClInclude Include="models\SystemSettings.h" />
+    <QtMoc Include="SystemSettingsSubPage.h" />
     <QtMoc Include="WellPlateWidget.h" />
     <QtMoc Include="ZStackSettingPage.h" />
     <ClInclude Include="models\ZStackSettings.h" />
@@ -267,6 +270,7 @@
     <QtUic Include="mainwindow.ui" />
     <QtUic Include="previewpage.ui" />
     <QtUic Include="scanpage.ui" />
+    <QtUic Include="SystemSettingsSubPage.ui" />
   </ItemGroup>
   <ItemGroup>
     <None Include="styles\app.qss" />

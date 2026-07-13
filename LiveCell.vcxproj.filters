@@ -77,6 +77,9 @@
     <ClCompile Include="SampleStageWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SystemSettingsSubPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="WellPlateWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +148,12 @@
     <ClInclude Include="models\StageControlSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="models\SystemSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <QtMoc Include="SystemSettingsSubPage.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
     <QtMoc Include="WellPlateWidget.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -194,6 +203,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="scanpage.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="SystemSettingsSubPage.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

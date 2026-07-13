@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SystemSettingsSubPage</class>
+ <widget class="QWidget" name="SystemSettingsSubPage">
+  <property name="minimumSize">
+   <size><width>720</width><height>520</height></size>
+  </property>
+  <property name="windowTitle">
+   <string>
+    系统设置
+   </string>
+  </property>
+  <layout class="QVBoxLayout" name="rootVerticalLayout">
+   <property name="spacing"><number>0</number></property>
+   <property name="leftMargin"><number>0</number></property>
+   <property name="topMargin"><number>0</number></property>
+   <property name="rightMargin"><number>0</number></property>
+   <property name="bottomMargin"><number>0</number></property>
+   <item>
+    <widget class="QWidget" name="titleBar">
+     <property name="minimumSize"><size><width>0</width><height>42</height></size></property>
+     <property name="maximumSize"><size><width>16777215</width><height>42</height></size></property>
+     <layout class="QHBoxLayout" name="titleBarHorizontalLayout">
+      <property name="leftMargin"><number>12</number></property>
+      <property name="topMargin"><number>0</number></property>
+      <property name="rightMargin"><number>0</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+      <item>
+       <widget class="QLabel" name="labelWindowTitle">
+        <property name="text">
+         <string>
+          系统设置
+         </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="titleBarHorizontalSpacer">
+        <property name="orientation"><enum>Qt::Horizontal</enum></property>
+        <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttonClose">
+        <property name="minimumSize"><size><width>42</width><height>40</height></size></property>
+        <property name="maximumSize"><size><width>42</width><height>40</height></size></property>
+        <property name="text"><string>x</string></property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="contentWidget">
+     <layout class="QHBoxLayout" name="contentHorizontalLayout">
+      <property name="spacing"><number>0</number></property>
+      <property name="leftMargin"><number>0</number></property>
+      <property name="topMargin"><number>0</number></property>
+      <property name="rightMargin"><number>0</number></property>
+      <property name="bottomMargin"><number>0</number></property>
+      <item>
+       <widget class="QWidget" name="sidebarWidget">
+        <property name="minimumSize"><size><width>128</width><height>0</height></size></property>
+        <property name="maximumSize"><size><width>150</width><height>16777215</height></size></property>
+        <layout class="QVBoxLayout" name="sidebarVerticalLayout">
+         <property name="spacing"><number>2</number></property>
+         <property name="leftMargin"><number>8</number></property>
+         <property name="topMargin"><number>8</number></property>
+         <property name="rightMargin"><number>8</number></property>
+         <property name="bottomMargin"><number>8</number></property>
+         <item><widget class="QPushButton" name="buttonBasicSettings"><property name="minimumSize"><size><width>0</width><height>36</height></size></property><property name="text"><string>
+基础
+</string></property><property name="checkable"><bool>true</bool></property></widget></item>
+         <item><widget class="QPushButton" name="buttonPlateSettings"><property name="minimumSize"><size><width>0</width><height>36</height></size></property><property name="text"><string>
+样品板
+</string></property><property name="checkable"><bool>true</bool></property></widget></item>
+         <item><widget class="QPushButton" name="buttonScaleSettings"><property name="minimumSize"><size><width>0</width><height>36</height></size></property><property name="text"><string>
+比例尺
+</string></property><property name="checkable"><bool>true</bool></property></widget></item>
+         <item><widget class="QPushButton" name="buttonMonitoringSettings"><property name="minimumSize"><size><width>0</width><height>36</height></size></property><property name="text"><string>
+监测参数
+</string></property><property name="checkable"><bool>true</bool></property></widget></item>
+         <item><spacer name="sidebarVerticalSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="pageStackedWidget">
+        <property name="currentIndex"><number>0</number></property>
+        <widget class="QWidget" name="pageBasicSettings">
+         <layout class="QVBoxLayout" name="basicSettingsVerticalLayout">
+          <property name="leftMargin"><number>24</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>24</number></property><property name="bottomMargin"><number>18</number></property>
+          <item>
+           <layout class="QFormLayout" name="basicSettingsFormLayout">
+            <property name="horizontalSpacing"><number>12</number></property><property name="verticalSpacing"><number>12</number></property>
+            <item row="0" column="0"><widget class="QLabel" name="labelStoragePath"><property name="text"><string>
+文件存储：
+</string></property></widget></item>
+            <item row="0" column="1"><layout class="QHBoxLayout" name="storagePathHorizontalLayout"><item><widget class="QLineEdit" name="lineEditStoragePath"/></item><item><widget class="QPushButton" name="buttonBrowseStorage"><property name="text"><string>
+浏览
+</string></property></widget></item></layout></item>
+            <item row="1" column="0"><widget class="QLabel" name="labelLanguage"><property name="text"><string>
+语言切换：
+</string></property></widget></item>
+            <item row="1" column="1"><widget class="QComboBox" name="comboLanguage"><item><property name="text"><string>中文</string></property></item></widget></item>
+            <item row="2" column="0" colspan="2"><widget class="QLabel" name="labelFormatSettings"><property name="text"><string>
+格式设置：
+</string></property></widget></item>
+            <item row="3" column="0"><widget class="QLabel" name="labelImageFormat"><property name="text"><string>
+图像格式：
+</string></property></widget></item>
+            <item row="3" column="1"><widget class="QComboBox" name="comboImageFormat"><item><property name="text"><string>JPG</string></property></item><item><property name="text"><string>PNG</string></property></item><item><property name="text"><string>TIFF</string></property></item></widget></item>
+            <item row="4" column="0"><widget class="QLabel" name="labelVideoFrameRate"><property name="text"><string>
+视频帧率：
+</string></property></widget></item>
+            <item row="4" column="1"><widget class="QLineEdit" name="lineEditVideoFrameRate"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+            <item row="5" column="0" colspan="2"><widget class="QLabel" name="labelChannelComposition"><property name="text"><string>
+多通道合成占比：
+</string></property></widget></item>
+            <item row="6" column="0" colspan="2"><layout class="QHBoxLayout" name="channelCompositionHorizontalLayout"><item><widget class="QLabel" name="labelBrightFieldRatio"><property name="text"><string>BF</string></property></widget></item><item><widget class="QLineEdit" name="lineEditBrightFieldRatio"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelBlueRatio"><property name="text"><string>B</string></property></widget></item><item><widget class="QLineEdit" name="lineEditBlueRatio"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelGreenRatio"><property name="text"><string>G</string></property></widget></item><item><widget class="QLineEdit" name="lineEditGreenRatio"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelRedRatio"><property name="text"><string>R</string></property></widget></item><item><widget class="QLineEdit" name="lineEditRedRatio"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item></layout></item>
+           </layout>
+          </item>
+          <item><spacer name="basicSettingsVerticalSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="pagePlateSettings">
+         <layout class="QVBoxLayout" name="plateSettingsVerticalLayout">
+          <property name="leftMargin"><number>24</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>24</number></property><property name="bottomMargin"><number>18</number></property>
+          <item><layout class="QHBoxLayout" name="plateTypeHorizontalLayout"><item><widget class="QLabel" name="labelPlateType"><property name="text"><string>
+样品板：
+</string></property></widget></item><item><widget class="QComboBox" name="comboPlateType"><item><property name="text"><string>自由区域扫描</string></property></item><item><property name="text"><string>整板扫描</string></property></item></widget></item><item><widget class="QPushButton" name="buttonPositionCalibration"><property name="text"><string>
+位置校准
+</string></property></widget></item><item><spacer name="plateTypeHorizontalSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+          <item><layout class="QHBoxLayout" name="plateSubTypeHorizontalLayout"><item><widget class="QLabel" name="labelPlateSubType"><property name="text"><string>
+样品板子类：
+</string></property></widget></item><item><widget class="QRadioButton" name="radioPlateSubTypeA"><property name="text"><string>A</string></property></widget></item><item><widget class="QRadioButton" name="radioPlateSubTypeB"><property name="text"><string>B</string></property></widget></item><item><widget class="QRadioButton" name="radioPlateSubTypeC"><property name="text"><string>C</string></property></widget></item><item><spacer name="plateSubTypeHorizontalSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item></layout></item>
+          <item><widget class="QLabel" name="labelWellAreaSettings"><property name="text"><string>
+孔区参数：
+</string></property></widget></item>
+          <item><layout class="QFormLayout" name="plateSettingsFormLayout"><property name="horizontalSpacing"><number>12</number></property><property name="verticalSpacing"><number>10</number></property>
+           <item row="0" column="0"><widget class="QLabel" name="labelWellAreaLength"><property name="text"><string>
+长度：
+</string></property></widget></item><item row="0" column="1"><layout class="QHBoxLayout" name="wellAreaLengthHorizontalLayout"><item><widget class="QLineEdit" name="lineEditWellAreaLength"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelWellAreaLengthUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="1" column="0"><widget class="QLabel" name="labelWellAreaWidth"><property name="text"><string>
+宽度：
+</string></property></widget></item><item row="1" column="1"><layout class="QHBoxLayout" name="wellAreaWidthHorizontalLayout"><item><widget class="QLineEdit" name="lineEditWellAreaWidth"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelWellAreaWidthUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="2" column="0" colspan="2"><widget class="QLabel" name="labelFirstWellPosition"><property name="text"><string>
+孔区坐标：
+</string></property></widget></item>
+           <item row="3" column="0"><widget class="QLabel" name="labelFirstWellX"><property name="text"><string>A1_X：</string></property></widget></item><item row="3" column="1"><layout class="QHBoxLayout" name="firstWellXHorizontalLayout"><item><widget class="QLineEdit" name="lineEditFirstWellX"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelFirstWellXUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="4" column="0"><widget class="QLabel" name="labelFirstWellY"><property name="text"><string>A1_Y：</string></property></widget></item><item row="4" column="1"><layout class="QHBoxLayout" name="firstWellYHorizontalLayout"><item><widget class="QLineEdit" name="lineEditFirstWellY"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelFirstWellYUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="5" column="0" colspan="2"><widget class="QLabel" name="labelWellPitch"><property name="text"><string>
+孔板相邻的圆心距：
+</string></property></widget></item>
+           <item row="6" column="0"><widget class="QLabel" name="labelWellPitchX"><property name="text"><string>X：</string></property></widget></item><item row="6" column="1"><layout class="QHBoxLayout" name="wellPitchXHorizontalLayout"><item><widget class="QLineEdit" name="lineEditWellPitchX"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelWellPitchXUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="7" column="0"><widget class="QLabel" name="labelWellPitchY"><property name="text"><string>Y：</string></property></widget></item><item row="7" column="1"><layout class="QHBoxLayout" name="wellPitchYHorizontalLayout"><item><widget class="QLineEdit" name="lineEditWellPitchY"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelWellPitchYUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="8" column="0"><widget class="QLabel" name="labelPlateRotation"><property name="text"><string>
+孔板逆时针旋转角度：
+</string></property></widget></item><item row="8" column="1"><widget class="QLineEdit" name="lineEditPlateRotation"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="9" column="0"><widget class="QLabel" name="labelFieldOverlap"><property name="text"><string>
+视野重合度：
+</string></property></widget></item><item row="9" column="1"><layout class="QHBoxLayout" name="fieldOverlapHorizontalLayout"><item><widget class="QLineEdit" name="lineEditFieldOverlap"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelFieldOverlapUnit"><property name="text"><string>%</string></property></widget></item></layout></item>
+          </layout></item>
+          <item><spacer name="plateSettingsVerticalSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>20</height></size></property></spacer></item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="pageScaleSettings">
+         <layout class="QVBoxLayout" name="scaleSettingsVerticalLayout"><property name="leftMargin"><number>24</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>24</number></property><property name="bottomMargin"><number>18</number></property>
+          <item><widget class="QCheckBox" name="checkScaleEnabled"><property name="text"><string>
+开启比例尺
+</string></property></widget></item>
+          <item><layout class="QFormLayout" name="scaleSettingsFormLayout"><property name="horizontalSpacing"><number>12</number></property><property name="verticalSpacing"><number>12</number></property>
+           <item row="0" column="0"><widget class="QLabel" name="labelScaleLength"><property name="text"><string>
+比例尺长度：
+</string></property></widget></item><item row="0" column="1"><layout class="QHBoxLayout" name="scaleLengthHorizontalLayout"><item><widget class="QLineEdit" name="lineEditScaleLength"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item><item><widget class="QLabel" name="labelScaleLengthUnit"><property name="text"><string>µm</string></property></widget></item></layout></item>
+           <item row="1" column="0"><widget class="QLabel" name="labelScaleLineWidth"><property name="text"><string>
+线宽：
+</string></property></widget></item><item row="1" column="1"><widget class="QLineEdit" name="lineEditScaleLineWidth"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="2" column="0"><widget class="QLabel" name="labelScaleFontSize"><property name="text"><string>
+字体大小：
+</string></property></widget></item><item row="2" column="1"><widget class="QLineEdit" name="lineEditScaleFontSize"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="3" column="0"><widget class="QLabel" name="labelScaleColor"><property name="text"><string>
+颜色：
+</string></property></widget></item><item row="3" column="1"><widget class="QPushButton" name="buttonScaleColor"><property name="minimumSize"><size><width>42</width><height>26</height></size></property><property name="maximumSize"><size><width>90</width><height>32</height></size></property></widget></item>
+          </layout></item>
+          <item><spacer name="scaleSettingsVerticalSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="pageMonitoringSettings">
+         <layout class="QVBoxLayout" name="monitoringSettingsVerticalLayout"><property name="leftMargin"><number>24</number></property><property name="topMargin"><number>18</number></property><property name="rightMargin"><number>24</number></property><property name="bottomMargin"><number>18</number></property>
+          <item><layout class="QFormLayout" name="monitoringSettingsFormLayout"><property name="horizontalSpacing"><number>12</number></property><property name="verticalSpacing"><number>12</number></property>
+           <item row="0" column="0"><widget class="QLabel" name="labelCellSegmentationLevel"><property name="text"><string>
+细胞分割等级：
+</string></property></widget></item><item row="0" column="1"><widget class="QLineEdit" name="lineEditCellSegmentationLevel"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="1" column="0"><widget class="QLabel" name="labelCellEdgeWidth"><property name="text"><string>
+细胞边缘宽度：
+</string></property></widget></item><item row="1" column="1"><widget class="QLineEdit" name="lineEditCellEdgeWidth"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="2" column="0"><widget class="QLabel" name="labelCellDiameterLength"><property name="text"><string>
+细胞直径长度：
+</string></property></widget></item><item row="2" column="1"><widget class="QLineEdit" name="lineEditCellDiameterLength"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="3" column="0"><widget class="QLabel" name="labelCellAreaThreshold"><property name="text"><string>
+细胞面积阈值：
+</string></property></widget></item><item row="3" column="1"><widget class="QLineEdit" name="lineEditCellAreaThreshold"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+           <item row="4" column="0"><widget class="QLabel" name="labelCellBrightnessThreshold"><property name="text"><string>
+细胞亮度阈值：
+</string></property></widget></item><item row="4" column="1"><widget class="QLineEdit" name="lineEditCellBrightnessThreshold"><property name="alignment"><set>Qt::AlignCenter</set></property></widget></item>
+          </layout></item>
+          <item><spacer name="monitoringSettingsVerticalSpacer"><property name="orientation"><enum>Qt::Vertical</enum></property><property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property></spacer></item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="footerWidget">
+     <property name="minimumSize"><size><width>0</width><height>48</height></size></property><property name="maximumSize"><size><width>16777215</width><height>48</height></size></property>
+     <layout class="QHBoxLayout" name="footerHorizontalLayout"><property name="leftMargin"><number>12</number></property><property name="topMargin"><number>6</number></property><property name="rightMargin"><number>12</number></property><property name="bottomMargin"><number>6</number></property>
+      <item><spacer name="footerHorizontalSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+      <item><widget class="QPushButton" name="buttonConfirm"><property name="minimumSize"><size><width>72</width><height>30</height></size></property><property name="text"><string>
+确认
+</string></property></widget></item>
+      <item><widget class="QPushButton" name="buttonCancel"><property name="minimumSize"><size><width>72</width><height>30</height></size></property><property name="text"><string>
+取消
+</string></property></widget></item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

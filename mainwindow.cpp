@@ -3,10 +3,12 @@
 #include "datawidget.h"
 #include "previewpage.h"
 #include "scanpage.h"
+#include "SystemSettingsSubPage.h"
 #include "ui_mainwindow.h"
 
 #include <QButtonGroup>
 #include <QStackedWidget>
+#include <QToolButton>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,11 +17,13 @@ MainWindow::MainWindow(QWidget *parent)
     , m_pPreviewPage(nullptr)
     , m_pScanPage(nullptr)
     , m_pDataWidget(nullptr)
+    , m_pSystemSettingsSubPage(nullptr)
 {
     m_pUi->setupUi(this);
 
     initPages();
     initNavigation();
+    initSettings();
 }
 
 MainWindow::~MainWindow()
@@ -54,4 +58,26 @@ void MainWindow::initNavigation()
         m_pUi->pageStackedWidget, &QStackedWidget::setCurrentIndex);
 
     m_pUi->buttonPreviewPage->setChecked(true);
+}
+
+void MainWindow::initSettings()
+{
+    m_pSystemSettingsSubPage = new SystemSettingsSubPage(m_pUi->centralWidget);
+    m_pSystemSettingsSubPage->hide();
+
+    connect(m_pUi->buttonSettings, &QToolButton::clicked,
+        this, &MainWindow::showSettingsPage);
+    connect(m_pSystemSettingsSubPage, &SystemSettingsSubPage::settingsAccepted,
+        this, &MainWindow::applySystemSettings);
+}
+
+void MainWindow::showSettingsPage()
+{
+    m_pSystemSettingsSubPage->setSettings(m_systemSettings);
+    m_pSystemSettingsSubPage->showCenteredIn(m_pUi->centralWidget);
+}
+
+void MainWindow::applySystemSettings(const SystemSettings &settings)
+{
+    m_systemSettings = settings;
 }

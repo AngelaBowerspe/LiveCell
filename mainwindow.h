@@ -4,9 +4,12 @@
 #include <QButtonGroup>
 #include <QMainWindow>
 
+#include "models/SystemSettings.h"
+
 class DataWidget;
 class PreviewPage;
 class ScanPage;
+class SystemSettingsSubPage;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +28,9 @@ public:
 private:
     void initPages();
     void initNavigation();
+    void initSettings();
+    void showSettingsPage();
+    void applySystemSettings(const SystemSettings &settings);
 
 private:
     Ui::MainWindow *m_pUi;
@@ -32,5 +38,7 @@ private:
     PreviewPage *m_pPreviewPage;
     ScanPage *m_pScanPage;
     DataWidget *m_pDataWidget;
+    SystemSettingsSubPage *m_pSystemSettingsSubPage;
+    SystemSettings m_systemSettings;
 };
 #endif // MAINWINDOW_H
