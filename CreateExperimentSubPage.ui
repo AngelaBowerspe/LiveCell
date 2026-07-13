@@ -29,7 +29,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="pageStep1">
     <layout class="QVBoxLayout" name="pageStep1Layout">
@@ -613,10 +613,10 @@
         </spacer>
        </item>
        <item row="0" column="2">
-         <widget class="QLineEdit" name="lineEditIntervalHours"/>
+        <widget class="QLineEdit" name="lineEditIntervalHours"/>
        </item>
        <item row="1" column="6">
-         <widget class="QLineEdit" name="lineEditTotalMinutes"/>
+        <widget class="QLineEdit" name="lineEditTotalMinutes"/>
        </item>
        <item row="0" column="7">
         <widget class="QLabel" name="labelIntervalMinuteUnit">
@@ -626,7 +626,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-         <widget class="QLineEdit" name="lineEditTotalHours"/>
+        <widget class="QLineEdit" name="lineEditTotalHours"/>
        </item>
        <item row="1" column="4">
         <widget class="QLabel" name="labelTotalHourUnit">
@@ -664,7 +664,7 @@
         </widget>
        </item>
        <item row="0" column="6">
-         <widget class="QLineEdit" name="lineEditIntervalMinutes"/>
+        <widget class="QLineEdit" name="lineEditIntervalMinutes"/>
        </item>
        <item row="0" column="5">
         <spacer name="horizontalSpacer_9">
@@ -1110,7 +1110,7 @@
         </widget>
        </item>
        <item>
-         <widget class="QLineEdit" name="lineEditFocusInterval"/>
+        <widget class="QLineEdit" name="lineEditFocusInterval"/>
        </item>
        <item>
         <widget class="QLabel" name="labelPage5FocusIntervalUnit">

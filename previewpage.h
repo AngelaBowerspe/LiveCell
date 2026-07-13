@@ -1,6 +1,8 @@
 #ifndef PREVIEWPAGE_H
 #define PREVIEWPAGE_H
 
+#include "models/CaptureSettings.h"
+
 #include <QButtonGroup>
 #include <QElapsedTimer>
 #include <QTimer>
@@ -28,6 +30,11 @@ class PreviewPage : public QWidget
 public:
     explicit PreviewPage(QWidget *parent = nullptr);
     ~PreviewPage();
+
+    ObjectiveMagnification objectiveMagnification() const;
+
+signals:
+    void objectiveMagnificationChanged(ObjectiveMagnification objective);
 
 private:
     void initLeftPages();

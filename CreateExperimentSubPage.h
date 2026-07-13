@@ -59,6 +59,7 @@ private:
     void initConnections();
     void centerInContainer(QWidget *container);
     void updatePageIndicator();
+    void updateSummary();
     void updateDelaySettingState();
     void updateAutoCycleCount();
     void resetPlateFieldSelectionSummary();

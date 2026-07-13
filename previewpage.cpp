@@ -40,6 +40,16 @@ PreviewPage::~PreviewPage()
     delete m_pUi;
 }
 
+ObjectiveMagnification PreviewPage::objectiveMagnification() const
+{
+    if (m_pBasicSettingPage == nullptr)
+    {
+        return ObjectiveMagnification::Objective10X;
+    }
+
+    return m_pBasicSettingPage->captureSettings().objective;
+}
+
 void PreviewPage::initPanels()
 {
     m_pSampleStageWidget = new SampleStageWidget(this);
@@ -75,6 +85,10 @@ void PreviewPage::initLeftPages()
 
     connect(m_pPreviewPresenter, &PreviewPresenter::recordingStateChanged,
         this, &PreviewPage::setRecordingEnabled);
+    connect(m_pBasicSettingPage, &BasicSettingPage::captureSettingsChanged,
+        this, [this]() {
+            emit objectiveMagnificationChanged(objectiveMagnification());
+        });
 }
 
 void PreviewPage::initNavigation()

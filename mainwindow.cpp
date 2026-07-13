@@ -37,6 +37,10 @@ void MainWindow::initPages()
     m_pUi->pageStackedWidget->addWidget(m_pScanPage);
     m_pUi->pageStackedWidget->addWidget(m_pDataWidget);
     m_pUi->pageStackedWidget->setCurrentWidget(m_pPreviewPage);
+
+    connect(m_pPreviewPage, &PreviewPage::objectiveMagnificationChanged,
+        m_pScanPage, &ScanPage::setObjectiveMagnification);
+    m_pScanPage->setObjectiveMagnification(m_pPreviewPage->objectiveMagnification());
 }
 
 void MainWindow::initNavigation()

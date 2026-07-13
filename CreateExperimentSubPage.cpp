@@ -134,6 +134,8 @@ void CreateExperimentSubPage::setPlateFieldSelectionSummary(const QString &plate
     const QString &selectedGroups,
     const QString &selectedFields)
 {
+    updateSummary();
+
     const bool hasSelection = !selectedWells.trimmed().isEmpty()
         && !selectedFields.trimmed().isEmpty();
     if (!hasSelection)
@@ -373,6 +375,18 @@ void CreateExperimentSubPage::updatePageIndicator()
     }
 }
 
+void CreateExperimentSubPage::updateSummary()
+{
+    ui->lineSummaryExperimentType->setText(experimentType());
+    ui->lineSummaryScanChannel->setText(scanChannelText());
+    ui->lineSummaryScanMode->setText(scanModeText());
+    ui->lineSummaryIntervalTime->setText(intervalTimeText());
+    ui->lineSummaryCycleCount->setText(loopCountText());
+    ui->lineSummaryFieldOverlap->setText(fieldOverlapText());
+    ui->lineSummaryFocusInterval->setText(focusIntervalText());
+    ui->lineSummaryFocusChannel->setText(focusChannelText());
+}
+
 void CreateExperimentSubPage::goPreviousPage()
 {
     const int nextIndex = qMax(0, ui->pageStackedWidget->currentIndex() - 1);
@@ -397,7 +411,12 @@ void CreateExperimentSubPage::goNextPage()
     }
 
     emit experimentPageAccepted(static_cast<AcceptedPage>(currentIndex));
-    ui->pageStackedWidget->setCurrentIndex(qMin(ui->pageStackedWidget->count() - 1, currentIndex + 1));
+    const int nextIndex = qMin(ui->pageStackedWidget->count() - 1, currentIndex + 1);
+    if (ui->pageStackedWidget->widget(nextIndex) == ui->pageStep6)
+    {
+        updateSummary();
+    }
+    ui->pageStackedWidget->setCurrentIndex(nextIndex);
     updatePageIndicator();
 }
 

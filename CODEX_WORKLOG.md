@@ -713,3 +713,89 @@ MVP/接口检查：
 
 遗留事项：
 - 本轮未提交；当前工作区仍有用户此前未提交的 `CreateExperimentSubPage.*`、`FieldViewWidget.*`、`WellPlateWidget.*`、`scanpage.*`、`AENGRTS.md` 等改动。
+# 2026-07-13 Well Preview Switching Fix
+
+Goal:
+- Make a click on a confirmed grouped well such as A4 immediately switch the active well and allow its field preview/selection.
+- Clear any temporary blue well selection, such as B4, when switching to a confirmed grouped well.
+
+Plan:
+- Trace the `WellPlateWidget::wellClicked` to `ScanPage` selection flow.
+- Centralize grouped-well activation in one page coordination method.
+- Keep the change within the lightweight UI selection mock; do not add hardware, SDK, threads, or image processing.
+
+MVP/interface check:
+- View input comes from `WellPlateWidget::wellClicked`.
+- The existing `wellClicked` signal is forwarded to `ScanPage::handleWellClicked`.
+- `ScanPage` coordinates clearing temporary selection and writing the active well/field view state.
+
+Actual changes:
+- `scanpage.cpp`: clicking a confirmed grouped or completed well now clears temporary blue well selections before activating that well for field preview and selection.
+
+Verification:
+- `git diff --check -- scanpage.cpp CODEX_WORKLOG.md`: passed; only Windows CRLF conversion warnings were reported.
+- No build run: this is a small UI-state fix and the user will compile locally.
+
+Open items:
+- Manually verify that clicking A4 clears B4's blue temporary state and enables field selection for A4.
+
+# 2026-07-13 Group Validation And Summary Completion
+
+Goal:
+- Prevent switching away from a group when any confirmed well in that group has no confirmed fields.
+- Populate the existing step 6 experiment and scan summary controls from the values collected on earlier pages.
+
+Plan:
+- Validate the current group in the `comboScanGroup` change handler before committing the new group selection.
+- Reuse `CreateExperimentSubPage` getters to fill the step 6 read-only controls.
+- Keep coordination in `ScanPage` and `CreateExperimentSubPage`; do not introduce hardware, SDK, threads, or image processing.
+
+MVP/interface check:
+- View data is read from the group combo box and the existing Create Experiment page controls.
+- Existing Qt signals deliver group selection changes and page navigation; no new external service dependency is introduced.
+- `ScanPage` validates group navigation, while `CreateExperimentSubPage` writes its own summary controls.
+
+Actual changes:
+- `scanpage.h/.cpp`: added a current-group missing-field lookup and block group switching until each confirmed well in that group has confirmed fields.
+- `CreateExperimentSubPage.h/.cpp`: added `updateSummary()` to fill the existing step 6 experiment and scan summary fields when entering that page and when the plate/field summary changes.
+
+Verification:
+- `git diff --check -- scanpage.cpp scanpage.h CreateExperimentSubPage.cpp CreateExperimentSubPage.h CODEX_WORKLOG.md`: passed; only Windows CRLF conversion warnings were reported.
+- No build run: the user requested local compilation for small changes.
+
+Open items:
+- Manually verify that a group containing A1 without fields cannot switch to group 2, and that step 6 shows the earlier experiment and scan values.
+- Changes are intentionally uncommitted because related UI-selection fixes are still being batched; existing user changes to `CreateExperimentSubPage.ui`, `scanpage.ui`, and `AENGRTS.md` remain untouched.
+
+# 2026-07-13 Field Cancellation, Objective Sync, And Experiment Editing
+
+Goal:
+- Make field cancellation remove the active confirmed well's saved field selection.
+- Reflect the Preview page objective in the Scan page experiment settings.
+- Open the existing Create Experiment dialog from the Scan page Modify button without clearing the current experiment.
+
+Plan:
+- Keep field deletion in `ScanPage`, which owns the temporary field-selection cache.
+- Reuse `CaptureSettings::objective` between `PreviewPage` and `ScanPage`; MainWindow only wires the two top-level pages.
+- Add a dedicated edit-dialog entry point that resets wizard navigation only, not the experiment data.
+- Do not add hardware, SDK, threads, or image processing.
+
+MVP/interface check:
+- View data comes from `BasicSettingPage::captureSettings()` and `ScanPage`'s existing per-well field-selection cache.
+- `PreviewPage` forwards the selected objective through `objectiveMagnificationChanged`; `MainWindow` only connects the two top-level pages; `ScanPage` owns field-cache deletion and UI refresh.
+- UI write targets are `lineEditObjective`, `FieldSelectionWidget`, the page-6 selection summary, and the existing Create Experiment dialog.
+
+Actual:
+- `cancelFieldSelection()` now removes all saved fields for the active confirmed well, clears the field grid, and refreshes the selection summary.
+- `PreviewPage` exposes and forwards the current `CaptureSettings::objective`; `ScanPage` displays the resulting `10X` or `20X` value in the scan configuration.
+- The Scan page `修改` action now reopens the existing Create Experiment popup at page 1 without calling the new-experiment reset path, so current configuration data is preserved for editing.
+
+Validation:
+- Ran `git diff --check`; only existing CRLF normalization warnings were reported.
+- No build was run because this is a small UI interaction change and the user will compile locally.
+
+Open:
+- Verify locally that cancelling fields for the active well removes its confirmed yellow fields and then prevents group switching until fields are selected again.
+- Verify that changing the Preview objective immediately updates the Scan objective field.
+- Verify that `修改` opens the existing wizard with previous form data intact.
+- Changes remain uncommitted to batch with related fixes. User-modified `.ui` files and untracked `AENGRTS.md` were not edited.

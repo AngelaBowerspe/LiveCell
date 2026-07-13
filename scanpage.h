@@ -4,6 +4,7 @@
 #include "CreateExperimentSubPage.h"
 #include "FieldViewWidget.h"
 #include "WellPlateWidget.h"
+#include "models/CaptureSettings.h"
 
 #include <QColor>
 #include <QMap>
@@ -25,6 +26,8 @@ public:
     explicit ScanPage(QWidget *parent = nullptr);
     ~ScanPage();
 
+    void setObjectiveMagnification(ObjectiveMagnification objective);
+
 signals:
     void createExperimentRequested();
     void editExperimentConfigRequested();
@@ -44,6 +47,7 @@ private:
     void initControls();
     void initConnections();
     void showCreateExperimentPage();
+    void showEditExperimentPage();
     void applyAcceptedExperimentPage(CreateExperimentSubPage::AcceptedPage page);
     void completeExperimentConfiguration();
     void enablePlateFieldSelection();
@@ -75,6 +79,7 @@ private:
     QStringList groupedWells() const;
     QStringList selectedWellsInPlateOrder() const;
     QString selectedGroupsText() const;
+    QString firstWellWithoutFieldsInGroup(int groupIndex) const;
     QString firstWellWithoutFields() const;
     QColor currentGroupColor() const;
     static QColor groupColor(int groupIndex);

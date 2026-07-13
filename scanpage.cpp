@@ -45,6 +45,13 @@ ScanPage::~ScanPage()
     delete ui;
 }
 
+void ScanPage::setObjectiveMagnification(ObjectiveMagnification objective)
+{
+    ui->lineEditObjective->setText(objective == ObjectiveMagnification::Objective20X
+        ? QStringLiteral("20X")
+        : QStringLiteral("10X"));
+}
+
 void ScanPage::initControls()
 {
     ui->comboPlateFormat->addItem(plateFormatText(WellPlateWidget::PlateFormat::Plate6),
@@ -77,7 +84,7 @@ void ScanPage::initConnections()
     connect(ui->buttonCreateExperiment, &QPushButton::clicked,
         this, &ScanPage::showCreateExperimentPage);
     connect(ui->buttonEditExperimentConfig, &QPushButton::clicked,
-        this, &ScanPage::editExperimentConfigRequested);
+        this, &ScanPage::showEditExperimentPage);
     connect(ui->buttonSaveExperimentConfig, &QPushButton::clicked,
         this, &ScanPage::saveExperimentConfigRequested);
     connect(ui->buttonStopScan, &QPushButton::clicked,
@@ -102,6 +109,27 @@ void ScanPage::initConnections()
         emit plateFormatChanged(format);
     });
     connect(ui->comboScanGroup, &QComboBox::currentIndexChanged, this, [this](int index) {
+        const int nextGroupIndex = ui->comboScanGroup->itemData(index).toInt();
+        if (m_bPlateFieldSelectionEnabled && nextGroupIndex != m_nCurrentGroupIndex)
+        {
+            const QString missingWell = firstWellWithoutFieldsInGroup(m_nCurrentGroupIndex);
+            if (!missingWell.isEmpty())
+            {
+                const QSignalBlocker blocker(ui->comboScanGroup);
+                const int previousIndex = ui->comboScanGroup->findData(m_nCurrentGroupIndex);
+                if (previousIndex >= 0)
+                {
+                    ui->comboScanGroup->setCurrentIndex(previousIndex);
+                }
+
+                QMessageBox::warning(this, QStringLiteral("提示"),
+                    QStringLiteral("请先为分组%1的孔位 %2 选择视野。")
+                        .arg(m_nCurrentGroupIndex)
+                        .arg(missingWell));
+                return;
+            }
+        }
+
         if (m_bPlateFieldSelectionEnabled
             && m_bFieldSelectionMode
             && !ui->fieldViewWidget->fieldIndexesByState(FieldViewWidget::FieldState::Selected).isEmpty())
@@ -109,7 +137,7 @@ void ScanPage::initConnections()
             discardUnconfirmedFieldSelection();
         }
 
-        m_nCurrentGroupIndex = ui->comboScanGroup->itemData(index).toInt();
+        m_nCurrentGroupIndex = nextGroupIndex;
         updateGroupColorButton();
         updatePlateFieldControls();
         emit groupChanged(m_nCurrentGroupIndex);
@@ -150,6 +178,18 @@ void ScanPage::showCreateExperimentPage()
     m_pCreateExperimentSubPage->setPlateFieldSelectionSummary(QString(), QString(), QString(), QString());
     setExperimentActionEnabled(false);
     updatePlateFieldControls();
+    m_pCreateExperimentSubPage->resetToFirstPage();
+    m_pCreateExperimentSubPage->showCenteredIn(this);
+}
+
+void ScanPage::showEditExperimentPage()
+{
+    if (!m_bExperimentConfigured)
+    {
+        return;
+    }
+
+    emit editExperimentConfigRequested();
     m_pCreateExperimentSubPage->resetToFirstPage();
     m_pCreateExperimentSubPage->showCenteredIn(this);
 }
@@ -398,7 +438,8 @@ void ScanPage::cancelFieldSelection()
         return;
     }
 
-    ui->fieldViewWidget->clearState(FieldViewWidget::FieldState::Selected);
+    m_selectedFieldsByWell.remove(m_currentPreviewWell);
+    ui->fieldViewWidget->clearAll();
     updateCreateExperimentPlateFieldSummary();
     updatePlateFieldControls();
     emit cancelFieldSelectionRequested();
@@ -446,6 +487,13 @@ void ScanPage::handleWellClicked(const QString &well)
         && state != WellPlateWidget::WellState::Completed)
     {
         return;
+    }
+
+    if ((state == WellPlateWidget::WellState::Grouped
+            || state == WellPlateWidget::WellState::Completed)
+        && !ui->wellPlateWidget->selectedWells().isEmpty())
+    {
+        ui->wellPlateWidget->clearSelected();
     }
 
     beginFieldSelectionForWell(well);
@@ -731,6 +779,20 @@ QString ScanPage::selectedGroupsText() const
     }
 
     return groupTexts.join(QStringLiteral(", "));
+}
+
+QString ScanPage::firstWellWithoutFieldsInGroup(int groupIndex) const
+{
+    for (const QString &well : groupedWells())
+    {
+        if (m_selectedGroupByWell.value(well) == groupIndex
+            && m_selectedFieldsByWell.value(well).isEmpty())
+        {
+            return well;
+        }
+    }
+
+    return QString();
 }
 
 QString ScanPage::firstWellWithoutFields() const
